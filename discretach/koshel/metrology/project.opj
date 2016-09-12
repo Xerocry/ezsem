@@ -1,0 +1,113 @@
+(ExpressProject "project"
+  (ProjectVersion "19981106")
+  (ProjectType "PCB - PSpice")
+  (Folder "Design Resources"
+    (Folder "Library"
+      (File ".\soviet.olb"
+        (Type "Schematic Library")))
+    (NoModify)
+    (File ".\project.dsn"
+      (Type "Schematic Design"))
+    (BuildFileAddedOrDeleted "x")
+    (CompileFileAddedOrDeleted "x")
+    (PSPICE_Regenerate_Netlist_Flag "FALSE")
+    (PSPICE_DoNot_Show_WarningDlg "TRUE"))
+  (Folder "Outputs"
+    (File ".\project-main.net"
+      (Type "Report")))
+  (Folder "PSpice Resources"
+    (Folder "Simulation Profiles"
+      (ActiveProfile ".\project-main-sim.sim")
+      (File.PSpice.{09528990-3187-11D2-BC7B-00A0C90CBF91}
+         ".\project-main-sim.sim"
+        (DisplayName "MAIN-sim")
+        (Type "PSpice Profile")))
+    (Folder "Model Libraries"
+      (Sort User))
+    (Folder "Stimulus Files"
+      (Sort User))
+    (Folder "Include Files"
+      (Sort User)))
+  (DefaultLibraryBrowseDirectory "library\PSpice")
+  (PartMRUSelector
+    (FPOLY
+      (FullPartName "FPOLY.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\ANALOG.OLB")
+      (DeviceIndex "0"))
+    (0
+      (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
+      (DeviceIndex "0"))
+    (C
+      (FullPartName "C.Normal")
+      (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
+      (DeviceIndex "0"))
+    (R
+      (FullPartName "R.Normal")
+      (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
+      (DeviceIndex "0"))
+    (AD741
+      (FullPartName "AD741.Normal")
+      (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
+      (DeviceIndex "0"))
+    (AD648B
+      (FullPartName "AD648B.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\OPAMP.OLB")
+      (DeviceIndex "0"))
+    (AD648A
+      (FullPartName "AD648A.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\OPAMP.OLB")
+      (DeviceIndex "0"))
+    (VCC
+      (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
+      (DeviceIndex "0"))
+    (VDC
+      (FullPartName "VDC.Normal")
+      (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
+      (DeviceIndex "0"))
+    (VSRC
+      (FullPartName "VSRC.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\SOURCE.OLB")
+      (DeviceIndex "0"))
+    (R_0
+      (FullPartName "R_0.Normal")
+      (LibraryName "D:\STUDENT\MYPROJECT\PROJECT.DSN")
+      (DeviceIndex "0"))
+    (GND
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\CAPSYM.OLB")
+      (DeviceIndex "0"))
+    (LM741
+      (FullPartName "LM741.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\OPAMP.OLB")
+      (DeviceIndex "0"))
+    (LM301A
+      (FullPartName "LM301A.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\OPAMP.OLB")
+      (DeviceIndex "0"))
+    (LM324
+      (FullPartName "LM324.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\OPAMP.OLB")
+      (DeviceIndex "0"))
+    (LM301
+      (FullPartName "LM301.Normal")
+      (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\OPAMP.OLB")
+      (DeviceIndex "0")))
+  (LastUsedLibraryBrowseDirectory
+     "D:\Program Files\Orcad\Capture\library\PSpice")
+  (GlobalState
+    (FileView
+      (Path "Design Resources")
+      (Path "Design Resources" ".\project.dsn")
+      (Path "Design Resources" ".\project.dsn" "MAIN")
+      (Path "Design Resources" ".\project.dsn" "Design Cache")
+      (Path "Design Resources" "Library")
+      (Path "Design Resources" "Library" ".\soviet.olb")
+      (Path "Outputs")
+      (Path "PSpice Resources")
+      (Path "PSpice Resources" "Simulation Profiles")
+      (Select "PSpice Resources" "Simulation Profiles" ".\project-main-sim.sim"))
+    (HierarchyView)
+    (Doc
+      (Type "COrCapturePMDoc")
+      (Frame
+        (Placement "44 0 1 -1 -1 -8 -30 -4 260 -1 920"))
+      (Tab 0))))
