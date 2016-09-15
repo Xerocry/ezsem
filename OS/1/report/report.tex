@@ -1,0 +1,204 @@
+\documentclass[14pt,a4paper,report]{report}
+\usepackage[a4paper, mag=1000, left=2.5cm, right=1cm, top=2cm, bottom=2cm, headsep=0.7cm, footskip=1cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks]{hyperref}
+\usepackage{listings} 
+\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{graphicx}
+\hypersetup{
+	colorlinks = true,
+	linkcolor  = black
+}
+
+\usepackage{titlesec}
+\titleformat{\chapter}
+{\Large\bfseries} % format
+{}                % label
+{0pt}             % sep
+{\huge}           % before-code
+
+
+\DeclareCaptionFont{white}{\color{white}} 
+
+% Listing description
+\usepackage{listings} 
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\lstset{ 
+	% Listing settings
+	inputencoding = utf8,			
+	extendedchars = \true, 
+	keepspaces = true, 			  	 % Поддержка кириллицы и пробелов в комментариях
+	language = C,            	 	 % Язык программирования (для подсветки)
+	basicstyle = \small\sffamily, 	 % Размер и начертание шрифта для подсветки кода
+	%numbers = left,               	 % Где поставить нумерацию строк (слева\справа)
+	numberstyle = \tiny,          	 % Размер шрифта для номеров строк
+	stepnumber = 1,               	 % Размер шага между двумя номерами строк
+	numbersep = 5pt,              	 % Как далеко отстоят номера строк от подсвечиваемого кода
+	backgroundcolor = \color{white}, % Цвет фона подсветки - используем \usepackage{color}
+	showspaces = false,           	 % Показывать или нет пробелы специальными отступами
+	showstringspaces = false,    	 % Показывать или нет пробелы в строках
+	showtabs = false,           	 % Показывать или нет табуляцию в строках
+	%frame = single,              	 % Рисовать рамку вокруг кода
+	tabsize = 2,                  	 % Размер табуляции по умолчанию равен 2 пробелам
+	captionpos = t,             	 % Позиция заголовка вверху [t] или внизу [b] 
+	breaklines = true,           	 % Автоматически переносить строки (да\нет)
+	breakatwhitespace = false,   	 % Переносить строки только если есть пробел
+	escapeinside = {\%*}{*)}      	 % Если нужно добавить комментарии в коде
+}
+
+\begin{document}
+
+\def\contentsname{Содержание}
+
+% Titlepage
+\begin{titlepage}
+	\begin{center}
+		\textsc{Санкт-Петербургский государственный политехнический 
+			университет Петра Великого\\[5mm]
+			Кафедра компьютерных систем и программных технологий}
+		
+		\vfill
+		
+		\textbf{Отчёт по лабораторной работе\\[3mm]
+			Курс: Операционные системы»\\[6mm]
+			Тема: «Интерпретаторы командной строки Linux»\\[35mm]
+		}
+	\end{center}
+	
+	\hfill
+	\begin{minipage}{.5\textwidth}
+		Выполнил студент:\\[2mm] 
+		Бояркин Никита Сергеевич\\
+		Группа: 43501/3\\[5mm]
+		
+		Проверил:\\[2mm] 
+		Душутина Елена Владимировна
+	\end{minipage}
+	\vfill
+	\begin{center}
+		Санкт-Петербург\\ \the\year\ г.
+	\end{center}
+\end{titlepage}
+
+% Contents
+\tableofcontents
+\clearpage
+
+\chapter{Лабораторная работа №1}
+
+\section{Цель работы}
+
+\begin{itemize}
+	\item Изучение основных команд пользовательского интерфейса.
+	\item Изучение цикла подготовки и исполнения программ.
+	\item Изучение команд и утилит обработки текстов.
+\end{itemize}
+
+\section{Программа работы}
+
+\begin{itemize}
+	\item Основы работы c командным интерфейсом.
+	\item Команды работы с файловой системой.
+	\item Цикл работы программы (компиляторы, запуск отладчика).
+	\item Организация конвейера.
+	\item Изучение команд и утилит обработки текстов.
+\end{itemize}
+
+\section{Ход работы}
+
+\subsection{Основы работы c командным интерфейсом}
+
+Введем набор команд для получения информации об ОС и текущем сеансе:
+
+\lstinputlisting{listings/2.1.log}
+
+\begin{itemize}
+	\item \emph{date} - выводит информацию о текущем системном времени.
+	\item \emph{who} - выводит пользователей системы, которые в данный момент находятся в ней.
+	\item \emph{whoami} - выводит имя пользователя, ассоциированное с текущим эффективным идентификатором пользователя.
+	\item \emph{tty} - выводит на экран полное имя файла-терминала.
+	\item \emph{logname} - выводит имя пользователя, под которым он произвел вход в систему.
+	\item \emph{uname} - выводит на экран имя UNIX-системы. 
+\end{itemize}
+
+\clearpage
+
+Изучим команду задержки на указанное время:
+
+\lstinputlisting{listings/2.2.log}
+
+\emph{sleep} - задерживает на указанное время (задается в секундах, однако можно задавать в часах, например 5h).
+
+Команду \emph{sleep} (как и другие) можно преждевременно остановить, послав сигнал прерывания, с помощью комбинации клавиш \emph{Ctrl+C}.
+
+С помощью команды \emph{man}, можно получить справочную информацию о любой команде в формате справочника:
+
+\lstinputlisting{listings/2.3.log}
+
+Справочники в ОС Linux имеют следующие разделы:
+
+\begin{itemize}
+	\item \emph{NAME} - указывается название команды и ее функциональное применение.
+	\item \emph{SYNOPSIS} - указывается синтаксис команды (все что не заключено в квадратные скобки обязательно к добавлению).
+	\item \emph{DESCRIPTION} - описание флагов программы.
+	\item \emph{EXAMPLES} - примеры работы команды.
+	\item \emph{AUTHOR} - автор программы.
+	\item \emph{REPORTING BUGS} - контактные данные для обращения по поводу выявленных ошибок.
+	\item \emph{COPYRIGHT} - информация о лицензии.
+	\item \emph{SEE ALSO} - список похожих команд, рекомендованных для просмотра.
+\end{itemize}
+
+\subsection{Команды работы с файловой системой}
+
+Изучим команду получения информации о файлах и папках \emph{ls}:
+
+\lstinputlisting{listings/2.4.a.log}
+
+Команда \emph{ls} без ключей и указания абсолютного пути к директории выведет все файлы и папки в текущем каталоге. Если используется ключ -l, то выводится информация в виде таблицы: в первом столбце выводятся права доступа для пользователя, группы и остальных на файлы и каталоги (r - чтение, w - запись, x - выполнение). В следующих столбцах выводится количество ссылок на файл или каталог, имя владельца и имя группы, размер в байтах, дата последней модификации и самого файла или каталога имя. Если задать параметром не директорию, а файл, то тогда команда выведет только название этого файла.
+
+\clearpage
+
+Изучим команду просмотра содержимого файлов \emph{cat}:
+
+\lstinputlisting{listings/2.4.b.log}
+
+Команда \emph{cat} выводит содержимое указанных файлов (одного или нескольких) или печатает сообщение об ошибке, если параметром указана директория.
+
+\clearpage
+
+
+\lstinputlisting{listings/2.4.c.log}
+%\lstinputlisting{listings/2.5.log}
+%\lstinputlisting{listings/2.6.log}
+
+
+\subsection{Цикл работы программы}
+
+
+
+
+\subsection{Организация конвейера}
+
+
+\subsection{Изучение команд и утилит обработки текстов}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
