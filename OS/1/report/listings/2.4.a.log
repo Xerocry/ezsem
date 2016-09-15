@@ -1,0 +1,22 @@
+nikita@nikita-pc:~/Desktop$ ls
+clion.sh
+files
+firefox.desktop
+gedit.desktop
+gnome-mines.desktop
+gnome-sudoku.desktop
+gnome-system-monitor-kde.desktop
+libreoffice-writer.desktop
+Matlab.sh
+projects
+Quartus II.desktop
+software
+student
+texstudio.desktop
+nikita@nikita-pc:~/Desktop$ ls files
+projects  software  student
+nikita@nikita-pc:~/Desktop$ ls -l files
+lrwxrwxrwx 1 nikita nikita 18 июн 11 20:39 files -> /home/nikita/files
+nikita@nikita-pc:~/Desktop$ ls Quartus\ II.desktop 
+Quartus II.desktop
+

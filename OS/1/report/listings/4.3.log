@@ -1,0 +1,11 @@
+nikita@nikita-pc:~/temp$ ls
+file_name  my_open.c  prog    res.txt
+my_open    my_open.o  prog.c
+nikita@nikita-pc:~/temp$ ls | tr [a-z] [A-Z]
+FILE_NAME
+MY_OPEN
+MY_OPEN.C
+MY_OPEN.O
+PROG
+PROG.C
+RES.TXT

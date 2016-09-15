@@ -1,0 +1,27 @@
+nikita@nikita-pc:~/temp$ ls -l
+total 52
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 file_name
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 my_open
+-rw-rw-r-- 1 nikita nikita  397 сен 13 13:02 my_open.c
+-rw-rw-r-- 1 nikita nikita 1960 сен 13 12:45 my_open.o
+-rwxrwxr-x 1 nikita nikita 8608 сен 13 12:54 prog
+-rw-rw-r-- 1 nikita nikita   68 сен 13 11:32 prog.c
+-rw-rw-r-- 1 nikita nikita   19 сен 13 11:38 res.txt
+nikita@nikita-pc:~/temp$ ls --sort=size -l
+total 52
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 file_name
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 my_open
+-rwxrwxr-x 1 nikita nikita 8608 сен 13 12:54 prog
+-rw-rw-r-- 1 nikita nikita 1960 сен 13 12:45 my_open.o
+-rw-rw-r-- 1 nikita nikita  397 сен 13 13:02 my_open.c
+-rw-rw-r-- 1 nikita nikita   68 сен 13 11:32 prog.c
+-rw-rw-r-- 1 nikita nikita   19 сен 13 11:38 res.txt
+nikita@nikita-pc:~/temp$ ls -l | sort -k 5 -n
+total 52
+-rw-rw-r-- 1 nikita nikita   19 сен 13 11:38 res.txt
+-rw-rw-r-- 1 nikita nikita   68 сен 13 11:32 prog.c
+-rw-rw-r-- 1 nikita nikita  397 сен 13 13:02 my_open.c
+-rw-rw-r-- 1 nikita nikita 1960 сен 13 12:45 my_open.o
+-rwxrwxr-x 1 nikita nikita 8608 сен 13 12:54 prog
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 file_name
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 my_open

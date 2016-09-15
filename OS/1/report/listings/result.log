@@ -1,0 +1,811 @@
+II)
+
+1)
+
+nikita@nikita-pc:~$ date
+Вт сен 13 10:24:21 MSK 2016
+nikita@nikita-pc:~$ who
+nikita   tty7         2016-09-13 10:12 (:0)
+nikita@nikita-pc:~$ whoami
+nikita
+nikita@nikita-pc:~$ tty
+/dev/pts/18
+nikita@nikita-pc:~$ logname 
+logname: no login name
+nikita@nikita-pc:~$ uname
+Linux
+
+
+2)
+
+nikita@nikita-pc:~$ sleep 5
+nikita@nikita-pc:~$ sleep 10000
+^C
+
+3)
+
+nikita@nikita-pc:~$ man date
+
+4)
+
+a)
+
+nikita@nikita-pc:~/Desktop$ ls
+clion.sh
+files
+firefox.desktop
+gedit.desktop
+gnome-mines.desktop
+gnome-sudoku.desktop
+gnome-system-monitor-kde.desktop
+libreoffice-writer.desktop
+Matlab.sh
+projects
+Quartus II.desktop
+software
+student
+texstudio.desktop
+nikita@nikita-pc:~/Desktop$ ls files
+projects  software  student
+nikita@nikita-pc:~/Desktop$ ls -l files
+lrwxrwxrwx 1 nikita nikita 18 июн 11 20:39 files -> /home/nikita/files
+nikita@nikita-pc:~/Desktop$ ls Quartus\ II.desktop 
+Quartus II.desktop
+
+b)
+
+nikita@nikita-pc:~/Desktop$ cat Quartus\ II.desktop [Desktop Entry]
+Type=Application
+Version=0.9.4
+Name=Quartus II 13.1 (64-bit) Web Edition
+Comment=Quartus II 13.1 (64-bit)
+Icon=/home/nikita/files/software/altera/13.1/quartus/adm/quartusii.png
+Exec=/home/nikita/files/software/altera/13.1/quartus/bin/quartus --64bit
+Terminal=false
+Path=/home/nikita/files/software/altera/13.1
+Name[en_US]=Quartus II
+nikita@nikita-pc:~/Desktop$ cat files
+cat: files: Is a directory
+nikita@nikita-pc:~/Desktop$ cat Quartus\ II.desktop gedit.desktop 
+[Desktop Entry]
+Type=Application
+Version=0.9.4
+Name=Quartus II 13.1 (64-bit) Web Edition
+Comment=Quartus II 13.1 (64-bit)
+Icon=/home/nikita/files/software/altera/13.1/quartus/adm/quartusii.png
+Exec=/home/nikita/files/software/altera/13.1/quartus/bin/quartus --64bit
+Terminal=false
+Path=/home/nikita/files/software/altera/13.1
+Name[en_US]=Quartus II
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Name=gedit
+GenericName=Text Editor
+Comment=Edit text files
+Exec=gedit %U
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=accessories-text-editor
+Categories=GNOME;GTK;Utility;TextEditor;
+X-GNOME-DocPath=gedit/gedit.xml
+X-GNOME-FullName=Text Editor
+X-GNOME-Bugzilla-Bugzilla=GNOME
+X-GNOME-Bugzilla-Product=gedit
+X-GNOME-Bugzilla-Component=general
+X-GNOME-Bugzilla-Version=3.18.3
+X-GNOME-Bugzilla-ExtraInfoScript=/usr/share/gedit/gedit-bugreport
+Actions=new-window;new-document;
+Keywords=Text;Editor;Plaintext;Write;
+X-Ubuntu-Gettext-Domain=gedit
+
+X-AppStream-Ignore=true
+
+[Desktop Action new-window]
+Name=Open a New Window
+Exec=gedit --new-window
+
+[Desktop Action new-document]
+Name=Open a New Document
+Exec=gedit --new-document
+
+c)
+
+nikita@nikita-pc:~$ mv temp.file temp1.txt
+nikita@nikita-pc:~$ ls temp1.txt 
+temp1.txt
+nikita@nikita-pc:~$ cat temp.file
+cat: temp.file: No such file or directory
+nikita@nikita-pc:~$ cp temp1.txt Desktop/
+nikita@nikita-pc:~$ ls Desktop/
+clion.sh
+files
+firefox.desktop
+gedit.desktop
+gnome-mines.desktop
+gnome-sudoku.desktop
+gnome-system-monitor-kde.desktop
+libreoffice-writer.desktop
+Matlab.sh
+projects
+Quartus II.desktop
+software
+student
+temp1.txt
+texstudio.desktop
+nikita@nikita-pc:~$ rm Desktop/temp1.txt 
+nikita@nikita-pc:~$ ls Desktop/
+clion.sh
+files
+firefox.desktop
+gedit.desktop
+gnome-mines.desktop
+gnome-sudoku.desktop
+gnome-system-monitor-kde.desktop
+libreoffice-writer.desktop
+Matlab.sh
+projects
+Quartus II.desktop
+software
+student
+texstudio.desktop
+
+5)
+
+nikita@nikita-pc:~$ pwd
+/home/nikita
+nikita@nikita-pc:~$ >prog.c
+nikita@nikita-pc:~$ ls /home/nikita
+Desktop    examples.desktop  Pictures  temp1.txt
+Documents  files             prog.c    Templates
+Downloads  Music             Public    Videos
+nikita@nikita-pc:~$ ls /
+bin    initrd.img      media  sbin  var
+boot   initrd.img.old  mnt    snap  vmlinuz
+cdrom  lib             opt    srv   vmlinuz.old
+dev    lib32           proc   sys
+etc    lib64           root   tmp
+home   lost+found      run    usr
+nikita@nikita-pc:~$ ls -l /
+total 104
+drwxr-xr-x   2 root root  4096 май 29 23:06 bin
+drwxr-xr-x   3 root root  4096 июл 30 14:27 boot
+drwxrwxr-x   2 root root  4096 май 29 22:57 cdrom
+drwxr-xr-x  21 root root  4320 сен 13 10:12 dev
+drwxr-xr-x 136 root root 12288 июл 30 14:28 etc
+drwxr-xr-x   3 root root  4096 май 29 22:58 home
+lrwxrwxrwx   1 root root    32 июл 30 14:25 initrd.img -> boot/initrd.img-4.4.0-31-generic
+lrwxrwxrwx   1 root root    32 май 29 23:00 initrd.img.old -> boot/initrd.img-4.4.0-21-generic
+drwxr-xr-x  23 root root  4096 июл 30 01:52 lib
+drwxr-xr-x   2 root root  4096 июл 30 10:37 lib32
+drwxr-xr-x   2 root root  4096 апр 21 01:07 lib64
+drwx------   2 root root 16384 май 29 22:51 lost+found
+drwxr-xr-x   3 root root  4096 май 30 02:11 media
+drwxr-xr-x   2 root root  4096 апр 21 01:07 mnt
+drwxr-xr-x   3 root root  4096 июл 30 04:12 opt
+dr-xr-xr-x 222 root root     0 сен 13 10:11 proc
+drwx------   5 root root  4096 июл 30 16:14 root
+drwxr-xr-x  26 root root   760 сен 13 10:33 run
+drwxr-xr-x   2 root root 12288 июл 30 14:21 sbin
+drwxr-xr-x   2 root root  4096 апр 19 17:31 snap
+drwxr-xr-x   2 root root  4096 апр 21 01:07 srv
+dr-xr-xr-x  13 root root     0 сен 13 10:11 sys
+drwxrwxrwt  11 root root  4096 сен 13 10:48 tmp
+drwxr-xr-x  12 root root  4096 июл 30 10:37 usr
+drwxr-xr-x  14 root root  4096 апр 21 01:19 var
+lrwxrwxrwx   1 root root    29 июл 30 14:25 vmlinuz -> boot/vmlinuz-4.4.0-31-generic
+lrwxrwxrwx   1 root root    29 май 29 23:00 vmlinuz.old -> boot/vmlinuz-4.4.0-21-generic
+nikita@nikita-pc:~$ ls /bin
+bash           networkctl
+bunzip2        nisdomainname
+busybox        ntfs-3g
+bzcat          ntfs-3g.probe
+bzcmp          ntfs-3g.secaudit
+bzdiff         ntfs-3g.usermap
+bzegrep        ntfscat
+bzexe          ntfscluster
+bzfgrep        ntfscmp
+bzgrep         ntfsfallocate
+bzip2          ntfsfix
+bzip2recover   ntfsinfo
+bzless         ntfsls
+bzmore         ntfsmove
+cat            ntfstruncate
+chacl          ntfswipe
+chgrp          open
+chmod          openvt
+chown          pidof
+chvt           ping
+cp             ping6
+cpio           plymouth
+dash           ps
+date           pwd
+dd             rbash
+df             readlink
+dir            red
+dmesg          rm
+dnsdomainname  rmdir
+domainname     rnano
+dumpkeys       run-parts
+echo           sed
+ed             setfacl
+efibootmgr     setfont
+egrep          setupcon
+false          sh
+fgconsole      sh.distrib
+fgrep          sleep
+findmnt        ss
+fuser          static-sh
+fusermount     stty
+getfacl        su
+grep           sync
+gunzip         systemctl
+gzexe          systemd
+gzip           systemd-ask-password
+hciconfig      systemd-escape
+hostname       systemd-hwdb
+ip             systemd-inhibit
+journalctl     systemd-machine-id-setup
+kbd_mode       systemd-notify
+kill           systemd-tmpfiles
+kmod           systemd-tty-ask-password-agent
+less           tailf
+lessecho       tar
+lessfile       tempfile
+lesskey        touch
+lesspipe       true
+ln             udevadm
+loadkeys       ulockmgr_server
+login          umount
+loginctl       uname
+lowntfs-3g     uncompress
+ls             unicode_start
+lsblk          vdir
+lsmod          vmmouse_detect
+mkdir          wdctl
+mknod          which
+mktemp         whiptail
+more           ypdomainname
+mount          zcat
+mountpoint     zcmp
+mt             zdiff
+mt-gnu         zegrep
+mv             zfgrep
+nano           zforce
+nc             zgrep
+nc.openbsd     zless
+netcat         zmore
+netstat        znew
+
+nikita@nikita-pc:~$ cd ..
+nikita@nikita-pc:/home$ cd ..
+nikita@nikita-pc:/$ cd ..
+nikita@nikita-pc:/$ ls -ld /
+drwxr-xr-x 25 root root 4096 июл 30 14:25 /
+nikita@nikita-pc:/$ ls -ld /bin
+drwxr-xr-x 2 root root 4096 май 29 23:06 /bin
+nikita@nikita-pc:/$ ls -ld /home/nikita/
+drwxr-xr-x 25 nikita nikita 4096 сен 13 10:53 /home/nikita/
+nikita@nikita-pc:/$ cd
+nikita@nikita-pc:~$ mkdir temp
+nikita@nikita-pc:~$ cd temp
+nikita@nikita-pc:~/temp$ cp ../prog.c .
+nikita@nikita-pc:~/temp$ cd ..
+nikita@nikita-pc:~$ ls
+Desktop           files     Public     Videos
+Documents         Music     temp
+Downloads         Pictures  temp1.txt
+examples.desktop  prog.c    Templates
+nikita@nikita-pc:~$ rmdir temp/
+rmdir: failed to remove 'temp/': Directory not empty
+nikita@nikita-pc:~$ rm temp/prog.c
+nikita@nikita-pc:~$ rmdir temp/
+nikita@nikita-pc:~$ ls
+Desktop    examples.desktop  Pictures  temp1.txt
+Documents  files             prog.c    Templates
+Downloads  Music             Public    Videos
+
+6)
+
+nikita@nikita-pc:~$ ps
+  PID TTY          TIME CMD
+ 3274 pts/4    00:00:00 bash
+ 3294 pts/4    00:00:00 ps
+nikita@nikita-pc:~$ ps -A
+  PID TTY          TIME CMD
+    1 ?        00:00:04 systemd
+    2 ?        00:00:00 kthreadd
+    3 ?        00:00:00 ksoftirqd/0
+    5 ?        00:00:00 kworker/0:0H
+    7 ?        00:00:03 rcu_sched
+    8 ?        00:00:00 rcu_bh
+    9 ?        00:00:00 migration/0
+   10 ?        00:00:00 watchdog/0
+   11 ?        00:00:00 watchdog/1
+   12 ?        00:00:00 migration/1
+   13 ?        00:00:00 ksoftirqd/1
+   15 ?        00:00:00 kworker/1:0H
+   16 ?        00:00:00 watchdog/2
+   17 ?        00:00:00 migration/2
+   18 ?        00:00:00 ksoftirqd/2
+   20 ?        00:00:00 kworker/2:0H
+   21 ?        00:00:00 watchdog/3
+   22 ?        00:00:00 migration/3
+   23 ?        00:00:00 ksoftirqd/3
+   25 ?        00:00:00 kworker/3:0H
+   26 ?        00:00:00 kdevtmpfs
+   27 ?        00:00:00 netns
+   28 ?        00:00:00 perf
+   29 ?        00:00:00 khungtaskd
+   30 ?        00:00:00 writeback
+   31 ?        00:00:00 ksmd
+   32 ?        00:00:01 khugepaged
+   33 ?        00:00:00 crypto
+   34 ?        00:00:00 kintegrityd
+   35 ?        00:00:00 bioset
+   36 ?        00:00:00 kblockd
+   37 ?        00:00:00 ata_sff
+   38 ?        00:00:00 md
+   39 ?        00:00:00 devfreq_wq
+   45 ?        00:00:00 kswapd0
+   46 ?        00:00:00 vmstat
+   47 ?        00:00:00 fsnotify_mark
+   48 ?        00:00:00 ecryptfs-kthrea
+   64 ?        00:00:00 kthrotld
+   65 ?        00:00:00 acpi_thermal_pm
+   67 ?        00:00:00 bioset
+   68 ?        00:00:00 bioset
+   69 ?        00:00:00 bioset
+   70 ?        00:00:00 bioset
+   71 ?        00:00:00 bioset
+   72 ?        00:00:00 bioset
+   73 ?        00:00:00 bioset
+   74 ?        00:00:00 bioset
+   75 ?        00:00:00 bioset
+   76 ?        00:00:00 bioset
+   77 ?        00:00:00 bioset
+   78 ?        00:00:00 bioset
+   79 ?        00:00:00 bioset
+   80 ?        00:00:00 bioset
+   81 ?        00:00:00 bioset
+   82 ?        00:00:00 bioset
+   83 ?        00:00:00 bioset
+   84 ?        00:00:00 bioset
+   85 ?        00:00:00 bioset
+   86 ?        00:00:00 bioset
+   87 ?        00:00:00 bioset
+   88 ?        00:00:00 bioset
+   89 ?        00:00:00 bioset
+   90 ?        00:00:00 bioset
+   94 ?        00:00:00 ipv6_addrconf
+  108 ?        00:00:00 deferwq
+  109 ?        00:00:00 charger_manager
+  142 ?        00:00:01 kworker/2:2
+  148 ?        00:00:00 scsi_eh_0
+  149 ?        00:00:00 scsi_tmf_0
+  152 ?        00:00:00 scsi_eh_1
+  154 ?        00:00:00 scsi_tmf_1
+  155 ?        00:00:00 kpsmoused
+  156 ?        00:00:00 scsi_eh_2
+  157 ?        00:00:00 scsi_tmf_2
+  158 ?        00:00:00 scsi_eh_3
+  159 ?        00:00:00 scsi_tmf_3
+  164 ?        00:00:00 rtsx_pci_sdmmc_
+  168 ?        00:00:00 bioset
+  190 ?        00:00:00 kworker/3:1H
+  191 ?        00:00:00 kworker/1:1H
+  193 ?        00:00:00 jbd2/sda1-8
+  194 ?        00:00:00 ext4-rsv-conver
+  232 ?        00:00:00 kauditd
+  239 ?        00:00:01 systemd-journal
+  263 ?        00:00:01 systemd-udevd
+  274 ?        00:00:00 kworker/0:1H
+  275 ?        00:00:00 kworker/2:1H
+  401 ?        00:00:00 kmemstick
+  424 ?        00:00:00 cfg80211
+  457 ?        00:00:00 systemd-timesyn
+  583 ?        00:00:00 ModemManager
+  587 ?        00:00:00 accounts-daemon
+  593 ?        00:00:00 rsyslogd
+  606 ?        00:00:00 avahi-daemon
+  610 ?        00:00:00 acpid
+  616 ?        00:00:00 cron
+  621 ?        00:00:00 whoopsie
+  624 ?        00:00:05 dbus-daemon
+  650 ?        00:00:00 avahi-daemon
+  684 ?        00:00:05 NetworkManager
+  689 ?        00:00:00 cups-browsed
+  693 ?        00:00:00 systemd-logind
+  730 ?        00:00:00 polkitd
+  734 ?        00:00:00 lightdm
+  770 ?        00:00:01 wpa_supplicant
+  821 tty7     00:04:33 Xorg
+  836 ?        00:00:00 irqbalance
+  837 tty1     00:00:00 agetty
+  851 ?        00:00:00 lightdm
+  856 ?        00:00:00 systemd
+  857 ?        00:00:00 (sd-pam)
+  862 ?        00:00:00 upstart
+  881 ?        00:00:00 dnsmasq
+  994 ?        00:00:00 upstart-udev-br
+ 1005 ?        00:00:11 dbus-daemon
+ 1017 ?        00:00:00 window-stack-br
+ 1041 ?        00:00:00 upstart-dbus-br
+ 1043 ?        00:00:02 upstart-dbus-br
+ 1048 ?        00:00:00 upstart-file-br
+ 1052 ?        00:00:00 gnome-keyring-d
+ 1059 ?        00:00:41 ibus-daemon
+ 1073 ?        00:00:00 gpg-agent
+ 1077 ?        00:00:00 gvfsd
+ 1082 ?        00:00:00 gvfsd-fuse
+ 1084 ?        00:00:00 ibus-dconf
+ 1085 ?        00:00:14 ibus-ui-gtk3
+ 1087 ?        00:00:00 ibus-x11
+ 1101 ?        00:00:11 bamfdaemon
+ 1105 ?        00:00:18 hud-service
+ 1107 ?        00:00:02 unity-settings-
+ 1111 ?        00:04:30 compiz
+ 1115 ?        00:00:00 at-spi-bus-laun
+ 1116 ?        00:00:00 gnome-session-b
+ 1119 ?        00:00:23 unity-panel-ser
+ 1128 ?        00:00:00 dbus-daemon
+ 1135 ?        00:00:00 dconf-service
+ 1172 ?        00:00:03 at-spi2-registr
+ 1183 ?        00:00:00 upowerd
+ 1185 ?        00:00:10 ibus-engine-sim
+ 1204 ?        00:00:00 pulseaudio
+ 1205 ?        00:00:00 rtkit-daemon
+ 1212 ?        00:00:00 indicator-messa
+ 1213 ?        00:00:00 indicator-bluet
+ 1215 ?        00:00:00 indicator-power
+ 1216 ?        00:00:00 indicator-datet
+ 1217 ?        00:00:01 indicator-keybo
+ 1218 ?        00:00:00 indicator-sound
+ 1219 ?        00:00:00 indicator-print
+ 1220 ?        00:00:00 indicator-sessi
+ 1230 ?        00:00:02 indicator-appli
+ 1276 ?        00:00:19 gnome-software
+ 1282 ?        00:00:00 unity-fallback-
+ 1283 ?        00:00:18 nm-applet
+ 1289 ?        00:00:00 polkit-gnome-au
+ 1292 ?        00:00:38 nautilus
+ 1305 ?        00:00:00 gvfs-udisks2-vo
+ 1313 ?        00:00:00 evolution-sourc
+ 1316 ?        00:00:02 udisksd
+ 1343 ?        00:00:00 gvfs-goa-volume
+ 1348 ?        00:00:00 gvfs-mtp-volume
+ 1353 ?        00:00:00 gvfs-afc-volume
+ 1354 ?        00:00:00 colord
+ 1362 ?        00:00:03 fwupd
+ 1363 ?        00:00:00 syndaemon
+ 1368 ?        00:00:00 gvfs-gphoto2-vo
+ 1399 ?        00:00:00 evolution-calen
+ 1406 ?        00:00:00 gvfsd-trash
+ 1425 ?        00:00:00 evolution-calen
+ 1435 ?        00:00:00 evolution-addre
+ 1437 ?        00:00:00 evolution-calen
+ 1466 ?        00:00:00 gvfsd-metadata
+ 1475 ?        00:00:00 evolution-addre
+ 1507 ?        00:00:03 notify-osd
+ 1518 ?        00:00:01 zeitgeist-datah
+ 1525 ?        00:00:00 sh
+ 1529 ?        00:00:00 zeitgeist-daemo
+ 1536 ?        00:00:00 zeitgeist-fts
+ 1577 ?        00:00:00 gvfsd-network
+ 1583 ?        00:00:00 gvfsd-smb-brows
+ 1597 ?        00:00:00 gvfsd-dnssd
+ 1637 ?        00:00:00 gvfsd-http
+ 1653 ?        00:01:28 chromium-browse
+ 1675 ?        00:00:00 update-notifier
+ 1688 ?        00:00:03 chromium-browse
+ 1738 ?        00:00:00 chromium-browse
+ 1747 ?        00:00:00 gconfd-2
+ 1795 ?        00:00:32 chromium-browse
+ 1804 ?        00:00:05 chromium-browse
+ 1838 ?        00:00:24 chromium-browse
+ 1839 ?        00:00:00 chromium-browse
+ 2105 ?        00:00:00 deja-dup-monito
+ 2248 ?        00:00:03 kworker/u8:0
+ 2412 ?        00:00:00 chromium-browse
+ 2469 ?        00:00:39 chromium-browse
+ 2510 ?        00:00:03 kworker/1:3
+ 2628 ?        00:00:00 kworker/0:0
+ 2635 ?        00:02:31 gedit
+ 2713 ?        00:00:00 kworker/3:1
+ 2776 ?        00:00:02 kworker/0:1
+ 2831 ?        00:00:03 kworker/2:1
+ 2917 ?        00:00:02 kworker/3:2
+ 3123 ?        00:00:01 kworker/u8:2
+ 3180 ?        00:00:01 kworker/1:0
+ 3201 ?        00:00:00 kworker/u8:1
+ 3267 ?        00:00:01 gnome-terminal-
+ 3274 pts/4    00:00:00 bash
+ 3295 pts/4    00:00:00 ps
+
+III)
+
+nikita@nikita-pc:~$ cd temp
+nikita@nikita-pc:~/temp$ >prog.c
+nikita@nikita-pc:~/temp$ gedit prog.c 
+nikita@nikita-pc:~/temp$ gcc prog.c -c
+prog.c:2:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
+ main () 
+ ^
+nikita@nikita-pc:~/temp$ gcc prog.o -o prog
+nikita@nikita-pc:~/temp$ ./prog 
+Hello, everybody ! 
+nikita@nikita-pc:~/temp$ ./prog >res.txt
+nikita@nikita-pc:~/temp$ cat res.txt
+Hello, everybody ! 
+
+nikita@nikita-pc:~/temp$ >my_open.c
+nikita@nikita-pc:~/temp$ gedit my_open.c 
+nikita@nikita-pc:~/temp$ gcc my_open.c -o my_open
+my_open.c:2:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
+ main ( argc, argv ) 
+ ^
+nikita@nikita-pc:~/temp$ ./my_open
+открываемый файл не указан
+nikita@nikita-pc:~/temp$ ./my_open res.txt
+./my_open: файл res.txt открыт
+nikita@nikita-pc:~/temp$ ./my_open blahblah
+./my_open: неудача при попытке открыть файл blahblah
+
+nikita@nikita-pc:~/temp$ ./file_name || ./my_open res.txt
+./file_name: открываемый файл не указан 
+nikita@nikita-pc:~/temp$ ./file_name | ./my_open res.txt
+./my_open: файл res.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name && ./my_open res.txt
+./file_name: открываемый файл не указан 
+./my_open: файл res.txt открыт
+nikita@nikita-pc:~/temp$ ./file_name ; ./my_open res.txt
+./file_name: открываемый файл не указан 
+./my_open: файл res.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name | xargs ./my_open res.txt
+./my_open: файл res.txt открыт 
+
+IV)
+
+1)
+
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep '^d'
+drwx------ 2 nikita nikita 4096 сен 13 12:30 lu493719xsav.tmp
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-colord.service-Kpn7Wo
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-rtkit-daemon.service-apgp9Y
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-systemd-timesyncd.service-oyLPji
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep '.........x'
+drwx------ 2 nikita nikita 4096 сен 13 12:30 lu493719xsav.tmp
+srwxrwxr-x 1 nikita nikita    0 сен 13 12:26 OSL_PIPE_1000_SingleOfficeIPC_d6a98e563430a207ff34195dc355b
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep 'root'
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-colord.service-Kpn7Wo
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-rtkit-daemon.service-apgp9Y
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-systemd-timesyncd.service-oyLPji
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep -v 'root'
+total 16
+-rw------- 1 nikita nikita    0 сен 13 10:12 config-err-OJoivp
+drwx------ 2 nikita nikita 4096 сен 13 12:30 lu493719xsav.tmp
+srwxrwxr-x 1 nikita nikita    0 сен 13 12:26 OSL_PIPE_1000_SingleOfficeIPC_d6a98e563430a207ff34195dc355b
+-rw-rw-r-- 1 nikita nikita    0 сен 13 10:12 unity_support_test.0
+
+2)
+
+nikita@nikita-pc:~/temp$ ps
+  PID TTY          TIME CMD
+ 5365 pts/4    00:00:00 bash
+ 6031 pts/4    00:00:00 ps
+nikita@nikita-pc:~/temp$ ps | cut -f-2 -d " "
+ 
+ 5365
+ 6035
+ 6036
+nikita@nikita-pc:~/temp$ who
+nikita   tty7         2016-09-13 10:12 (:0)
+nikita@nikita-pc:~/temp$ who | cut -f1 -d ' '
+nikita
+nikita@nikita-pc:~/temp$ whoami
+nikita
+nikita@nikita-pc:~/temp$ whoami | cut -f1 -d ' '
+nikita
+
+3)
+
+nikita@nikita-pc:~/temp$ ls
+file_name  my_open.c  prog    res.txt
+my_open    my_open.o  prog.c
+nikita@nikita-pc:~/temp$ ls | tr [a-z] [A-Z]
+FILE_NAME
+MY_OPEN
+MY_OPEN.C
+MY_OPEN.O
+PROG
+PROG.C
+RES.TXT
+
+4)
+
+nikita@nikita-pc:~/temp$ ls -l
+total 52
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 file_name
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 my_open
+-rw-rw-r-- 1 nikita nikita  397 сен 13 13:02 my_open.c
+-rw-rw-r-- 1 nikita nikita 1960 сен 13 12:45 my_open.o
+-rwxrwxr-x 1 nikita nikita 8608 сен 13 12:54 prog
+-rw-rw-r-- 1 nikita nikita   68 сен 13 11:32 prog.c
+-rw-rw-r-- 1 nikita nikita   19 сен 13 11:38 res.txt
+nikita@nikita-pc:~/temp$ ls --sort=size -l
+total 52
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 file_name
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 my_open
+-rwxrwxr-x 1 nikita nikita 8608 сен 13 12:54 prog
+-rw-rw-r-- 1 nikita nikita 1960 сен 13 12:45 my_open.o
+-rw-rw-r-- 1 nikita nikita  397 сен 13 13:02 my_open.c
+-rw-rw-r-- 1 nikita nikita   68 сен 13 11:32 prog.c
+-rw-rw-r-- 1 nikita nikita   19 сен 13 11:38 res.txt
+nikita@nikita-pc:~/temp$ ls -l | sort -k 5 -n
+total 52
+-rw-rw-r-- 1 nikita nikita   19 сен 13 11:38 res.txt
+-rw-rw-r-- 1 nikita nikita   68 сен 13 11:32 prog.c
+-rw-rw-r-- 1 nikita nikita  397 сен 13 13:02 my_open.c
+-rw-rw-r-- 1 nikita nikita 1960 сен 13 12:45 my_open.o
+-rwxrwxr-x 1 nikita nikita 8608 сен 13 12:54 prog
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 file_name
+-rwxrwxr-x 1 nikita nikita 8656 сен 13 13:02 my_open
+
+5)
+
+nikita@nikita-pc:~/temp$ ls -l /usr/bin/ | cut -b24-31 | sort -n | uniq -d
+        
+       1
+       2
+       3
+       4
+       5
+       6
+       7
+       8
+       9
+      10
+      11
+      12
+      13
+      14
+      15
+      16
+      17
+      18
+      19
+      20
+      22
+      23
+      26
+      27
+      28
+      29
+      30
+      31
+      32
+      33
+      35
+      36
+      37
+      38
+      39
+      40
+      41
+      43
+      44
+      45
+      47
+      48
+      49
+      51
+      52
+      53
+      54
+      55
+      56
+      57
+      59
+      60
+      61
+      62
+      63
+      64
+      65
+      66
+      68
+      69
+      72
+      73
+      74
+      76
+      77
+      80
+      81
+      84
+      85
+      88
+      92
+      94
+     104
+     105
+     109
+     111
+     115
+     116
+     117
+     120
+     121
+     128
+     131
+     133
+     134
+     136
+     138
+     139
+     140
+     146
+     147
+     162
+     163
+     166
+     178
+     182
+     190
+     192
+     200
+     201
+     205
+     224
+     229
+     232
+     234
+     248
+     255
+     291
+     294
+     297
+     302
+     351
+     358
+     371
+     474
+     559
+     915
+    1680
+    1907
+    4439
+
+6)
+
+nikita@nikita-pc:~/temp$ cat v1
+9324893278309248903289
+nikita@nikita-pc:~/temp$ cat v2
+93F4893278309248903289
+nikita@nikita-pc:~/temp$ cmp v1 v2
+v1 v2 differ: byte 3, line 1
+
+7)
+
+nikita@nikita-pc:~/temp$ cat v1
+9324893278309248903289
+9324893278309248903289
+9324893278309248903289
+9324893278309248903289
+nikita@nikita-pc:~/temp$ cat v2
+9324893278309248903289
+93F4893278309248903289
+9324893278309248903289
+9324893278309248903289
+nikita@nikita-pc:~/temp$ diff v1 v2
+2c2
+< 9324893278309248903289
+---
+> 93F4893278309248903289
+
+
+
+
+
+
+

@@ -1,0 +1,18 @@
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep '^d'
+drwx------ 2 nikita nikita 4096 сен 13 12:30 lu493719xsav.tmp
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-colord.service-Kpn7Wo
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-rtkit-daemon.service-apgp9Y
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-systemd-timesyncd.service-oyLPji
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep '.........x'
+drwx------ 2 nikita nikita 4096 сен 13 12:30 lu493719xsav.tmp
+srwxrwxr-x 1 nikita nikita    0 сен 13 12:26 OSL_PIPE_1000_SingleOfficeIPC_d6a98e563430a207ff34195dc355b
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep 'root'
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-colord.service-Kpn7Wo
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-rtkit-daemon.service-apgp9Y
+drwx------ 3 root   root   4096 сен 13 10:12 systemd-private-7825063278dd42f399ad5f71661fe3a7-systemd-timesyncd.service-oyLPji
+nikita@nikita-pc:~/temp$ ls -l /tmp | grep -v 'root'
+total 16
+-rw------- 1 nikita nikita    0 сен 13 10:12 config-err-OJoivp
+drwx------ 2 nikita nikita 4096 сен 13 12:30 lu493719xsav.tmp
+srwxrwxr-x 1 nikita nikita    0 сен 13 12:26 OSL_PIPE_1000_SingleOfficeIPC_d6a98e563430a207ff34195dc355b
+-rw-rw-r-- 1 nikita nikita    0 сен 13 10:12 unity_support_test.0

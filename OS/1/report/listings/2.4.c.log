@@ -1,0 +1,38 @@
+nikita@nikita-pc:~$ mv temp.file temp1.txt
+nikita@nikita-pc:~$ ls temp1.txt 
+temp1.txt
+nikita@nikita-pc:~$ cat temp.file
+cat: temp.file: No such file or directory
+nikita@nikita-pc:~$ cp temp1.txt Desktop/
+nikita@nikita-pc:~$ ls Desktop/
+clion.sh
+files
+firefox.desktop
+gedit.desktop
+gnome-mines.desktop
+gnome-sudoku.desktop
+gnome-system-monitor-kde.desktop
+libreoffice-writer.desktop
+Matlab.sh
+projects
+Quartus II.desktop
+software
+student
+temp1.txt
+texstudio.desktop
+nikita@nikita-pc:~$ rm Desktop/temp1.txt 
+nikita@nikita-pc:~$ ls Desktop/
+clion.sh
+files
+firefox.desktop
+gedit.desktop
+gnome-mines.desktop
+gnome-sudoku.desktop
+gnome-system-monitor-kde.desktop
+libreoffice-writer.desktop
+Matlab.sh
+projects
+Quartus II.desktop
+software
+student
+texstudio.desktop

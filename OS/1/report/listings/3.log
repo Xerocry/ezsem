@@ -1,0 +1,39 @@
+nikita@nikita-pc:~$ cd temp
+nikita@nikita-pc:~/temp$ >prog.c
+nikita@nikita-pc:~/temp$ gedit prog.c 
+nikita@nikita-pc:~/temp$ gcc prog.c -c
+prog.c:2:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
+ main () 
+ ^
+nikita@nikita-pc:~/temp$ gcc prog.o -o prog
+nikita@nikita-pc:~/temp$ ./prog 
+Hello, everybody ! 
+nikita@nikita-pc:~/temp$ ./prog >res.txt
+nikita@nikita-pc:~/temp$ cat res.txt
+Hello, everybody ! 
+
+nikita@nikita-pc:~/temp$ >my_open.c
+nikita@nikita-pc:~/temp$ gedit my_open.c 
+nikita@nikita-pc:~/temp$ gcc my_open.c -o my_open
+my_open.c:2:1: warning: return type defaults to ‘int’ [-Wimplicit-int]
+ main ( argc, argv ) 
+ ^
+nikita@nikita-pc:~/temp$ ./my_open
+открываемый файл не указан
+nikita@nikita-pc:~/temp$ ./my_open res.txt
+./my_open: файл res.txt открыт
+nikita@nikita-pc:~/temp$ ./my_open blahblah
+./my_open: неудача при попытке открыть файл blahblah
+
+nikita@nikita-pc:~/temp$ ./file_name || ./my_open res.txt
+./file_name: открываемый файл не указан 
+nikita@nikita-pc:~/temp$ ./file_name | ./my_open res.txt
+./my_open: файл res.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name && ./my_open res.txt
+./file_name: открываемый файл не указан 
+./my_open: файл res.txt открыт
+nikita@nikita-pc:~/temp$ ./file_name ; ./my_open res.txt
+./file_name: открываемый файл не указан 
+./my_open: файл res.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name | xargs ./my_open res.txt
+./my_open: файл res.txt открыт 

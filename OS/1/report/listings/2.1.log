@@ -1,0 +1,12 @@
+nikita@nikita-pc:~$ date
+Вт сен 13 10:24:21 MSK 2016
+nikita@nikita-pc:~$ who
+nikita   tty7         2016-09-13 10:12 (:0)
+nikita@nikita-pc:~$ whoami
+nikita
+nikita@nikita-pc:~$ tty
+/dev/pts/18
+nikita@nikita-pc:~$ logname 
+logname: no login name
+nikita@nikita-pc:~$ uname
+Linux
