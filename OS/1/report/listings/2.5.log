@@ -18,25 +18,7 @@ drwxr-xr-x   2 root root  4096 май 29 23:06 bin
 drwxr-xr-x   3 root root  4096 июл 30 14:27 boot
 drwxrwxr-x   2 root root  4096 май 29 22:57 cdrom
 drwxr-xr-x  21 root root  4320 сен 13 10:12 dev
-drwxr-xr-x 136 root root 12288 июл 30 14:28 etc
-drwxr-xr-x   3 root root  4096 май 29 22:58 home
-lrwxrwxrwx   1 root root    32 июл 30 14:25 initrd.img -> boot/initrd.img-4.4.0-31-generic
-lrwxrwxrwx   1 root root    32 май 29 23:00 initrd.img.old -> boot/initrd.img-4.4.0-21-generic
-drwxr-xr-x  23 root root  4096 июл 30 01:52 lib
-drwxr-xr-x   2 root root  4096 июл 30 10:37 lib32
-drwxr-xr-x   2 root root  4096 апр 21 01:07 lib64
-drwx------   2 root root 16384 май 29 22:51 lost+found
-drwxr-xr-x   3 root root  4096 май 30 02:11 media
-drwxr-xr-x   2 root root  4096 апр 21 01:07 mnt
-drwxr-xr-x   3 root root  4096 июл 30 04:12 opt
-dr-xr-xr-x 222 root root     0 сен 13 10:11 proc
-drwx------   5 root root  4096 июл 30 16:14 root
-drwxr-xr-x  26 root root   760 сен 13 10:33 run
-drwxr-xr-x   2 root root 12288 июл 30 14:21 sbin
-drwxr-xr-x   2 root root  4096 апр 19 17:31 snap
-drwxr-xr-x   2 root root  4096 апр 21 01:07 srv
-dr-xr-xr-x  13 root root     0 сен 13 10:11 sys
-drwxrwxrwt  11 root root  4096 сен 13 10:48 tmp
+( ... )
 drwxr-xr-x  12 root root  4096 июл 30 10:37 usr
 drwxr-xr-x  14 root root  4096 апр 21 01:19 var
 lrwxrwxrwx   1 root root    29 июл 30 14:25 vmlinuz -> boot/vmlinuz-4.4.0-31-generic
@@ -48,80 +30,7 @@ busybox        ntfs-3g
 bzcat          ntfs-3g.probe
 bzcmp          ntfs-3g.secaudit
 bzdiff         ntfs-3g.usermap
-bzegrep        ntfscat
-bzexe          ntfscluster
-bzfgrep        ntfscmp
-bzgrep         ntfsfallocate
-bzip2          ntfsfix
-bzip2recover   ntfsinfo
-bzless         ntfsls
-bzmore         ntfsmove
-cat            ntfstruncate
-chacl          ntfswipe
-chgrp          open
-chmod          openvt
-chown          pidof
-chvt           ping
-cp             ping6
-cpio           plymouth
-dash           ps
-date           pwd
-dd             rbash
-df             readlink
-dir            red
-dmesg          rm
-dnsdomainname  rmdir
-domainname     rnano
-dumpkeys       run-parts
-echo           sed
-ed             setfacl
-efibootmgr     setfont
-egrep          setupcon
-false          sh
-fgconsole      sh.distrib
-fgrep          sleep
-findmnt        ss
-fuser          static-sh
-fusermount     stty
-getfacl        su
-grep           sync
-gunzip         systemctl
-gzexe          systemd
-gzip           systemd-ask-password
-hciconfig      systemd-escape
-hostname       systemd-hwdb
-ip             systemd-inhibit
-journalctl     systemd-machine-id-setup
-kbd_mode       systemd-notify
-kill           systemd-tmpfiles
-kmod           systemd-tty-ask-password-agent
-less           tailf
-lessecho       tar
-lessfile       tempfile
-lesskey        touch
-lesspipe       true
-ln             udevadm
-loadkeys       ulockmgr_server
-login          umount
-loginctl       uname
-lowntfs-3g     uncompress
-ls             unicode_start
-lsblk          vdir
-lsmod          vmmouse_detect
-mkdir          wdctl
-mknod          which
-mktemp         whiptail
-more           ypdomainname
-mount          zcat
-mountpoint     zcmp
-mt             zdiff
-mt-gnu         zegrep
-mv             zfgrep
-nano           zforce
-nc             zgrep
-nc.openbsd     zless
-netcat         zmore
-netstat        znew
+( ... )
 
 nikita@nikita-pc:~$ cd ..
 nikita@nikita-pc:/home$ cd ..

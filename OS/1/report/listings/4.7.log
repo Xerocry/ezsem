@@ -13,3 +13,4 @@ nikita@nikita-pc:~/temp$ diff v1 v2
 < 9324893278309248903289
 ---
 > 93F4893278309248903289
+nikita@nikita-pc:~/temp$ diff -e prog.c my_open.c > eqv

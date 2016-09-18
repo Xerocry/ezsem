@@ -19,20 +19,4 @@ Quartus II.desktop
 software
 student
 temp1.txt
-texstudio.desktop
-nikita@nikita-pc:~$ rm Desktop/temp1.txt 
-nikita@nikita-pc:~$ ls Desktop/
-clion.sh
-files
-firefox.desktop
-gedit.desktop
-gnome-mines.desktop
-gnome-sudoku.desktop
-gnome-system-monitor-kde.desktop
-libreoffice-writer.desktop
-Matlab.sh
-projects
-Quartus II.desktop
-software
-student
-texstudio.desktop
+( ... )

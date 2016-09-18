@@ -1,0 +1,12 @@
+nikita@nikita-pc:~/temp$ ./file_name || ./my_open res.txt
+./file_name: открываемый файл не указан 
+nikita@nikita-pc:~/temp$ ./file_name | ./my_open res.txt
+./my_open: файл res.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name && ./my_open res.txt
+./file_name: открываемый файл не указан 
+./my_open: файл res.txt открыт
+nikita@nikita-pc:~/temp$ ./file_name ; ./my_open res.txt
+./file_name: открываемый файл не указан 
+./my_open: файл res.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name | xargs ./my_open res.txt
+./my_open: файл res.txt открыт 

@@ -784,6 +784,10 @@ nikita@nikita-pc:~/temp$ cat v2
 93F4893278309248903289
 nikita@nikita-pc:~/temp$ cmp v1 v2
 v1 v2 differ: byte 3, line 1
+nikita@nikita-pc:~/temp$ cmp my_open.c prog.c
+my_open.c prog.c differ: byte 1, line 1
+nikita@nikita-pc:~/temp$ cmp my_open.o prog.o
+my_open.o prog.o differ: byte 41, line 1
 
 7)
 
@@ -802,6 +806,7 @@ nikita@nikita-pc:~/temp$ diff v1 v2
 < 9324893278309248903289
 ---
 > 93F4893278309248903289
+nikita@nikita-pc:~/temp$ diff -e prog.c my_open.c > eqv
 
 
 
