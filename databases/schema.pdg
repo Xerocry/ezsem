@@ -1,0 +1,263 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DIAGRAM DIAGRAMTYPE="Physical" FILE_VERSION="2" ZOOM="100" SCROLLH="0" SCROLLV="0" PAPERID="9" PAPERORIENTATION="0" DBTYPE="3">
+    <OPTIONS OPTION0="OPT_VIEW_DISPLAY_LINK_NAMES_IN_DGR=1" OPTION1="OPT_IDENTIFIER_CASE=1" OPTION2="OPT_PHYS_TARGET_VERSION=3.0">
+    </OPTIONS>
+    <ITEMS>
+        <DOMAINS>
+        </DOMAINS>
+        <TABLES>
+            <TABLE ID="{BC1BF7E0-92D6-4DD2-B8BD-5D8EF77F788C}" NAME="COMPATIBILITY" PKNAME="PK_COMPATIBILITY" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_COMPATIBILITY" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="ID_DRAG_FIRST" DT="Integer" NOTE="" REQ="1" ORDER="1">
+                    </COLUMN>
+                    <COLUMN NAME="ID_DRAG_SECOND" DT="Integer" NOTE="" REQ="1" ORDER="2">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="24,336">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+            <TABLE ID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" NAME="CONSIGNMENT" PKNAME="PK_CONSIGNMENT" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_CONSIGNMENT" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="ID_DRAG" DT="Integer" NOTE="" REQ="1" ORDER="1">
+                    </COLUMN>
+                    <COLUMN NAME="ID_PROVIDER" DT="Integer" NOTE="" REQ="1" ORDER="2">
+                    </COLUMN>
+                    <COLUMN NAME="CONSIGNMENT_DRAG_COUNT" DT="Integer" NOTE="" REQ="1" ORDER="3">
+                    </COLUMN>
+                    <COLUMN NAME="CONSIGNMENT_ARRIVAL_DATE" DT="Timestamp" NOTE="" REQ="1" ORDER="4">
+                    </COLUMN>
+                    <COLUMN NAME="CONSIGNMENT_MANUFACTURE_DATE" DT="Timestamp" NOTE="" REQ="1" ORDER="5">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="856,216">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+            <TABLE ID="{D4410EE5-1D49-4047-8A5E-6998B64412A5}" NAME="CONTRAINDICATION" PKNAME="PK_CONTRAINDICATION" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_CONTRAINDICATIONS" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="ID_DISEASE" DT="Integer" NOTE="" REQ="1" ORDER="1">
+                    </COLUMN>
+                    <COLUMN NAME="ID_DRAG" DT="Integer" NOTE="" REQ="1" ORDER="2">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="16,176">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+            <TABLE ID="{B79D88B1-6403-4C86-BE6E-B6D1684B4EBC}" NAME="DISEASE" PKNAME="PK_DISEASE" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_DISEASE" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="DISEASE_NAME" DT="VarChar" NOTE="" DTL="256" REQ="1" ORDER="1" CHRST="NONE" COLL="NONE">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="48,16">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+            <TABLE ID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" NAME="DRUG" PKNAME="PK_DRUG" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_DRUG" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="DRUG_NAME" DT="VarChar" NOTE="" DTL="256" REQ="1" ORDER="1" CHRST="NONE" COLL="NONE">
+                    </COLUMN>
+                    <COLUMN NAME="DRUG_SHELF_LIFE" DT="Timestamp" NOTE="" REQ="1" ORDER="2">
+                    </COLUMN>
+                    <COLUMN NAME="DRUG_CURRENT_COST" DT="Decimal" NOTE="" DTL="18" DTP="18" DTS="4" REQ="1" ORDER="3">
+                    </COLUMN>
+                    <COLUMN NAME="DRUG_RECIPE_NEEDED" DT="Char" NOTE="" DTL="1" REQ="1" ORDER="4" CHRST="NONE" COLL="NONE">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="448,344">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+            <TABLE ID="{175FE52C-25CA-422B-8B55-1A2560FA8032}" NAME="PROVIDER" PKNAME="PK_PROVIDER" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_PROVIDER" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="PROVIDER_NAME" DT="VarChar" NOTE="" DTL="256" REQ="1" ORDER="1" CHRST="NONE" COLL="NONE">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="568,40">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+            <TABLE ID="{7F114512-9F8A-4DE3-990A-37A8CE1AEE79}" NAME="REQUEST" PKNAME="PK_REQUEST" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_REQUEST" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="REQUEST_DATE" DT="Timestamp" NOTE="" REQ="1" ORDER="1">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="568,536">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+            <TABLE ID="{13717678-8E1D-466A-8B17-76E9DFD54806}" NAME="REQUEST_FROM_CONSIGNMENT" PKNAME="PK_REQUEST_FROM_CONSIGNMENT" TT="0">
+                <COLUMNS>
+                    <COLUMN NAME="ID_REQUEST_FROM_CONSIGNMENT" DT="Integer" ISID="1" NOTE="" REQ="1" ORDER="0">
+                    </COLUMN>
+                    <COLUMN NAME="ID_REQUEST" DT="Integer" NOTE="" REQ="1" ORDER="1">
+                    </COLUMN>
+                    <COLUMN NAME="ID_CONSIGNMENT" DT="Integer" NOTE="" REQ="1" ORDER="2">
+                    </COLUMN>
+                    <COLUMN NAME="DRUG_PREVIOUS_COST" DT="Decimal" NOTE="" DTL="18" DTP="18" DTS="4" REQ="1" ORDER="3">
+                    </COLUMN>
+                </COLUMNS>
+                <VPROPS>
+                    <FONT>
+                    </FONT>
+                    <COLORS FCLR="16579836" OLCLR="0" HDRCLR="10789024">
+                    </COLORS>
+                    <POS POS="872,392">
+                    </POS>
+                </VPROPS>
+            </TABLE>
+        </TABLES>
+        <VIEWS>
+        </VIEWS>
+        <FOREIGN_KEYS>
+            <FOREIGN_KEY NAME="INTEG_272" ID="{6265F1B8-9148-4BF2-80D7-F36FA9292653}" CHILDID="{BC1BF7E0-92D6-4DD2-B8BD-5D8EF77F788C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG_FIRST">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="INTEG_274" ID="{1754BA15-06EA-4A5A-8A7D-4E882374967B}" CHILDID="{BC1BF7E0-92D6-4DD2-B8BD-5D8EF77F788C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG_SECOND">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="INTEG_279" ID="{316B515E-AEBA-4DCC-BB64-004974AA86C2}" CHILDID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="INTEG_281" ID="{DE933F17-2179-4994-BC84-67D1B454EC34}" CHILDID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENTID="{175FE52C-25CA-422B-8B55-1A2560FA8032}" PARENT_CONS="PK_PROVIDER" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_PROVIDER">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="INTEG_267" ID="{F0AAEF2E-55CA-4882-A4B5-BDA05ECFCE18}" CHILDID="{D4410EE5-1D49-4047-8A5E-6998B64412A5}" PARENTID="{B79D88B1-6403-4C86-BE6E-B6D1684B4EBC}" PARENT_CONS="PK_DISEASE" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DISEASE">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="INTEG_269" ID="{9188836E-1025-4E7C-A75F-9BC08586BD23}" CHILDID="{D4410EE5-1D49-4047-8A5E-6998B64412A5}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="INTEG_289" ID="{9F321311-2E6F-4061-A615-04D69166AA52}" CHILDID="{13717678-8E1D-466A-8B17-76E9DFD54806}" PARENTID="{7F114512-9F8A-4DE3-990A-37A8CE1AEE79}" PARENT_CONS="PK_REQUEST" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_REQUEST">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="INTEG_291" ID="{2A9A7C23-FB11-44F4-AC38-1A79000591F3}" CHILDID="{13717678-8E1D-466A-8B17-76E9DFD54806}" PARENTID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENT_CONS="PK_CONSIGNMENT" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_CONSIGNMENT">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_CONTRAINDICATIO_DISEASE" ID="{4617F89E-513C-4A4B-BE64-1A31547B0B0F}" CHILDID="{D4410EE5-1D49-4047-8A5E-6998B64412A5}" PARENTID="{B79D88B1-6403-4C86-BE6E-B6D1684B4EBC}" PARENT_CONS="PK_DISEASE" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DISEASE">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_CONTRAINDICATION_DRUG" ID="{AAF0F9FD-7A22-4226-9F55-8A4BE3FF23F2}" CHILDID="{D4410EE5-1D49-4047-8A5E-6998B64412A5}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_COMPATIBILITY_DRUG_FIRST" ID="{B9091174-465B-4335-BEC9-4403712FED5A}" CHILDID="{BC1BF7E0-92D6-4DD2-B8BD-5D8EF77F788C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG_FIRST">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_COMPATIBILITY_DRUG_NEXT" ID="{A80EC7BB-03B1-41D9-B164-37E217F8B87A}" CHILDID="{BC1BF7E0-92D6-4DD2-B8BD-5D8EF77F788C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG_SECOND">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_CONSIGNMENT_DRUG" ID="{5473F747-3D4D-4E4B-9417-071C85471B29}" CHILDID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" PARENT_CONS="PK_DRUG" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_DRAG">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_CONSIGNMENT_PROVIDER" ID="{643B4C82-C589-4B6C-BCEE-56B08CB70065}" CHILDID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENTID="{175FE52C-25CA-422B-8B55-1A2560FA8032}" PARENT_CONS="PK_PROVIDER" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_PROVIDER">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_RFC_CONSIGNMENT" ID="{DC173757-0B6A-49F4-8609-1B1C909DCE4C}" CHILDID="{13717678-8E1D-466A-8B17-76E9DFD54806}" PARENTID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENT_CONS="PK_CONSIGNMENT" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_CONSIGNMENT">
+                </COLUMNS>
+            </FOREIGN_KEY>
+            <FOREIGN_KEY NAME="FK_RFC_REQUEST" ID="{1A051DB9-686A-4EC0-A9C0-AF4216544430}" CHILDID="{13717678-8E1D-466A-8B17-76E9DFD54806}" PARENTID="{7F114512-9F8A-4DE3-990A-37A8CE1AEE79}" PARENT_CONS="PK_REQUEST" UA="1" DA="1" MT="0">
+                <COLUMNS COL1="ID_REQUEST">
+                </COLUMNS>
+            </FOREIGN_KEY>
+        </FOREIGN_KEYS>
+        <INDICES>
+        </INDICES>
+        <TRIGGERS>
+        </TRIGGERS>
+        <CHECK_CONSTRAINTS>
+        </CHECK_CONSTRAINTS>
+        <UNIQUE_CONSTRAINTS>
+        </UNIQUE_CONSTRAINTS>
+        <LINKS>
+            <LINK OBJID="{4617F89E-513C-4A4B-BE64-1A31547B0B0F}" CHILDID="{D4410EE5-1D49-4047-8A5E-6998B64412A5}" PARENTID="{B79D88B1-6403-4C86-BE6E-B6D1684B4EBC}" SP="112,48" DP="80,16">
+            </LINK>
+            <LINK OBJID="{AAF0F9FD-7A22-4226-9F55-8A4BE3FF23F2}" CHILDID="{D4410EE5-1D49-4047-8A5E-6998B64412A5}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" SP="96,48" DP="104,56">
+            </LINK>
+            <LINK OBJID="{B9091174-465B-4335-BEC9-4403712FED5A}" CHILDID="{BC1BF7E0-92D6-4DD2-B8BD-5D8EF77F788C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" SP="104,48" DP="56,40">
+            </LINK>
+            <LINK OBJID="{A80EC7BB-03B1-41D9-B164-37E217F8B87A}" CHILDID="{BC1BF7E0-92D6-4DD2-B8BD-5D8EF77F788C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" SP="112,56" DP="96,48">
+            </LINK>
+            <LINK OBJID="{5473F747-3D4D-4E4B-9417-071C85471B29}" CHILDID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENTID="{84815948-3D99-45A5-ABE1-4F08ED1C19F1}" SP="64,56" DP="144,48">
+            </LINK>
+            <LINK OBJID="{643B4C82-C589-4B6C-BCEE-56B08CB70065}" CHILDID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" PARENTID="{175FE52C-25CA-422B-8B55-1A2560FA8032}" SP="152,56" DP="96,32">
+            </LINK>
+            <LINK OBJID="{DC173757-0B6A-49F4-8609-1B1C909DCE4C}" CHILDID="{13717678-8E1D-466A-8B17-76E9DFD54806}" PARENTID="{3A6F2E6B-305B-48EE-A336-67082416E77C}" SP="136,56" DP="152,40">
+            </LINK>
+            <LINK OBJID="{1A051DB9-686A-4EC0-A9C0-AF4216544430}" CHILDID="{13717678-8E1D-466A-8B17-76E9DFD54806}" PARENTID="{7F114512-9F8A-4DE3-990A-37A8CE1AEE79}" SP="136,48" DP="88,32">
+            </LINK>
+        </LINKS>
+        <COMMENTS>
+        </COMMENTS>
+        <REGIONS>
+        </REGIONS>
+        <DOCLINKS>
+        </DOCLINKS>
+        <SUBDIAGRAMS>
+        </SUBDIAGRAMS>
+    </ITEMS>
+</DIAGRAM>

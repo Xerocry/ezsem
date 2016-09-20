@@ -1,0 +1,112 @@
+/* Start isql.exe<PHARMACY.sql */
+
+
+/* create database 'tiger.ftk.spbstu.ru:/var/lib/firebird/445013/pharmacy.fdb' user 'SYSDBA' password 'masterkey';
+commit;
+connect 'tiger.ftk.spbstu.ru:/var/lib/firebird/445013/pharmacy.fdb' user 'SYSDBA' password 'masterkey';  */
+
+
+/* create database '127.0.0.1/3050:d:\Student\7\databases\PHARMACY.FDB' user 'SYSDBA' password '1111';
+commit;
+connect '127.0.0.1/3050:d:\Student\7\databases\PHARMACY.FDB' user 'SYSDBA' password '1111'; */
+
+
+DROP TABLE REQUEST_FROM_CONSIGNMENT;
+/* commit; */
+DROP TABLE REQUEST;
+/* commit; */
+DROP TABLE CONSIGNMENT;
+/* commit; */
+DROP TABLE PROVIDER;
+/* commit; */
+DROP TABLE COMPATIBILITY;
+/* commit; */
+DROP TABLE CONTRAINDICATION;
+/* commit; */
+DROP TABLE DRUG;
+/* commit; */
+DROP TABLE DISEASE;
+/* commit; */
+
+CREATE TABLE DISEASE 
+(
+  ID_DISEASE                INTEGER         NOT NULL,
+  DISEASE_NAME              VARCHAR(256)    NOT NULL COLLATE NONE,
+CONSTRAINT PK_DISEASE PRIMARY KEY (ID_DISEASE)
+); 
+
+/* commit; */
+
+CREATE TABLE DRUG 
+(
+  ID_DRUG                INTEGER         NOT NULL,
+  DRUG_NAME              VARCHAR(256)    NOT NULL COLLATE NONE,  
+  DRUG_SHELF_LIFE        TIMESTAMP       NOT NULL,  
+  DRUG_CURRENT_COST      DECIMAL(18,4)   NOT NULL, 
+  DRUG_RECIPE_NEEDED     CHAR(1)         NOT NULL,
+  CONSTRAINT PK_DRUG PRIMARY KEY (ID_DRUG)
+);
+
+/* commit; */
+
+CREATE TABLE CONTRAINDICATION 
+(
+  ID_CONTRAINDICATIONS              INTEGER         NOT NULL,
+  ID_DISEASE                        INTEGER         NOT NULL REFERENCES DISEASE,
+  ID_DRAG                           INTEGER         NOT NULL REFERENCES DRUG,
+ CONSTRAINT PK_CONTRAINDICATION PRIMARY KEY (ID_CONTRAINDICATIONS)
+);
+
+/* commit; */
+
+CREATE TABLE COMPATIBILITY 
+(
+  ID_COMPATIBILITY                INTEGER         NOT NULL,
+  ID_DRAG_FIRST                   INTEGER         NOT NULL  REFERENCES DRUG,
+  ID_DRAG_SECOND                  INTEGER         NOT NULL  REFERENCES DRUG,
+ CONSTRAINT PK_COMPATIBILITY PRIMARY KEY (ID_COMPATIBILITY)
+);
+
+/* commit; */
+
+CREATE TABLE PROVIDER 
+(
+  ID_PROVIDER                     INTEGER         NOT NULL,
+  PROVIDER_NAME                   VARCHAR(256)    NOT NULL,
+ CONSTRAINT PK_PROVIDER PRIMARY KEY (ID_PROVIDER)
+);
+
+/* commit; */
+
+CREATE TABLE CONSIGNMENT 
+(
+  ID_CONSIGNMENT                  INTEGER         NOT NULL,
+  ID_DRAG                         INTEGER         NOT NULL  REFERENCES DRUG,
+  ID_PROVIDER                     INTEGER         NOT NULL  REFERENCES PROVIDER,
+  CONSIGNMENT_DRAG_COUNT          INTEGER         NOT NULL,
+  CONSIGNMENT_ARRIVAL_DATE             TIMESTAMP       NOT NULL, 
+  CONSIGNMENT_MANUFACTURE_DATE    TIMESTAMP       NOT NULL,
+ CONSTRAINT PK_CONSIGNMENT PRIMARY KEY (ID_CONSIGNMENT)
+);
+
+/* commit; */
+
+CREATE TABLE REQUEST 
+(
+  ID_REQUEST                     INTEGER         NOT NULL,
+  REQUEST_DATE                   TIMESTAMP       NOT NULL,
+ CONSTRAINT PK_REQUEST PRIMARY KEY (ID_REQUEST)
+);
+
+/* commit; */
+
+CREATE TABLE REQUEST_FROM_CONSIGNMENT
+(
+  ID_REQUEST_FROM_CONSIGNMENT    INTEGER         NOT NULL,
+  ID_REQUEST                     INTEGER         NOT NULL  REFERENCES REQUEST,
+  ID_CONSIGNMENT                 INTEGER         NOT NULL  REFERENCES CONSIGNMENT,
+  DRUG_PREVIOUS_COST             DECIMAL(18,4)   NOT NULL,
+ CONSTRAINT PK_REQUEST_FROM_CONSIGNMENT PRIMARY KEY (ID_REQUEST_FROM_CONSIGNMENT)
+);
+
+/* commit; */
