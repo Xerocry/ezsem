@@ -3,8 +3,7 @@
 	org 8400h
 	
 	mov r0,#20h  ; operands addrs
-	mov @r0,#0Bh ; value, 4 little bits
-	; 3-d  2-c  1-b 0-a 
+	mov @r0,#0Bh ; value, 4 little bits 3-d  2-c  1-b 0-a 
 	
 	; f1(08h) = A(0h) and not B(1h)
 	mov C, 00h

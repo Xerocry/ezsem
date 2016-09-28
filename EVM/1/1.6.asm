@@ -1,23 +1,25 @@
-	;1.6.asm
-
-	org 8400h
-	mov dptr,#8500h
-	mov r1,#2h
-	mov r2, #0
-
-;m0:	mov a,#0h
-
-;m1:	add a,r1
-m0:	add a,r1
+    оrg 8500h
+	
+	mov dptr, #8400h
+	mov r0, #0h
+	mov r1, #10h
+	
+m1:	mov a, r0
 	movx @dptr, a
-;	cjne a, #10h, m1
-
-;m2:	subb a,r1
-;	movx @dptr, a
-;	cjne a, #0h, m2
-
+	inc r0
 	inc dptr
-	inc r2
-	cjne r2, #10h, m0
-
+	dec r1
+	mov a, r1
+	jnz m1
+	
+	mov r1, #11h
+	
+m2:	mov a, r0
+	movx @dptr, a
+	dec r0
+	inc dptr
+	dec r1
+	mov a, r1
+	jnz m2
+	
 	ret
