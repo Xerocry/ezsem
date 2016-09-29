@@ -205,6 +205,10 @@ const void Server::ServerController::exit() const {
     this->serverPtr->interrupt = true;
 }
 
+const char* Server::ServerController::getEventNameByEventId(const int eventId) const {
+    return new char[10];
+}
+
 // ServerException
 
 Server::ServerException::ServerException(const Server::Error error) {

@@ -4,6 +4,7 @@
 
 #include <exception>
 #include <string>
+#include <vector>
 #include "Server.h"
 
 class Command {
@@ -13,6 +14,10 @@ protected:
         COULD_NOT_RESOLVE_ARGUMENT = 0x2,
         COULD_NOT_PROVIDE_ACCESS = 0x3
     };
+
+    static const int MAX_COMMAND_PARTITION_SIZE = 5;
+    static const char EVENT_PREFIX = 'e';
+    static const char THREAD_PREFIX = 't';
 
     std::string* expr;
     Server::ServerController* controller;
@@ -29,6 +34,9 @@ public:
     };
 
 protected:
+    const std::vector<std::string> prepareCommand() const;
+    const int parseEventId(const std::string& stringId) const throw(std::invalid_argument, std::out_of_range);
+    const int parseThreadId(const std::string& stringId) const throw(std::invalid_argument, std::out_of_range);
     explicit Command(std::string* expr, Server::ServerController* controller) throw(CommandException);
     virtual ~Command();
 

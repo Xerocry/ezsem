@@ -15,7 +15,26 @@ public:
         Server* serverPtr;
     public:
         ServerController(Server* serverPtr);
+
+        const void reg(const char* login, const char* password) const;
+        const void del(const char* login, const char* password) const;
+        const void detach(const char* login) const;
+        const void save(const char* filename) const;
+        const void load(const char* filename) const;
         const void exit() const;
+        const void exit(const char* filename) const;
+        const void eventCreate(const bool singleMode, const int period, const char* eventName) const;
+        const void eventDrop(const char* eventName) const;
+        const void eventSubscribe(const char* eventName, const char* login) const;
+        const void eventUnsubscribe(const char* eventName, const char* login) const;
+        const void eventNotificate(const char* eventName) const;
+        const void printUsersInfo() const;
+        const void printEventsInfo() const;
+
+        const int getThreadIdByLogin(const char* login) const;
+        const char* getLoginByThreadId(const int threadId) const;
+        const int getEventIdByEventName(const char* eventName) const;
+        const char* getEventNameByEventId(const int eventId) const;
     };
 
 private:
