@@ -70,7 +70,17 @@ const void Server::commandExecutor() {
     std::string command;
     while(!this->interrupt){
         std::getline(*this->in, command);
-        ServerCommand(&command, controller).parseAndExecute();
+
+        try { ServerCommand(&command, controller).parseAndExecute(); }
+        catch(const Command::CommandException& exception) {
+            *this->error << exception.what() << std::endl;
+        }
+        catch(const std::exception& exception) {
+            *this->error << exception.what() << std::endl;
+        }
+        catch(...) {
+            *this->error << "Strange resolve command error." << std::endl;
+        }
     }
 }
 
@@ -205,9 +215,12 @@ const void Server::ServerController::exit() const {
     this->serverPtr->interrupt = true;
 }
 
-const char* Server::ServerController::getEventNameByEventId(const int eventId) const {
-    return new char[10];
-}
+const char* Server::ServerController::getEventNameByEventId(const int eventId) const { return nullptr; }
+const char* Server::ServerController::getLoginByThreadId(const int threadId) const { return nullptr; }
+
+const void Server::ServerController::eventDrop(const char *eventName) const { }
+
+const void Server::ServerController::eventNotify(const char *eventName) const { }
 
 // ServerException
 
@@ -243,5 +256,5 @@ const char* Server::ServerException::what() const noexcept {
 }
 
 const int Server::ServerException::code() const {
-    return error;
+    return this->error;
 }

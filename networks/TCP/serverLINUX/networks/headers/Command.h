@@ -28,12 +28,14 @@ public:
         Error error;
         char* command;
     public:
-        explicit CommandException(const Error, const char*);
+        explicit CommandException(const Error);
         const char* what() const noexcept override;
         const int code() const;
     };
 
 protected:
+    char* getEventName(const std::string& command) const throw(CommandException);
+    char* getLoginName(const std::string& command) const throw(CommandException);
     const std::vector<std::string> prepareCommand() const;
     const int parseEventId(const std::string& stringId) const throw(std::invalid_argument, std::out_of_range);
     const int parseThreadId(const std::string& stringId) const throw(std::invalid_argument, std::out_of_range);

@@ -27,7 +27,7 @@ public:
         const void eventDrop(const char* eventName) const;
         const void eventSubscribe(const char* eventName, const char* login) const;
         const void eventUnsubscribe(const char* eventName, const char* login) const;
-        const void eventNotificate(const char* eventName) const;
+        const void eventNotify(const char *eventName) const;
         const void printUsersInfo() const;
         const void printEventsInfo() const;
 
@@ -72,8 +72,6 @@ private:
     int interrupt;
 
     int generalSocket = -1, generalBind = -1, generalFlags = -1;
-
-
 
 public:
     class ServerException: public std::exception {
