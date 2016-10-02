@@ -12,21 +12,24 @@ protected:
     enum Error {
         COULD_NOT_RESOLVE_COMMAND = 0x1,
         COULD_NOT_RESOLVE_ARGUMENT = 0x2,
-        COULD_NOT_PROVIDE_ACCESS = 0x3
+        ARGUMENT_LOGIC_ERROR = 0x3,
+        COMMAND_OR_ARGUMENT_IS_TOO_LONG = 0x4,
+        COULD_NOT_PROVIDE_ACCESS = 0x5
     };
 
-    static const int MAX_COMMAND_PARTITION_SIZE = 5;
-    static const char EVENT_PREFIX = 'e';
-    static const char THREAD_PREFIX = 't';
+    static const int MAX_EVENT_PERIOD = 60 * 60 * 24 * 10;
+    static const int MIN_EVENT_PERIOD = 10;
 
     std::string* expr;
     Server::ServerController* controller;
 
 public:
+    static const char PREFIX = '#';
+    static const int MAX_LENGTH_OF_ARGUMENT = 30;
+
     class CommandException : public std::exception {
     private:
         Error error;
-        char* command;
     public:
         explicit CommandException(const Error);
         const char* what() const noexcept override;
@@ -34,16 +37,18 @@ public:
     };
 
 protected:
-    char* getEventName(const std::string& command) const throw(CommandException);
-    char* getLoginName(const std::string& command) const throw(CommandException);
-    const std::vector<std::string> prepareCommand() const;
-    const int parseEventId(const std::string& stringId) const throw(std::invalid_argument, std::out_of_range);
-    const int parseThreadId(const std::string& stringId) const throw(std::invalid_argument, std::out_of_range);
-    explicit Command(std::string* expr, Server::ServerController* controller) throw(CommandException);
+    const std::vector<std::string> prepareCommand() const throw(CommandException);
+    char* getNameFromCommand(const std::string& command, const bool isEvent) const throw(CommandException, Server::ServerController::ControllerException);
+    explicit Command(std::string* expr, Server::ServerController* controller);
     virtual ~Command();
 
 public:
-    virtual const void parseAndExecute() const throw(CommandException);
+    virtual const void parseAndExecute() const throw(CommandException, Server::ServerController::ControllerException);
+
+    static const void checkFilename(const std::string &filename) throw(CommandException);
+    static const std::string& checkASCII(const std::string &password) throw(CommandException);
+    static const std::chrono::milliseconds parseDate(const std::string &string) throw(CommandException);
+    static const int parseId(const std::string &stringId) throw(std::invalid_argument, std::out_of_range);
 };
 
 

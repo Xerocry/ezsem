@@ -13,28 +13,58 @@ public:
     class ServerController {
     private:
         Server* serverPtr;
+
     public:
+        enum Error {
+            COULD_NOT_OPEN_FILE = 0x1,
+            COULD_NOT_PARSE_FILE = 0x2,
+            USER_IS_ALREADY_EXISTS = 0x3,
+            USER_IS_NOT_EXISTS = 0x4,
+            EVENT_IS_NOT_EXISTS = 0x5
+        };
+
+        class ControllerException: public std::exception {
+        private:
+            Error error;
+        public:
+            explicit ControllerException(const Error);
+            const char* what() const noexcept override;
+            const int code() const;
+        };
+
         ServerController(Server* serverPtr);
 
-        const void reg(const char* login, const char* password) const;
-        const void del(const char* login, const char* password) const;
-        const void detach(const char* login) const;
-        const void save(const char* filename) const;
-        const void load(const char* filename) const;
+        const void reg(const char* userName, const char* password) const throw(ControllerException);
+        const void del(const char* userName) const throw(ControllerException);
+        const void detach(const char* userName) const throw(ControllerException);
+        const void finit(const char* filename) const;
+        const void save() const throw(ControllerException);
+        const void load() const throw(ControllerException);
         const void exit() const;
-        const void exit(const char* filename) const;
-        const void eventCreate(const bool singleMode, const int period, const char* eventName) const;
+        const void eventCreate(const char* eventName, const bool singleMode, const std::chrono::milliseconds& start, const std::chrono::seconds& period) const;
         const void eventDrop(const char* eventName) const;
-        const void eventSubscribe(const char* eventName, const char* login) const;
-        const void eventUnsubscribe(const char* eventName, const char* login) const;
+        const void eventSubscribe(const char* eventName, const char* userName) const;
+        const void eventUnsubscribe(const char* eventName, const char* userName) const;
         const void eventNotify(const char *eventName) const;
         const void printUsersInfo() const;
         const void printEventsInfo() const;
+        const void printAccountsInfo() const;
 
-        const int getThreadIdByLogin(const char* login) const;
-        const char* getLoginByThreadId(const int threadId) const;
+        const int getThreadIdByUserName(const char* userName) const;
+        const char* getUserNameByThreadId(const int threadId) const throw(ControllerException);
         const int getEventIdByEventName(const char* eventName) const;
-        const char* getEventNameByEventId(const int eventId) const;
+        const char* getEventNameByEventId(const int eventId) const throw(ControllerException);
+    };
+
+    struct Event {
+        std::string eventName;
+        std::chrono::milliseconds startMoment;
+        std::chrono::seconds period;
+    };
+    struct User{
+        std::string userName;
+        std::shared_ptr<std::thread> thread;
+        int socket;
     };
 
 private:
@@ -58,9 +88,16 @@ private:
     static const int EMPTY_FLAGS = 0;
     static const int MESSAGE_SIZE = 1000;
 
+    static constexpr const char *DEFAULT_FILENAME = "server.data";
+
     std::shared_ptr<std::thread> commandThread;
-    std::map<int, std::shared_ptr<std::thread>> clientThreads;
-    std::map<int, int> clientSockets;
+
+    std::string filename;
+
+    std::map<std::string, std::string> accounts;
+
+    std::map<int, Server::Event*> events;
+    std::map<int, Server::User*> users;
 
     std::istream* in;
     std::ostream* out;
@@ -68,7 +105,6 @@ private:
 
     ServerController* controller;
 
-    bool clearStarted;
     int interrupt;
 
     int generalSocket = -1, generalBind = -1, generalFlags = -1;
@@ -83,8 +119,8 @@ public:
         const int code() const;
     };
 
-    explicit Server(std::ostream* out, std::istream* in, std::ostream* error, const uint16_t port) throw(ServerException);
-    const void start() throw(ServerException);
+    explicit Server(std::ostream* out, std::istream* in, std::ostream* error, const uint16_t port, const char* filename) throw(ServerException);
+    const void start() throw(ServerException, ServerController::ControllerException);
     const void stop() throw(ServerException);
     ~Server();
 
