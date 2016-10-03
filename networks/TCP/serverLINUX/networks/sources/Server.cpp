@@ -47,8 +47,10 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
     this->events = std::map<int, Server::Event*>();
     this->users = std::map<int, Server::User*>();
     this->accounts = std::map<std::string, std::string>();
+    this->timings = std::vector<std::pair<int, std::chrono::milliseconds>>();
+    this->subscriptions = std::vector<std::pair<std::string, std::string>>();
 
-    this->interrupt = false;
+    this->generalInterrupt = false;
 
     this->controller = new ServerController(this);
     this->controller->load();
@@ -56,12 +58,42 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
     auto bind = std::bind(&Server::commandThreadInitialize, std::placeholders::_1);
     commandThread = std::make_shared<std::thread>(bind, this);
 
-    while(!this->interrupt) {
+    while(!this->generalInterrupt) {
         sockaddr_in clientAddress;
         auto size = sizeof(struct sockaddr_in);
         auto clientSocket = accept(generalSocket, (sockaddr *) &clientAddress, (socklen_t *) &size);
         if (clientSocket >= 0)
             createClientThread(clientSocket, clientAddress.sin_addr);
+    }
+}
+
+void* Server::timerThreadInitialize(void *thisPtr) {
+    ((Server*)thisPtr)->eventTimer();
+    return NULL;
+}
+
+const void Server::eventTimer() {
+    while(!this->generalInterrupt && !this->timerInterrupt) {
+        if(this->timings.empty())
+            continue;
+
+        auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+
+        auto resultVector = std::vector<int>();
+
+        for(auto& current: this->timings) {
+            if (now >= current.second)
+                resultVector.push_back(current.first);
+            else
+                break;
+        }
+
+        for(auto& current: resultVector) {
+            refreshTiming(current);
+            auto currentTime = time(0);
+            struct tm* nowStruct = localtime(&currentTime);
+            *this->out << nowStruct->tm_hour << ":" << nowStruct->tm_min << ":" << nowStruct->tm_sec << " Handle event #" << current << "." << std::endl;
+        }
     }
 }
 
@@ -72,7 +104,7 @@ void* Server::commandThreadInitialize(void *thisPtr) {
 
 const void Server::commandExecutor() {
     std::string command;
-    while(!this->interrupt){
+    while(!this->generalInterrupt){
         std::getline(*this->in, command);
 
         try {
@@ -92,6 +124,60 @@ const void Server::commandExecutor() {
             *this->error << "Strange resolve command error." << std::endl;
         }
     }
+}
+
+const void Server::refreshTiming(const int eventId) {
+    std::chrono::milliseconds timing;
+    bool eraseCompleted = false;
+
+    for(auto current = this->timings.begin(); current != this->timings.end(); ++current)
+        if(current->first == eventId) {
+            timing = current->second;
+            this->timings.erase(current);
+            eraseCompleted = true;
+            break;
+        }
+
+    if(this->events.find(eventId) == this->events.end())
+        return;
+
+    auto event = this->events.at(eventId);
+
+    if(eraseCompleted) {
+        if(event->period.count() == 0) {
+            this->events.erase(eventId);
+            return;
+        }
+        timing += event->period;
+    }
+    else
+        timing = event->startMoment;
+
+    auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+    auto buffer = Command::EVENT_BUFFER;
+
+    if(now + std::chrono::seconds(buffer) >= timing) {
+        if(event->period.count() == 0) {
+            this->events.erase(eventId);
+            return;
+        }
+        else {
+            auto count = (now + std::chrono::seconds(buffer) - timing) / event->period;
+            timing += (count + 1) * event->period;
+        }
+    }
+
+    bool insertCompleted = false;
+
+    for(auto current = this->timings.begin(); current != this->timings.end(); ++current)
+        if(current->second >= timing) {
+            this->timings.insert(current, std::pair<int, std::chrono::milliseconds>(eventId, timing));
+            insertCompleted = true;
+            break;
+        }
+
+    if(!insertCompleted)
+        this->timings.insert(this->timings.end(), std::pair<int, std::chrono::milliseconds>(eventId, timing));
 }
 
 void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const struct in_addr address) {
@@ -180,11 +266,17 @@ const void Server::clearSocket(const int threadId, const int socket) throw(Serve
 }
 
 const void Server::stop() throw(ServerException){
+    this->generalInterrupt = true;
+    this->timerInterrupt = true;
+
     if(generalSocket >= 0) {
         auto fcntlResult = fcntl(generalSocket, F_SETFL, generalFlags);
         if (fcntlResult < 0)
             throw ServerException(Error::COULD_NOT_SET_NON_BLOCKING);
     }
+
+    if(timerThread != nullptr && timerThread.get()->joinable())
+        timerThread.get()->join();
 
     if(commandThread != nullptr && commandThread.get()->joinable())
         commandThread.get()->join();
@@ -197,9 +289,10 @@ const void Server::stop() throw(ServerException){
             current.second->thread.get()->join();
     }
 
-    this->users.clear();
-
     clearSocket(-1, generalSocket);
+
+    this->controller->finit(BACKUP_FILENAME);
+    this->controller->save();
 }
 
 Server::~Server() {
@@ -212,6 +305,22 @@ Server::ServerController::ServerController(Server *serverPtr) {
     this->serverPtr = serverPtr;
 }
 
+const int Server::ServerController::getThreadIdByUserName(const char* userName) const throw(ControllerException) {
+    auto string = std::string(userName);
+    for(auto& current: this->serverPtr->users)
+        if(current.second->userName == string)
+            return current.first;
+
+    throw ControllerException(USER_IS_NOT_EXISTS);
+}
+const int Server::ServerController::getEventIdByEventName(const char *eventName) const throw(ControllerException) {
+    auto string = std::string(eventName);
+    for(auto& current: this->serverPtr->events)
+        if(current.second->eventName == string)
+            return current.first;
+
+    throw ControllerException(EVENT_IS_NOT_EXISTS);
+}
 const char* Server::ServerController::getEventNameByEventId(const int eventId) const throw(ControllerException) {
     auto userFind = this->serverPtr->events.find(eventId);
     if(userFind == this->serverPtr->events.end())
@@ -227,44 +336,122 @@ const char* Server::ServerController::getUserNameByThreadId(const int threadId) 
         return this->serverPtr->users.at(threadId)->userName.data();
 }
 
-const void Server::ServerController::eventCreate(const char *eventName, const bool singleMode, const std::chrono::milliseconds& start, const std::chrono::seconds& period) const {}
-const void Server::ServerController::eventDrop(const char *eventName) const { }
-const void Server::ServerController::eventNotify(const char *eventName) const { }
-const void Server::ServerController::eventSubscribe(const char *eventName, const char *userName) const { }
-const void Server::ServerController::eventUnsubscribe(const char *eventName, const char *userName) const { }
+const void Server::ServerController::eventCreate(const char *eventName, const bool singleMode, const std::chrono::milliseconds& start, const std::chrono::seconds& period) const throw(ControllerException) {
+    try { getEventIdByEventName(eventName); }
+    catch (const ControllerException& exception) {
+        int index = 0;
+        std::map<int, Server::Event*>::iterator result;
+        do {
+            result = this->serverPtr->events.find(index);
+            ++index;
+        } while(result != this->serverPtr->events.end());
+        --index;
+
+        //event create multi some 03/10/2016|05:25:00 10
+
+        auto event = new Server::Event;
+        event->eventName = std::string(eventName);
+        event->startMoment = start;
+        event->period = period;
+        this->serverPtr->events.insert(std::pair<int, Server::Event*>(index, event));
+
+        this->serverPtr->refreshTiming(index);
+        return;
+    }
+
+    throw ControllerException(EVENT_IS_ALREADY_EXISTS);
+}
+const void Server::ServerController::eventDrop(const char *eventName) const throw(ControllerException) {
+    auto eventId = getEventIdByEventName(eventName);
+    this->serverPtr->events.erase(eventId);
+    this->serverPtr->refreshTiming(eventId);
+}
+const void Server::ServerController::eventNotify(const char *eventName) const {
+
+}
+const void Server::ServerController::eventSubscribe(const char *eventName, const char *userName) const throw(ControllerException) {
+
+}
+const void Server::ServerController::eventUnsubscribe(const char *eventName, const char *userName) const throw(ControllerException) {
+
+}
 
 const void Server::ServerController::printEventsInfo() const {
-    //*this->serverPtr->out
+    if(this->serverPtr->events.empty())
+        *this->serverPtr->out << "Events table is empty." << std::endl;
+    else {
+        *this->serverPtr->out << std::endl
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "ID"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "EVENTNAME"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "START"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "PERIOD"
+                              << std::endl << std::endl;
+
+        for (auto &current: this->serverPtr->events) {
+            std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> castPoint(current.second->startMoment);
+            auto time = std::chrono::system_clock::to_time_t(castPoint);
+            std::string timeString = std::ctime(&time);
+            timeString.resize(timeString.size() - 1);
+
+            __int64_t days, hours, minutes, seconds;
+            __int64_t period = current.second->period.count();
+            std::string result;
+            if(period != 0) {
+                days = period / (60 * 60 * 24);
+                hours = (period % (60 * 60 * 24)) / (60 * 60);
+                minutes = (period % (60 * 60)) / 60;
+                seconds = period % 60;
+                result = std::to_string(days) + " days " + std::to_string(hours) + ":" + std::to_string(minutes) + ":" + std::to_string(seconds);
+            }
+
+            *this->serverPtr->out << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << (std::string(1, Command::PREFIX) + std::to_string(current.first))
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.second->eventName
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << timeString
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((period == 0) ? "Single event." : result)
+                                  << std::endl;
+        }
+
+        *this->serverPtr->out << std::endl;
+    }
 }
 const void Server::ServerController::printUsersInfo() const {
     if(this->serverPtr->users.empty())
         *this->serverPtr->out << "Users table is empty." << std::endl;
     else {
-        *this->serverPtr->out << std::endl << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "ID"
-                              << "USERNAME" << std::endl << std::endl;
-        for (auto &current: this->serverPtr->users)
-            *this->serverPtr->out << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ')
-                                  << (std::string(1, Command::PREFIX) + std::to_string(current.first))<< current.second->userName << std::endl;
+        *this->serverPtr->out << std::endl
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "ID"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "USERNAME"
+                              << std::endl << std::endl;
+
+        for (auto &current: this->serverPtr->users) {
+            *this->serverPtr->out << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << (std::string(1, Command::PREFIX) + std::to_string(current.first))
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.second->userName
+                                  << std::endl;
+        }
 
         *this->serverPtr->out << std::endl;
     }
 }
-
 const void Server::ServerController::printAccountsInfo() const {
     if(this->serverPtr->accounts.empty())
         *this->serverPtr->out << "Accounts table is empty." << std::endl;
     else {
-        *this->serverPtr->out << std::endl << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ')
-                              << "USERNAME" << "PASSWORD" << std::endl << std::endl;
-        for (auto &current: this->serverPtr->accounts)
-            *this->serverPtr->out << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ')
-                                  << current.first << current.second << std::endl;
+        *this->serverPtr->out << std::endl
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "USERNAME"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "PASSWORD"
+                              << std::endl << std::endl;
+
+        for (auto &current: this->serverPtr->accounts) {
+            *this->serverPtr->out << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.first
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.second
+                                  << std::endl;
+        }
         *this->serverPtr->out << std::endl;
     }
 }
 
 const void Server::ServerController::exit() const {
-    this->serverPtr->interrupt = true;
+    this->serverPtr->generalInterrupt = true;
 }
 const void Server::ServerController::finit(const char *filename) const {
     this->serverPtr->filename = std::string(filename);
@@ -276,17 +463,38 @@ const void Server::ServerController::save() const throw(ControllerException) {
     if(!stream.is_open())
         throw ControllerException(COULD_NOT_OPEN_FILE);
 
-    stream << this->serverPtr->accounts.size() << std::endl;
-    for(auto& current: this->serverPtr->accounts)
-        stream << current.first << std::endl << current.second << std::endl;
-
     stream << this->serverPtr->events.size() << std::endl;
     for(auto& current: this->serverPtr->events)
         stream << current.second->eventName << std::endl << current.second->startMoment.count() << std::endl << current.second->period.count() << std::endl;
 
+    stream << this->serverPtr->accounts.size() << std::endl;
+    for(auto& currentAccount: this->serverPtr->accounts) {
+        stream << currentAccount.first << std::endl << currentAccount.second << std::endl;
+
+        int count = 0;
+        for(auto& currentSubscribe: this->serverPtr->subscriptions)
+            if(currentSubscribe.first == currentAccount.first)
+                ++count;
+
+        stream << count << std::endl;
+
+        for(auto& currentSubscribe: this->serverPtr->subscriptions)
+            if(currentSubscribe.first == currentAccount.first)
+                stream << currentSubscribe.second << std::endl;
+    }
+
     stream.close();
 }
 const void Server::ServerController::load() const throw(ControllerException) {
+    if(this->serverPtr->timerThread != nullptr) {
+        this->serverPtr->timerInterrupt = true;
+        if(this->serverPtr->timerThread.get()->joinable())
+            this->serverPtr->timerThread.get()->join();
+    }
+
+    this->serverPtr->timings.clear();
+    this->serverPtr->events.clear();
+
     for(auto& current: this->serverPtr->users) {
         auto temp = current.second->socket;
         current.second->socket = -1;
@@ -296,8 +504,6 @@ const void Server::ServerController::load() const throw(ControllerException) {
     }
 
     this->serverPtr->users.clear();
-    this->serverPtr->events.clear();
-    // TODO clear event timers
 
     auto filename = (this->serverPtr->filename.empty()) ? DEFAULT_FILENAME: this->serverPtr->filename;
     auto stream = std::ifstream(filename);
@@ -307,37 +513,12 @@ const void Server::ServerController::load() const throw(ControllerException) {
 
     std::stringstream stringStream;
 
-    std::string login, password;
-    std::string countString;
-    int count = -1, index = 0;
-
-    while(!stream.eof()) {
-        if(count == -1) {
-            std::getline(stream, countString);
-            stringStream.clear();
-            stringStream.str(countString);
-            stringStream >> count;
-        }
-        else if(count > 0) {
-            std::getline(stream, login);
-            if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
-            std::getline(stream, password);
-            try {
-                this->serverPtr->accounts.insert(std::pair<std::string, std::string>(Command::checkASCII(login), Command::checkASCII(password)));
-            } catch (const Command::CommandException& exception){
-                throw ControllerException(COULD_NOT_PARSE_FILE);
-            }
-            --count;
-        }
-        else
-            break;
-    }
-
-    count = -1;
-
     std::string eventName;
     std::string startString, periodString;
     __int64_t start, period;
+
+    std::string countString;
+    int count = -1, index = 0;
 
     while(!stream.eof()) {
         if(count == -1) {
@@ -360,7 +541,8 @@ const void Server::ServerController::load() const throw(ControllerException) {
             stringStream >> period;
 
             auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-            if(now < std::chrono::milliseconds(start)) {
+            auto buffer = Command::EVENT_BUFFER;
+            if(((period != 0) || (now + std::chrono::seconds(buffer) < std::chrono::milliseconds(start))) && Command::MAX_EVENT_PERIOD >= period && (period == 0 || Command::MIN_EVENT_PERIOD <= period)) {
                 try {
                     auto event = new Server::Event;
                     event->eventName = Command::checkASCII(eventName);
@@ -379,10 +561,73 @@ const void Server::ServerController::load() const throw(ControllerException) {
             break;
     }
 
-    // TODO start event timers
+    count = -1;
 
-    stringStream.clear();
+    std::string login, password;
+    int subCount;
+
+    while(!stream.eof()) {
+        if(count == -1) {
+            std::getline(stream, countString);
+            stringStream.clear();
+            stringStream.str(countString);
+            stringStream >> count;
+        }
+        else if(count > 0) {
+            std::getline(stream, login);
+            if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+            std::getline(stream, password);
+            if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+            std::getline(stream, countString);
+            stringStream.clear();
+            stringStream.str(countString);
+            stringStream >> subCount;
+
+            std::vector<std::string> resultSubs;
+            std::string currentSub;
+            for(auto subIndex = 0; subIndex < subCount; ++subIndex) {
+                if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+                std::getline(stream, currentSub);
+
+                bool containsInCurrent = false;
+                for(auto& current: resultSubs)
+                    if(currentSub == current) {
+                        containsInCurrent = true;
+                        break;
+                    }
+
+                bool containsInEvents = false;
+                for(auto& current: this->serverPtr->events)
+                    if(currentSub == current.second->eventName) {
+                        containsInEvents = true;
+                        break;
+                    }
+
+                if(!containsInCurrent && containsInEvents)
+                    resultSubs.push_back(currentSub);
+            }
+
+            try {
+                this->serverPtr->accounts.insert(std::pair<std::string, std::string>(Command::checkASCII(login), Command::checkASCII(password)));
+                for(auto& current: resultSubs)
+                    this->serverPtr->subscriptions.push_back(std::pair<std::string, std::string>(Command::checkASCII(login), Command::checkASCII(current)));
+            } catch (const Command::CommandException& exception){
+                throw ControllerException(COULD_NOT_PARSE_FILE);
+            }
+            --count;
+        }
+        else
+            break;
+    }
+
     stream.close();
+
+    for(auto& current: this->serverPtr->events)
+        this->serverPtr->refreshTiming(current.first);
+
+    this->serverPtr->timerInterrupt = false;
+    auto bind = std::bind(&Server::timerThreadInitialize, std::placeholders::_1);
+    this->serverPtr->timerThread = std::make_shared<std::thread>(bind, this->serverPtr);
 }
 const void Server::ServerController::detach(const char *userName) const throw(ControllerException) {
     for(auto& current: this->serverPtr->users)
@@ -398,11 +643,19 @@ const void Server::ServerController::detach(const char *userName) const throw(Co
     throw ControllerException(USER_IS_NOT_EXISTS);
 }
 const void Server::ServerController::del(const char *userName) const throw(ControllerException) {
-    auto userFind = this->serverPtr->accounts.find(userName);
+    auto userFind = this->serverPtr->accounts.find(std::string(userName));
     if(userFind == this->serverPtr->accounts.end())
         throw ControllerException(USER_IS_NOT_EXISTS);
     else {
-        detach(userName);
+        try { detach(userName); }
+        catch (const ControllerException& exception) {}
+
+        for(auto current = this->serverPtr->subscriptions.begin(); current != this->serverPtr->subscriptions.end(); ++current)
+            if(current->first == std::string(userName)) {
+                this->serverPtr->subscriptions.erase(current);
+                --current;
+            }
+
         this->serverPtr->accounts.erase(userFind);
     }
 }
@@ -433,6 +686,12 @@ const char* Server::ServerController::ControllerException::what() const noexcept
 
         case USER_IS_NOT_EXISTS:
             return "User isn't exists.";
+
+        case EVENT_IS_ALREADY_EXISTS:
+            return "Event is already exists.";
+
+        case EVENT_IS_NOT_EXISTS:
+            return "Event isn't exists.";
     }
 
     return "Unknown exception.";

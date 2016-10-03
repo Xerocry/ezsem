@@ -17,13 +17,14 @@ protected:
         COULD_NOT_PROVIDE_ACCESS = 0x5
     };
 
-    static const int MAX_EVENT_PERIOD = 60 * 60 * 24 * 10;
-    static const int MIN_EVENT_PERIOD = 10;
-
     std::string* expr;
     Server::ServerController* controller;
 
 public:
+    static const int MAX_EVENT_PERIOD = 60 * 60 * 24 * 10;
+    static const int MIN_EVENT_PERIOD = 10;
+    static const int EVENT_BUFFER = 1;
+
     static const char PREFIX = '#';
     static const int MAX_LENGTH_OF_ARGUMENT = 30;
 

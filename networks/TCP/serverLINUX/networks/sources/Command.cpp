@@ -66,9 +66,9 @@ const std::chrono::milliseconds Command::parseDate(const std::string &string) th
 
     auto result = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::from_time_t(std::mktime(&time)).time_since_epoch());
     auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-    auto buffer = std::chrono::minutes(1);
+    auto buffer = EVENT_BUFFER;
 
-    if(result <= now + buffer)
+    if(result <= now + std::chrono::seconds(buffer))
         throw CommandException(Error::ARGUMENT_LOGIC_ERROR);
 
     return result;

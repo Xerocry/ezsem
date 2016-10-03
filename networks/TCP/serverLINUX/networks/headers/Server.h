@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <map>
 #include <thread>
+#include <vector>
 
 class Server {
 public:
@@ -20,7 +21,8 @@ public:
             COULD_NOT_PARSE_FILE = 0x2,
             USER_IS_ALREADY_EXISTS = 0x3,
             USER_IS_NOT_EXISTS = 0x4,
-            EVENT_IS_NOT_EXISTS = 0x5
+            EVENT_IS_ALREADY_EXISTS = 0x5,
+            EVENT_IS_NOT_EXISTS = 0x6
         };
 
         class ControllerException: public std::exception {
@@ -41,18 +43,18 @@ public:
         const void save() const throw(ControllerException);
         const void load() const throw(ControllerException);
         const void exit() const;
-        const void eventCreate(const char* eventName, const bool singleMode, const std::chrono::milliseconds& start, const std::chrono::seconds& period) const;
-        const void eventDrop(const char* eventName) const;
-        const void eventSubscribe(const char* eventName, const char* userName) const;
-        const void eventUnsubscribe(const char* eventName, const char* userName) const;
+        const void eventCreate(const char* eventName, const bool singleMode, const std::chrono::milliseconds& start, const std::chrono::seconds& period) const throw(ControllerException);
+        const void eventDrop(const char* eventName) const throw(ControllerException);
+        const void eventSubscribe(const char* eventName, const char* userName) const throw(ControllerException);
+        const void eventUnsubscribe(const char* eventName, const char* userName) const throw(ControllerException);
         const void eventNotify(const char *eventName) const;
         const void printUsersInfo() const;
         const void printEventsInfo() const;
         const void printAccountsInfo() const;
 
-        const int getThreadIdByUserName(const char* userName) const;
+        const int getThreadIdByUserName(const char* userName) const throw(ControllerException);
         const char* getUserNameByThreadId(const int threadId) const throw(ControllerException);
-        const int getEventIdByEventName(const char* eventName) const;
+        const int getEventIdByEventName(const char* eventName) const throw(ControllerException);
         const char* getEventNameByEventId(const int eventId) const throw(ControllerException);
     };
 
@@ -89,15 +91,18 @@ private:
     static const int MESSAGE_SIZE = 1000;
 
     static constexpr const char *DEFAULT_FILENAME = "server.data";
+    static constexpr const char *BACKUP_FILENAME = "server.backup";
 
     std::shared_ptr<std::thread> commandThread;
+    std::shared_ptr<std::thread> timerThread;
 
     std::string filename;
 
     std::map<std::string, std::string> accounts;
-
     std::map<int, Server::Event*> events;
     std::map<int, Server::User*> users;
+    std::vector<std::pair<int, std::chrono::milliseconds>> timings;
+    std::vector<std::pair<std::string, std::string>> subscriptions;
 
     std::istream* in;
     std::ostream* out;
@@ -105,7 +110,7 @@ private:
 
     ServerController* controller;
 
-    int interrupt;
+    bool generalInterrupt, timerInterrupt;
 
     int generalSocket = -1, generalBind = -1, generalFlags = -1;
 
@@ -129,7 +134,10 @@ private:
     const void removeClientThread(const int threadId) throw(ServerException);
     static void* clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const struct in_addr address);
     static void* commandThreadInitialize(void *thisPtr);
+    static void* timerThreadInitialize(void *thisPtr);
+    const void eventTimer();
     const void commandExecutor();
+    const void refreshTiming(const int eventId);
     const void acceptClient(const int threadId, const int clientSocket, const struct in_addr address) throw(ServerException);
     const void clearSocket(const int threadId, const int socket) throw(ServerException);
 };
