@@ -32,6 +32,8 @@ const void ServerCommand::parseAndExecute() const throw(CommandException, Server
                 this->controller->printUsersInfo();
             else if(commandPartition[1] == "accounts" && commandPartition[0] == "info")
                 this->controller->printAccountsInfo();
+            else if(commandPartition[1] == "subscriptions" && commandPartition[0] == "info")
+                this->controller->printSubscriptionsInfo();
             else if(commandPartition[0] == "filename") {
                 checkFilename(commandPartition[1]);
                 this->controller->finit(commandPartition[1].data());

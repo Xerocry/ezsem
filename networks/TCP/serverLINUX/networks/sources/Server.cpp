@@ -370,12 +370,62 @@ const void Server::ServerController::eventNotify(const char *eventName) const {
 
 }
 const void Server::ServerController::eventSubscribe(const char *eventName, const char *userName) const throw(ControllerException) {
+    getEventIdByEventName(eventName);
+    getThreadIdByUserName(userName);
 
+    std::string eventString(eventName);
+    std::string userString(userName);
+
+    auto position = this->serverPtr->subscriptions.end();
+
+    for(auto current = this->serverPtr->subscriptions.begin(); current != this->serverPtr->subscriptions.end(); ++current) {
+        if(current->first == userString) {
+            if (current->second == eventString)
+                return;
+
+            position = current;
+        }
+    }
+
+    this->serverPtr->subscriptions.insert(position, std::pair<std::string, std::string>(userString, eventString));
 }
 const void Server::ServerController::eventUnsubscribe(const char *eventName, const char *userName) const throw(ControllerException) {
+    getEventIdByEventName(eventName);
+    getThreadIdByUserName(userName);
 
+    std::string eventString(eventName);
+    std::string userString(userName);
+
+    for(auto current = this->serverPtr->subscriptions.begin(); current != this->serverPtr->subscriptions.end(); ++current)
+        if(current->first == userString && current->second == eventString) {
+            this->serverPtr->subscriptions.erase(current);
+            return;
+        }
 }
 
+const void Server::ServerController::printSubscriptionsInfo() const {
+    if(this->serverPtr->events.empty())
+        *this->serverPtr->out << "Events table is empty." << std::endl;
+    else {
+        *this->serverPtr->out << std::endl
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "USERNAME"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "EVENTNAME"
+                              << std::endl;
+
+        std::string userName;
+
+        for (auto &current: this->serverPtr->subscriptions) {
+            *this->serverPtr->out << ((userName != current.first) ? "\n" : "")
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((userName != current.first) ? current.first : "")
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.second
+                                  << std::endl;
+
+            userName = current.first;
+        }
+
+        *this->serverPtr->out << std::endl;
+    }
+}
 const void Server::ServerController::printEventsInfo() const {
     if(this->serverPtr->events.empty())
         *this->serverPtr->out << "Events table is empty." << std::endl;

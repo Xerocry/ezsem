@@ -48,6 +48,8 @@ public:
         const void eventSubscribe(const char* eventName, const char* userName) const throw(ControllerException);
         const void eventUnsubscribe(const char* eventName, const char* userName) const throw(ControllerException);
         const void eventNotify(const char *eventName) const;
+
+        const void printSubscriptionsInfo() const;
         const void printUsersInfo() const;
         const void printEventsInfo() const;
         const void printAccountsInfo() const;
