@@ -1,3 +1,6 @@
+nikita@nikita-pc:~/temp$ mkdir example
+nikita@nikita-pc:~/temp$ cd example
+nikita@nikita-pc:~/temp/example$ >cat.ty
 nikita@nikita-pc:~/temp/example$ ls -l
 total 0
 -rw-rw-r-- 1 nikita nikita 0 сен 23 12:28 cat.ty
