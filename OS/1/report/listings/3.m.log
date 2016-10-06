@@ -1,0 +1,4 @@
+nikita@nikita-pc:~/temp$ gcc -c prog.c foo.c
+nikita@nikita-pc:~/temp$ gcc prog.o foo.o -o result 
+nikita@nikita-pc:~/temp$ ./result 
+Hello, everybody ! Number from extern function: 202

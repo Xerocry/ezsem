@@ -7,21 +7,29 @@ res:	equ 34h
 	mov r0, #res	
 		
 d7:	mov a, @r0
-	mov b, #10	
+
+	cjne a, #ffh, con1
+	mov a, #46h
+	movx @dptr, a
+	inc dptr
+	movx @dptr, a
+	jmp indx
+
+con1:	mov b, #10	
 	div ab 
 	add a, #30h
 	movx @dptr, a
 	inc dptr
 	mov a, b 
 	add a, #30h
-	movx @dptr, a
+	movx @dptr, a	
 
-	lcall indic 
+indx:	lcall indic 
 	
-	ret		
+	ret
 
-str1:	db 	'Microcontrollers2016'
-str2:	db	'Number of button '
+	include ASMS\43501_3\bk\2\indic.asm
+	include ASMS\43501_3\bk\2\sklav.asm
 
-	include ASMS\43501_3\bk\2\ind.asm
-	include ASMS\43501_3\bk\2\klv.asm
+;str1:	db 	'Microcontrollers2016'
+;str2:	db	'Number of button '

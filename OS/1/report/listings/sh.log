@@ -1,0 +1,15 @@
+nikita@nikita-pc:~$ ps -T
+  PID  SPID TTY          TIME CMD
+ 3464  3464 pts/2    00:00:00 bash
+ 3475  3475 pts/2    00:00:00 ps
+nikita@nikita-pc:~$ sudo apt install csh
+( ... )
+nikita@nikita-pc:~$ csh
+% who
+nikita   tty7         2016-10-04 22:47 (:0)
+% ps -T
+  PID  SPID TTY          TIME CMD
+ 2738  2738 pts/3    00:00:00 bash
+ 3385  3385 pts/3    00:00:00 csh
+ 3432  3432 pts/3    00:00:00 ps
+%

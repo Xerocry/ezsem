@@ -2,7 +2,7 @@
 P4: 	equ E8h
 P5:	equ F8h
 
-indic:	clr P5.0
+indic:	clr P5.2
 	mov r4,#38h		; Установка 8-битного режима обмена с ЖКИ с выводом обеих строк
 	lcall ind_wr
 	mov r4,#0Ch		; Отображение экрана без курсоров
@@ -17,7 +17,7 @@ indic:	clr P5.0
 	mov F8h, dpl	
 
 	mov dptr, #FFD0h		;Адрес внешней памяти, где хранится выводимые строки
-	setb P5.0	
+	setb P5.2	
 
 wr_str1:	movx a,@dptr		
 	mov r4,a
@@ -29,7 +29,7 @@ wr_str1:	movx a,@dptr
 	clr P5.0
 	mov r4,#C0h	; Команда для адресации 1-й ячейки второй строки
 	lcall ind_wr	
-	setb P5.0
+	setb P5.2
 
 wr_str2:	movx a,@dptr
 	mov r4,a
@@ -41,7 +41,7 @@ wr_str2:	movx a,@dptr
 
 ind_wr:	mov P4, r4		; Загрузка в порт P5 записываемой в ЖКИ информации
 	setb P5.3			; Установка сигнала E
-	clr P5.2			; R/W=0 (запись)
+	clr P5.0			; R/W=0 (запись)
 	lcall delay
 	clr P5.3			; Сброс сигнала E
 	lcall delay
@@ -49,10 +49,14 @@ ind_wr:	mov P4, r4		; Загрузка в порт P5 записываемой в ЖКИ информации
 	ret
 
 delay:	mov r3, #7
-m1:	djnz r3, m1	
+m11:	djnz r3, m11	
 	ret
 	
 	org FFD0h
 
-str1:	db 'Microcontrollers2016'
-str2:	db 20h, 20h, 20h 20h, A0h, 4Fh, B1h, 50h, 4Bh, A5h, 48h, 20h, 20h, 4Bh, 41h, 48h, 20h, 20h, 20h, 20h
+;str1:	db 	'Microcontrollers2016'
+;str2:	db	'Number of button '
+
+
+str1: db 'potenciometr        '
+str2: db 'integrator          '

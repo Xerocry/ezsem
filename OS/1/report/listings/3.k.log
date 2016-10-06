@@ -1,12 +1,21 @@
-nikita@nikita-pc:~/temp$ ./file_name || ./my_open res.txt
-./file_name: открываемый файл не указан 
-nikita@nikita-pc:~/temp$ ./file_name | ./my_open res.txt
-./my_open: файл res.txt открыт 
-nikita@nikita-pc:~/temp$ ./file_name && ./my_open res.txt
-./file_name: открываемый файл не указан 
-./my_open: файл res.txt открыт
-nikita@nikita-pc:~/temp$ ./file_name ; ./my_open res.txt
-./file_name: открываемый файл не указан 
-./my_open: файл res.txt открыт 
-nikita@nikita-pc:~/temp$ ./file_name | xargs ./my_open res.txt
-./my_open: файл res.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name undefigned.txt && ./file_name defigned.txt  
+./file_name: неудача при попытке открыть файл undefigned.txt
+nikita@nikita-pc:~/temp$ ./file_name defigned.txt && ./file_name defigned.txt 
+./file_name: файл defigned.txt открыт 
+./file_name: файл defigned.txt открыт 
+
+nikita@nikita-pc:~/temp$ ./file_name undefigned.txt || ./file_name defigned.txt  
+./file_name: неудача при попытке открыть файл undefigned.txt 
+./file_name: файл defigned.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name defigned.txt || ./file_name defigned.txt ./file_name: файл defigned.txt открыт 
+
+nikita@nikita-pc:~/temp$ ./file_name undefigned.txt | ./file_name defigned.txt ./file_name: файл defigned.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name defigned.txt | ./file_name defigned.txt ./file_name: файл defigned.txt открыт 
+
+nikita@nikita-pc:~/temp$ ./file_name undefigned.txt ; ./file_name defigned.txt 
+./file_name: неудача при попытке открыть файл undefigned.txt 
+./file_name: файл defigned.txt открыт 
+nikita@nikita-pc:~/temp$ ./file_name defigned.txt ; ./file_name defigned.txt 
+./file_name: файл defigned.txt открыт 
+./file_name: файл defigned.txt открыт 
+

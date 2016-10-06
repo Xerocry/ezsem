@@ -1,0 +1,24 @@
+nikita@nikita-pc:~/temp/example$ ls -l
+total 0
+-rw-rw-r-- 1 nikita nikita 0 сен 23 12:28 cat.ty
+nikita@nikita-pc:~/temp/example$ ln cat.ty ../cat.ty
+nikita@nikita-pc:~/temp/example$ ls -l
+total 0
+-rw-rw-r-- 2 nikita nikita 0 сен 23 12:28 cat.ty
+nikita@nikita-pc:~/temp/example$ rm ../cat.ty
+nikita@nikita-pc:~/temp/example$ ls -l
+total 0
+-rw-rw-r-- 1 nikita nikita 0 сен 23 12:28 cat.ty
+nikita@nikita-pc:~/temp/example$ mkdir folder
+nikita@nikita-pc:~/temp/example$ ls -l
+total 4
+-rw-rw-r-- 1 nikita nikita    0 сен 23 12:28 cat.ty
+drwxrwxr-x 2 nikita nikita 4096 окт  6 02:57 folder
+nikita@nikita-pc:~/temp/example$ ls -as
+total 12
+4 .  4 ..  0 cat.ty  4 folder
+nikita@nikita-pc:~/temp/example$ echo "somesomesomesomesomesomesome">cat.ty
+nikita@nikita-pc:~/temp/example$ ls -as
+total 16
+4 .  4 ..  4 cat.ty  4 folder
+
