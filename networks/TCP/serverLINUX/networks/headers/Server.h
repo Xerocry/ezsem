@@ -8,6 +8,7 @@
 #include <map>
 #include <thread>
 #include <vector>
+#include <mutex>
 
 class Server {
 public:
@@ -21,8 +22,12 @@ public:
             COULD_NOT_PARSE_FILE = 0x2,
             USER_IS_ALREADY_EXISTS = 0x3,
             USER_IS_NOT_EXISTS = 0x4,
-            EVENT_IS_ALREADY_EXISTS = 0x5,
-            EVENT_IS_NOT_EXISTS = 0x6
+            USER_IS_NOT_CONNECTED_YET = 0x5,
+            USER_IS_ALREADY_CONNECTED = 0x6,
+            EVENT_IS_ALREADY_EXISTS = 0x7,
+            EVENT_IS_NOT_EXISTS = 0x8,
+            COULD_NOT_GET_CLIENT_INFO_BY_SOCKET = 0x9,
+            WRONG_PASSWORD = 0xA,
         };
 
         class ControllerException: public std::exception {
@@ -37,8 +42,10 @@ public:
         ServerController(Server* serverPtr);
 
         const void reg(const char* userName, const char* password) const throw(ControllerException);
+        const void connect(const char* userName, const char* password, const int clientSocket) const throw(ControllerException);
         const void del(const char* userName) const throw(ControllerException);
         const void detach(const char* userName) const throw(ControllerException);
+        const void close(const int socket) const throw(ControllerException);
         const void finit(const char* filename) const;
         const void save() const throw(ControllerException);
         const void load() const throw(ControllerException);
@@ -49,11 +56,17 @@ public:
         const void eventUnsubscribe(const char* eventName, const char* userName) const throw(ControllerException);
         const void eventNotify(const char *eventName) const;
 
+        const void help(std::ostream* out) const;
+
         const void printSubscriptionsInfo() const;
+        const void printSelfInfo(std::ostream* out, const char* userName) const;
         const void printUsersInfo() const;
-        const void printEventsInfo() const;
+        const void printEventsInfo(std::ostream* out) const;
         const void printAccountsInfo() const;
 
+        const std::pair<std::string, std::string> getAddressInfoBySocket(const int socket) const throw(ControllerException);
+
+        const char* getUserNameBySocket(const int clientSocket) const throw(ControllerException);
         const int getThreadIdByUserName(const char* userName) const throw(ControllerException);
         const char* getUserNameByThreadId(const int threadId) const throw(ControllerException);
         const int getEventIdByEventName(const char* eventName) const throw(ControllerException);
@@ -65,10 +78,12 @@ public:
         std::chrono::milliseconds startMoment;
         std::chrono::seconds period;
     };
+
     struct User{
         std::string userName;
         std::shared_ptr<std::thread> thread;
         int socket;
+        sockaddr_in* address;
     };
 
 private:
@@ -82,12 +97,6 @@ private:
         COULD_NOT_CLOSE_SOCKET = 0x7,
     };
 
-    class CommunicationConstants {
-    public:
-        static constexpr const char *CLIENT_JOINED = "Client joined.";
-        static constexpr const char *MESSAGE_RECEIVED = "Message received.";
-    };
-
     static const int BACKLOG = 5;
     static const int EMPTY_FLAGS = 0;
     static const int MESSAGE_SIZE = 1000;
@@ -98,16 +107,31 @@ private:
     std::shared_ptr<std::thread> commandThread;
     std::shared_ptr<std::thread> timerThread;
 
+    std::mutex mutexFilename;
     std::string filename;
 
+    std::mutex mutexAccounts;
     std::map<std::string, std::string> accounts;
+
+    std::mutex mutexEvents;
     std::map<int, Server::Event*> events;
+
+    std::mutex mutexUsers;
     std::map<int, Server::User*> users;
-    std::vector<std::pair<int, std::chrono::milliseconds>> timings;
+
+    std::mutex mutexSubscriptions;
     std::vector<std::pair<std::string, std::string>> subscriptions;
 
+    std::mutex mutexTimings;
+    std::vector<std::pair<int, std::chrono::milliseconds>> timings;
+
+    std::mutex mutexIn;
     std::istream* in;
+
+    std::mutex mutexOut;
     std::ostream* out;
+
+    std::mutex mutexError;
     std::ostream* error;
 
     ServerController* controller;
@@ -132,16 +156,20 @@ public:
     ~Server();
 
 private:
-    const void createClientThread(const int clientSocket, const struct in_addr address);
+    const void createClientThread(const int clientSocket, sockaddr_in* address);
     const void removeClientThread(const int threadId) throw(ServerException);
-    static void* clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const struct in_addr address);
+    static void* clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket);
     static void* commandThreadInitialize(void *thisPtr);
     static void* timerThreadInitialize(void *thisPtr);
     const void eventTimer();
     const void commandExecutor();
     const void refreshTiming(const int eventId);
-    const void acceptClient(const int threadId, const int clientSocket, const struct in_addr address) throw(ServerException);
+    const void acceptClient(const int threadId, const int clientSocket) throw(ServerException);
     const void clearSocket(const int threadId, const int socket) throw(ServerException);
+    const void lockAll(bool tryLockArray[9]);
+    const void unlockAll(const bool tryLockArray[9]);
+    static const void writeLine(const std::string& message, const int socket) throw(ServerException);
+    static const std::string readLine(const int socket) throw(ServerException);
 };
 
 #endif //NETWORKS_SERVER_H

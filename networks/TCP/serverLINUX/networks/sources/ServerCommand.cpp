@@ -14,20 +14,20 @@ const void ServerCommand::parseAndExecute() const throw(CommandException, Server
 
     switch(commandPartition.size()){
         case 1:
-            if(commandPartition[0] == "exit")
+            if(commandPartition[0] == "help")
+                this->controller->help(nullptr);
+            else if(commandPartition[0] == "exit")
                 this->controller->exit();
-            else if(commandPartition[0] == "save") {
+            else if(commandPartition[0] == "save")
                 this->controller->save();
-            }
-            else if(commandPartition[0] == "load") {
+            else if(commandPartition[0] == "load")
                 this->controller->load();
-            }
             else
                 throw CommandException(Error::COULD_NOT_RESOLVE_COMMAND);
             break;
         case 2:
             if(commandPartition[1] == "events" && commandPartition[0] == "info")
-                this->controller->printEventsInfo();
+                this->controller->printEventsInfo(nullptr);
             else if(commandPartition[1] == "users" && commandPartition[0] == "info")
                 this->controller->printUsersInfo();
             else if(commandPartition[1] == "accounts" && commandPartition[0] == "info")
@@ -48,7 +48,11 @@ const void ServerCommand::parseAndExecute() const throw(CommandException, Server
                 throw CommandException(Error::COULD_NOT_RESOLVE_COMMAND);
             break;
         case 3:
-            if(commandPartition[0] == "register")
+            if(commandPartition[1] == "user" && commandPartition[0] == "info") {
+                userName = getNameFromCommand(commandPartition[2], false);
+                this->controller->printSelfInfo(nullptr, userName);
+            }
+            else if(commandPartition[0] == "register")
                 this->controller->reg(checkASCII(commandPartition[1]).data(), checkASCII(commandPartition[2]).data());
             else if(commandPartition[0] == "event" && (commandPartition[1] == "drop" || commandPartition[1] == "notify")) {
                 eventName = getNameFromCommand(commandPartition[2], true);

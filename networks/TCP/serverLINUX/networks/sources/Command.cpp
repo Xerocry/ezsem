@@ -3,12 +3,15 @@
 #include <iomanip>
 #include "../headers/Command.h"
 
-Command::Command(std::string* expr, Server::ServerController* controller) {
+Command::Command(std::string* expr, Server::ServerController* controller) throw(std::invalid_argument) {
+    if(expr == nullptr || controller == nullptr)
+        throw std::invalid_argument("Pointer couldn't be null.");
+
     this->expr = expr;
     this->controller = controller;
 }
 
-Command::~Command() {}
+Command::~Command() { }
 
 const std::vector<std::string> Command::prepareCommand() const throw(CommandException){
     auto result = std::vector<std::string>();
@@ -98,14 +101,12 @@ const int Command::parseId(const std::string &stringId) throw(std::invalid_argum
     if(string.find_first_not_of("0123456789") != std::string::npos)
         throw std::out_of_range(stringId);
 
-    int result = NULL;
+    int result;
     try { result = std::stoi(string); }
     catch(...) { throw std::out_of_range(stringId); }
 
     return result;
 }
-
-const void Command::parseAndExecute() const throw(CommandException, Server::ServerController::ControllerException) { }
 
 Command::CommandException::CommandException(const Error error) {
     this->error = error;
@@ -115,14 +116,15 @@ const char* Command::CommandException::what() const noexcept {
     switch(this->error){
         case COULD_NOT_RESOLVE_COMMAND:
             return "It's impossible to resolve command.";
+
         case COULD_NOT_RESOLVE_ARGUMENT:
             return "It's impossible to resolve argument.";
+
         case ARGUMENT_LOGIC_ERROR:
             return "Argument logic exception.";
+
         case COMMAND_OR_ARGUMENT_IS_TOO_LONG:
             return "It's impossible to resolve so long command or argument.";
-        case COULD_NOT_PROVIDE_ACCESS:
-            return "It's impossible to provide access to command.";
     }
 
     return "Unknown exception.";

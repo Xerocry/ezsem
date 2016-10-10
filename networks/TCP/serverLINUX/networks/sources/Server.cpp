@@ -1,8 +1,6 @@
-#include "../headers/Server.h"
 #include "../headers/ServerCommand.h"
-#include <sys/socket.h>
+#include "../headers/ClientCommand.h"
 #include <arpa/inet.h>
-#include <sys/errno.h>
 #include <cstring>
 #include <unistd.h>
 #include <fcntl.h>
@@ -59,11 +57,13 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
     commandThread = std::make_shared<std::thread>(bind, this);
 
     while(!this->generalInterrupt) {
-        sockaddr_in clientAddress;
+        auto clientAddress = new sockaddr_in;
         auto size = sizeof(struct sockaddr_in);
-        auto clientSocket = accept(generalSocket, (sockaddr *) &clientAddress, (socklen_t *) &size);
+        auto clientSocket = accept(generalSocket, (sockaddr *) clientAddress, (socklen_t *) &size);
         if (clientSocket >= 0)
-            createClientThread(clientSocket, clientAddress.sin_addr);
+            createClientThread(clientSocket, clientAddress);
+        else
+            delete clientAddress;
     }
 }
 
@@ -74,8 +74,14 @@ void* Server::timerThreadInitialize(void *thisPtr) {
 
 const void Server::eventTimer() {
     while(!this->generalInterrupt && !this->timerInterrupt) {
-        if(this->timings.empty())
+        bool lockTimings = this->mutexTimings.try_lock();
+
+        if(this->timings.empty()) {
+            if(lockTimings)
+                this->mutexTimings.unlock();
+
             continue;
+        }
 
         auto now = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
@@ -88,11 +94,12 @@ const void Server::eventTimer() {
                 break;
         }
 
+        if(lockTimings)
+            this->mutexTimings.unlock();
+
         for(auto& current: resultVector) {
             refreshTiming(current);
-            auto currentTime = time(0);
-            struct tm* nowStruct = localtime(&currentTime);
-            *this->out << nowStruct->tm_hour << ":" << nowStruct->tm_min << ":" << nowStruct->tm_sec << " Handle event #" << current << "." << std::endl;
+            this->controller->eventNotify(this->controller->getEventNameByEventId(current));
         }
     }
 }
@@ -104,29 +111,52 @@ void* Server::commandThreadInitialize(void *thisPtr) {
 
 const void Server::commandExecutor() {
     std::string command;
-    while(!this->generalInterrupt){
+    while(!this->generalInterrupt) {
+        bool lockIn = this->mutexIn.try_lock();
         std::getline(*this->in, command);
+        if(lockIn)
+            this->mutexIn.unlock();
+
+        bool lockOut, lockError;
 
         try {
-            ServerCommand(&command, controller).parseAndExecute();
+            ServerCommand(&command, this->controller).parseAndExecute();
+
+            lockOut = this->mutexOut.try_lock();
             *this->out << "Command has been successfully executed." << std::endl;
+            if(lockOut)
+                this->mutexOut.unlock();
         }
         catch(const Command::CommandException& exception) {
+            lockError = this->mutexError.try_lock();
             *this->error << exception.what() << std::endl;
+            if(lockError)
+                this->mutexError.unlock();
         }
         catch(const Server::ServerController::ControllerException& exception) {
+            lockError = this->mutexError.try_lock();
             *this->error << exception.what() << std::endl;
+            if(lockError)
+                this->mutexError.unlock();
         }
         catch(const std::exception& exception) {
+            lockError = this->mutexError.try_lock();
             *this->error << exception.what() << std::endl;
+            if(lockError)
+                this->mutexError.unlock();
         }
         catch(...) {
+            lockError = this->mutexError.try_lock();
             *this->error << "Strange resolve command error." << std::endl;
+            if(lockError)
+                this->mutexError.unlock();
         }
     }
 }
 
 const void Server::refreshTiming(const int eventId) {
+    bool lockTimings = this->mutexTimings.try_lock();
+
     std::chrono::milliseconds timing;
     bool eraseCompleted = false;
 
@@ -138,14 +168,26 @@ const void Server::refreshTiming(const int eventId) {
             break;
         }
 
-    if(this->events.find(eventId) == this->events.end())
+    bool lockEvents = this->mutexEvents.try_lock();
+
+    if(this->events.find(eventId) == this->events.end()) {
+        if(lockEvents)
+            this->mutexEvents.unlock();
+        if(lockTimings)
+            this->mutexTimings.unlock();
         return;
+    }
 
     auto event = this->events.at(eventId);
 
     if(eraseCompleted) {
         if(event->period.count() == 0) {
             this->events.erase(eventId);
+
+            if(lockEvents)
+                this->mutexEvents.unlock();
+            if(lockTimings)
+                this->mutexTimings.unlock();
             return;
         }
         timing += event->period;
@@ -159,6 +201,11 @@ const void Server::refreshTiming(const int eventId) {
     if(now + std::chrono::seconds(buffer) >= timing) {
         if(event->period.count() == 0) {
             this->events.erase(eventId);
+
+            if(lockEvents)
+                this->mutexEvents.unlock();
+            if(lockTimings)
+                this->mutexTimings.unlock();
             return;
         }
         else {
@@ -166,6 +213,9 @@ const void Server::refreshTiming(const int eventId) {
             timing += (count + 1) * event->period;
         }
     }
+
+    if(lockEvents)
+        this->mutexEvents.unlock();
 
     bool insertCompleted = false;
 
@@ -178,49 +228,107 @@ const void Server::refreshTiming(const int eventId) {
 
     if(!insertCompleted)
         this->timings.insert(this->timings.end(), std::pair<int, std::chrono::milliseconds>(eventId, timing));
+
+    if(lockTimings)
+        this->mutexTimings.unlock();
 }
 
-void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const struct in_addr address) {
+void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket) {
     auto serverPtr = ((Server*)thisPtr);
 
-    try { serverPtr->acceptClient(threadId, clientSocket, address); }
+    bool lockOut, lockError;
+
+    try { serverPtr->acceptClient(threadId, clientSocket); }
     catch (const ServerException& exception) {
+        lockError = serverPtr->mutexError.try_lock();
         *serverPtr->error << "Thread 0x" << threadId << ". " << exception.what() << std::endl;
+        if(lockError)
+            serverPtr->mutexError.unlock();
     }
     try {
         serverPtr->removeClientThread(threadId);
+
+        lockOut = serverPtr->mutexOut.try_lock();
         *serverPtr->out << "Thread 0x" << threadId << ". Client disconnected." << std::endl;
+        if(lockOut)
+            serverPtr->mutexOut.unlock();
     } catch (const ServerException& exception) {
+        lockError = serverPtr->mutexError.try_lock();
         *serverPtr->error << "Thread 0x" << threadId << ". " << exception.what() << std::endl;
+        if(lockError)
+            serverPtr->mutexError.unlock();
     }
 
     return NULL;
 }
 
-const void Server::acceptClient(const int threadId, const int clientSocket, const struct in_addr address) throw(ServerException){
-    *this->out << "Thread 0x" << threadId << ". Client with IP address " << inet_ntoa(address) << " has been connected." << std::endl;
+const void Server::acceptClient(const int threadId, const int clientSocket) throw(ServerException) {
+    bool lockOut = this->mutexOut.try_lock();
+    *this->out << "Thread 0x" << threadId << ". Client has been connected." << std::endl;
+    if(lockOut)
+        this->mutexOut.unlock();
 
-    write(clientSocket, CommunicationConstants::CLIENT_JOINED, strlen(CommunicationConstants::CLIENT_JOINED));
+    while(!this->generalInterrupt) {
+        std::string message;
+        try{ message = readLine(clientSocket); }
+        catch (const ServerException& exception) {
+            if(exception.code() == Error::COULD_NOT_RECEIVE_MESSAGE)
+                break;
+        }
 
-    char message[MESSAGE_SIZE];
-    bzero(message, sizeof message);
+        auto stream = new std::stringstream();
+        try {
+            ClientCommand(&message, this->controller, clientSocket).parseAndExecute(stream);
+            *stream << "Command has been successfully executed." << std::endl;
+        }
+        catch(const Command::CommandException& exception) {
+            *stream << exception.what() << std::endl;
+        }
+        catch(const Server::ServerController::ControllerException& exception) {
+            *stream << exception.what() << std::endl;
+        }
+        catch(const std::exception& exception) {
+            *stream << exception.what() << std::endl;
+        }
+        catch(...) {
+            *stream << "Strange resolve command error." << std::endl;
+        }
 
-    while(true) {
-        auto readSize = recv(clientSocket, message, MESSAGE_SIZE, EMPTY_FLAGS);
-
-        if(readSize < 0)
-            throw ServerException(Error::COULD_NOT_RECEIVE_MESSAGE);
-        else if(readSize == 0)
-            break;
-
-        *this->out << "Thread 0x" << threadId << ". Received message: " << message << std::endl;
-
-        write(clientSocket, message, strlen(message));
-        bzero(message, sizeof message);
+        writeLine(stream->str(), clientSocket);
     }
 }
 
-const void Server::createClientThread(const int clientSocket, const struct in_addr address) {
+const void Server::writeLine(const std::string& message, const int socket) throw(ServerException) {
+    if(message.empty())
+        return;
+
+    auto output = message.data();
+
+    send(socket, output, strlen(output), EMPTY_FLAGS);
+}
+
+const std::string Server::readLine(const int socket) throw(ServerException) {
+    auto result = std::string();
+
+    char resolvedSymbol = ' ';
+
+    for(auto index = 0; index < MESSAGE_SIZE; ++index){
+        auto readSize = recv(socket, &resolvedSymbol, 1, EMPTY_FLAGS);
+
+        if(readSize <= 0)
+            throw ServerException(Error::COULD_NOT_RECEIVE_MESSAGE);
+        else if(resolvedSymbol == '\n')
+            return result;
+        else if(resolvedSymbol != '\r')
+            result.push_back(resolvedSymbol);
+    }
+
+    throw ServerException(Error::COULD_NOT_RECEIVE_MESSAGE);
+}
+
+const void Server::createClientThread(const int clientSocket, sockaddr_in* address) {
+    bool lockUsers = this->mutexUsers.try_lock();
+
     int index = 0;
     std::map<int, Server::User*>::iterator result;
     do {
@@ -229,16 +337,23 @@ const void Server::createClientThread(const int clientSocket, const struct in_ad
     } while(result != this->users.end());
     --index;
 
-    auto bind = std::bind(&Server::clientThreadInitialize, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+    auto bind = std::bind(&Server::clientThreadInitialize, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 
     auto user = new User;
-    user->userName = "name";
-    user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket, address);
+    user->userName = "";
+    user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket);
     user->socket = clientSocket;
+    user->address = address;
+
     this->users.insert(std::pair<int, Server::User*>(index, user));
+
+    if(lockUsers)
+        this->mutexUsers.unlock();
 }
 
 const void Server::removeClientThread(const int threadId) throw(ServerException) {
+    bool lockUsers = this->mutexUsers.try_lock();
+
     const auto find = this->users.find(threadId);
     if(find != this->users.end()) {
         const auto clientSocket = find->second->socket;
@@ -246,6 +361,9 @@ const void Server::removeClientThread(const int threadId) throw(ServerException)
         this->users.at(threadId)->thread.get()->detach();
         this->users.erase(threadId);
     }
+
+    if(lockUsers)
+        this->mutexUsers.unlock();
 }
 
 const void Server::clearSocket(const int threadId, const int socket) throw(ServerException) {
@@ -256,23 +374,57 @@ const void Server::clearSocket(const int threadId, const int socket) throw(Serve
     if(socketShutdown != 0)
         throw ServerException(Error::COULD_NOT_SHUT_SOCKET_DOWN);
 
+    bool lockOut = this->mutexOut.try_lock();
     *this->out <<  "Thread 0x" << threadId << ". Socket is down." << std::endl;
+    if(lockOut)
+        this->mutexOut.unlock();
 
     auto socketClose = close(socket);
     if(socketClose != 0)
         throw ServerException(Error::COULD_NOT_CLOSE_SOCKET);
 
+    lockOut = this->mutexOut.try_lock();
     *this->out <<  "Thread 0x" << threadId << ". Socket is closed." << std::endl;
+    if(lockOut)
+        this->mutexOut.unlock();
+}
+
+const void Server::lockAll(bool tryLockArray[9]) {
+    tryLockArray[0] = this->mutexFilename.try_lock();
+    tryLockArray[1] = this->mutexEvents.try_lock();
+    tryLockArray[2] = this->mutexAccounts.try_lock();
+    tryLockArray[3] = this->mutexTimings.try_lock();
+    tryLockArray[4] = this->mutexUsers.try_lock();
+    tryLockArray[5] = this->mutexSubscriptions.try_lock();
+    tryLockArray[6] = this->mutexIn.try_lock();
+    tryLockArray[7] = this->mutexOut.try_lock();
+    tryLockArray[8] = this->mutexError.try_lock();
+}
+const void Server::unlockAll(const bool tryLockArray[9]) {
+    if(tryLockArray[0]) this->mutexError.unlock();
+    if(tryLockArray[1]) this->mutexOut.unlock();
+    if(tryLockArray[2]) this->mutexIn.unlock();
+    if(tryLockArray[3]) this->mutexSubscriptions.unlock();
+    if(tryLockArray[4]) this->mutexUsers.unlock();
+    if(tryLockArray[5]) this->mutexTimings.unlock();
+    if(tryLockArray[6]) this->mutexAccounts.unlock();
+    if(tryLockArray[7]) this->mutexEvents.unlock();
+    if(tryLockArray[8]) this->mutexFilename.unlock();
 }
 
 const void Server::stop() throw(ServerException){
     this->generalInterrupt = true;
     this->timerInterrupt = true;
 
+    bool tryLockArray[9];
+    lockAll(tryLockArray);
+
     if(generalSocket >= 0) {
         auto fcntlResult = fcntl(generalSocket, F_SETFL, generalFlags);
-        if (fcntlResult < 0)
+        if (fcntlResult < 0) {
+            unlockAll(tryLockArray);
             throw ServerException(Error::COULD_NOT_SET_NON_BLOCKING);
+        }
     }
 
     if(timerThread != nullptr && timerThread.get()->joinable())
@@ -291,8 +443,11 @@ const void Server::stop() throw(ServerException){
 
     clearSocket(-1, generalSocket);
 
+    unlockAll(tryLockArray);
+
     this->controller->finit(BACKUP_FILENAME);
-    this->controller->save();
+    try { this->controller->save(); }
+    catch (const ServerController::ControllerException& exception) {  }
 }
 
 Server::~Server() {
@@ -305,40 +460,129 @@ Server::ServerController::ServerController(Server *serverPtr) {
     this->serverPtr = serverPtr;
 }
 
+const std::pair<std::string, std::string> Server::ServerController::getAddressInfoBySocket(const int socket) const throw(ControllerException) {
+    if(socket == -1)
+        throw ControllerException(COULD_NOT_GET_CLIENT_INFO_BY_SOCKET);
+
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
+    for(auto& current: this->serverPtr->users)
+        if(current.second->socket == socket) {
+            auto result = std::pair<std::string, std::string>(std::string(inet_ntoa(current.second->address->sin_addr)), std::to_string(current.second->address->sin_port));
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+            return result;
+        }
+
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
+    throw ControllerException(USER_IS_NOT_EXISTS);
+}
+
+const char* Server::ServerController::getUserNameBySocket(const int clientSocket) const throw(ControllerException) {
+    if(clientSocket < 0)
+        throw ControllerException(COULD_NOT_GET_CLIENT_INFO_BY_SOCKET);
+
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
+    for(auto& current: this->serverPtr->users)
+        if(current.second->socket == clientSocket) {
+            if(current.second->userName.empty()) {
+                if(lockUsers)
+                    this->serverPtr->mutexUsers.unlock();
+                throw ControllerException(USER_IS_NOT_CONNECTED_YET);
+            }
+
+            const char* result = current.second->userName.data();
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+            return result;
+        }
+
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
+    throw ControllerException(USER_IS_NOT_EXISTS);
+}
 const int Server::ServerController::getThreadIdByUserName(const char* userName) const throw(ControllerException) {
+    if(userName == nullptr || strlen(userName) == 0)
+        throw ControllerException(USER_IS_NOT_CONNECTED_YET);
+
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
     auto string = std::string(userName);
     for(auto& current: this->serverPtr->users)
-        if(current.second->userName == string)
-            return current.first;
+        if(current.second->userName == string) {
+            const int result = current.first;
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+            return result;
+        }
 
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
     throw ControllerException(USER_IS_NOT_EXISTS);
 }
 const int Server::ServerController::getEventIdByEventName(const char *eventName) const throw(ControllerException) {
     auto string = std::string(eventName);
-    for(auto& current: this->serverPtr->events)
-        if(current.second->eventName == string)
-            return current.first;
 
+    bool lockEvents = this->serverPtr->mutexEvents.try_lock();
+
+    for(auto& current: this->serverPtr->events)
+        if(current.second->eventName == string) {
+            const int result = current.first;
+            if(lockEvents)
+                this->serverPtr->mutexEvents.unlock();
+            return result;
+        }
+
+    if(lockEvents)
+        this->serverPtr->mutexEvents.unlock();
     throw ControllerException(EVENT_IS_NOT_EXISTS);
 }
 const char* Server::ServerController::getEventNameByEventId(const int eventId) const throw(ControllerException) {
-    auto userFind = this->serverPtr->events.find(eventId);
-    if(userFind == this->serverPtr->events.end())
+    bool lockEvents = this->serverPtr->mutexEvents.try_lock();
+
+    auto eventFind = this->serverPtr->events.find(eventId);
+    if(eventFind == this->serverPtr->events.end()) {
+        if(lockEvents)
+            this->serverPtr->mutexEvents.unlock();
         throw ControllerException(EVENT_IS_NOT_EXISTS);
-    else
-        return this->serverPtr->events.at(eventId)->eventName.data();
+    }
+    else {
+        const char* result = this->serverPtr->events.at(eventId)->eventName.data();
+        if(lockEvents)
+            this->serverPtr->mutexEvents.unlock();
+        return result;
+    }
 }
 const char* Server::ServerController::getUserNameByThreadId(const int threadId) const throw(ControllerException) {
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
     auto userFind = this->serverPtr->users.find(threadId);
-    if(userFind == this->serverPtr->users.end())
+    if(userFind == this->serverPtr->users.end()) {
+        if(lockUsers)
+            this->serverPtr->mutexUsers.unlock();
         throw ControllerException(USER_IS_NOT_EXISTS);
-    else
-        return this->serverPtr->users.at(threadId)->userName.data();
+    }
+    else {
+        if(this->serverPtr->users.at(threadId)->userName.empty()) {
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+            throw ControllerException(USER_IS_NOT_CONNECTED_YET);
+        }
+
+        const char* result = this->serverPtr->users.at(threadId)->userName.data();
+        if(lockUsers)
+            this->serverPtr->mutexUsers.unlock();
+        return result;
+    }
 }
 
 const void Server::ServerController::eventCreate(const char *eventName, const bool singleMode, const std::chrono::milliseconds& start, const std::chrono::seconds& period) const throw(ControllerException) {
     try { getEventIdByEventName(eventName); }
     catch (const ControllerException& exception) {
+        bool lockEvents = this->serverPtr->mutexEvents.try_lock();
+
         int index = 0;
         std::map<int, Server::Event*>::iterator result;
         do {
@@ -347,13 +591,14 @@ const void Server::ServerController::eventCreate(const char *eventName, const bo
         } while(result != this->serverPtr->events.end());
         --index;
 
-        //event create multi some 03/10/2016|05:25:00 10
-
         auto event = new Server::Event;
         event->eventName = std::string(eventName);
         event->startMoment = start;
         event->period = period;
         this->serverPtr->events.insert(std::pair<int, Server::Event*>(index, event));
+
+        if(lockEvents)
+            this->serverPtr->mutexEvents.unlock();
 
         this->serverPtr->refreshTiming(index);
         return;
@@ -363,11 +608,35 @@ const void Server::ServerController::eventCreate(const char *eventName, const bo
 }
 const void Server::ServerController::eventDrop(const char *eventName) const throw(ControllerException) {
     auto eventId = getEventIdByEventName(eventName);
+
+    bool lockEvents = this->serverPtr->mutexEvents.try_lock();
     this->serverPtr->events.erase(eventId);
+    if(lockEvents)
+        this->serverPtr->mutexEvents.unlock();
+
     this->serverPtr->refreshTiming(eventId);
 }
 const void Server::ServerController::eventNotify(const char *eventName) const {
+    bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
 
+    auto currentTime = time(0);
+    struct tm* nowStruct = localtime(&currentTime);
+
+    auto eventString = std::string(eventName);
+    for(auto& currentSubscription: this->serverPtr->subscriptions)
+        if(currentSubscription.second == eventString)
+            for(auto& currentUsers : this->serverPtr->users)
+                if(currentUsers.second->userName == currentSubscription.first) {
+                    std::stringstream stream;
+                    stream << nowStruct->tm_hour << ":" << nowStruct->tm_min << ":" << nowStruct->tm_sec << " Notify about the event \"" << currentSubscription.second << "\"." << std::endl;
+                    writeLine(stream.str(), currentUsers.second->socket);
+                }
+
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
+    if(lockSubscriptions)
+        this->serverPtr->mutexSubscriptions.unlock();
 }
 const void Server::ServerController::eventSubscribe(const char *eventName, const char *userName) const throw(ControllerException) {
     getEventIdByEventName(eventName);
@@ -376,18 +645,25 @@ const void Server::ServerController::eventSubscribe(const char *eventName, const
     std::string eventString(eventName);
     std::string userString(userName);
 
+    bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
+
     auto position = this->serverPtr->subscriptions.end();
 
     for(auto current = this->serverPtr->subscriptions.begin(); current != this->serverPtr->subscriptions.end(); ++current) {
         if(current->first == userString) {
-            if (current->second == eventString)
+            if (current->second == eventString) {
+                if(lockSubscriptions)
+                    this->serverPtr->mutexSubscriptions.unlock();
                 return;
+            }
 
             position = current;
         }
     }
 
     this->serverPtr->subscriptions.insert(position, std::pair<std::string, std::string>(userString, eventString));
+    if(lockSubscriptions)
+        this->serverPtr->mutexSubscriptions.unlock();
 }
 const void Server::ServerController::eventUnsubscribe(const char *eventName, const char *userName) const throw(ControllerException) {
     getEventIdByEventName(eventName);
@@ -396,16 +672,229 @@ const void Server::ServerController::eventUnsubscribe(const char *eventName, con
     std::string eventString(eventName);
     std::string userString(userName);
 
+    bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
+
     for(auto current = this->serverPtr->subscriptions.begin(); current != this->serverPtr->subscriptions.end(); ++current)
         if(current->first == userString && current->second == eventString) {
             this->serverPtr->subscriptions.erase(current);
+            if(lockSubscriptions)
+                this->serverPtr->mutexSubscriptions.unlock();
             return;
         }
+
+    if(lockSubscriptions)
+        this->serverPtr->mutexSubscriptions.unlock();
 }
 
+const void Server::ServerController::help(std::ostream* out) const {
+    auto stream = (out == nullptr) ? this->serverPtr->out : out;
+    const bool client = (out != nullptr);
+
+    bool lockOut = false;
+
+    if(!client)
+        lockOut = this->serverPtr->mutexOut.try_lock();
+
+    const int length = 77;
+
+    if(client) {
+        *stream << std::endl
+                << std::left << std::setw(length) << std::setfill(' ') << "COMMAND"
+                << std::left << std::setw(length) << std::setfill(' ') << "DESCRIPTION" << std::endl;
+
+        *stream << std::endl << "Connect commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "connect <user[a-z][0-9]> <password[a-z][0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Connect to server by username and password." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "exit"
+                << std::left << std::setw(length) << std::setfill(' ') << "Disconnect from server and remove session." << std::endl;
+
+        *stream << std::endl << "Info commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "info self"
+                << std::left << std::setw(length) << std::setfill(' ') << "Print info about current connected user." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "info events"
+                << std::left << std::setw(length) << std::setfill(' ') << "Print info about all existing events." << std::endl;
+
+        *stream << std::endl << "Account commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "register <user[a-z][0-9]> <password[a-z][0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Register new user in accounts table." << std::endl;
+
+        *stream << std::endl << "Event commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event create single <event[a-z][0-9]> <[dd/mm/yyyy|hh:mm:ss]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Create single event." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event create multi <event[a-z][0-9]> <[dd/mm/yyyy|hh:mm:ss]> <period[int]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Create repeating event with period in seconds." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event drop <event[a-z][0-9] | #EID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Remove event by name or id." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event subscribe <event[a-z][0-9] | #EID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Sign current connected user on event." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event unsubscribe <event[a-z][0-9] | #EID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Unsubscribe current connected user from event." << std::endl << std::endl;
+    }
+    else {
+        *stream << std::endl
+                << std::left << std::setw(length) << std::setfill(' ') << "COMMAND"
+                << std::left << std::setw(length) << std::setfill(' ') << "DESCRIPTION" << std::endl;
+
+        *stream << std::endl << "Server state commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "filename <filename^[\\/:*?\"<>|]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Set current filename (default \"server.data\")." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "save"
+                << std::left << std::setw(length) << std::setfill(' ') << "Save program data into current file." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "load"
+                << std::left << std::setw(length) << std::setfill(' ') << "Load program data from current file." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "exit"
+                << std::left << std::setw(length) << std::setfill(' ') << "Close all connections and save backup data (into file \"server.backup\")." << std::endl;
+
+        *stream << std::endl << "Info commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "info user <login[a-z][0-9] | #UID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Print info about connected user." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "info users"
+                << std::left << std::setw(length) << std::setfill(' ') << "Print info about all connected users." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "info accounts"
+                << std::left << std::setw(length) << std::setfill(' ') << "Print info about all existing accounts." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "info events"
+                << std::left << std::setw(length) << std::setfill(' ') << "Print info about all existing events." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "info subscriptions"
+                << std::left << std::setw(length) << std::setfill(' ') << "Print info about all existing subscriptions." << std::endl;
+
+        *stream << std::endl << "Account commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "register <user[a-z][0-9]> <password[a-z][0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Register new user in accounts table." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "detach <user[a-z][0-9] | #UID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Disconnect user from server." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "delete <user[a-z][0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Detach user and delete him from accounts table." << std::endl;
+
+        *stream << std::endl << "Event commands:" << std::endl << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event create single <event[a-z][0-9]> <[dd/mm/yyyy|hh:mm:ss]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Create single event." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event create multi <event[a-z][0-9]> <[dd/mm/yyyy|hh:mm:ss]> <period[int]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Create repeating event with period in seconds." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event drop <event[a-z][0-9] | #EID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Remove event by name or id." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event subscribe <event[a-z][0-9] | #EID[0-9]> <user[a-z][0-9] | #UID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Sign user on event." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event unsubscribe <event[a-z][0-9] | #EID[0-9]> <user[a-z][0-9] | #UID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Unsubscribe user from event." << std::endl;
+
+        *stream << std::left << std::setw(length) << std::setfill(' ') << "event notify <event[a-z][0-9] | #EID[0-9]>"
+                << std::left << std::setw(length) << std::setfill(' ') << "Notify all subscribers about the event immediately." << std::endl << std::endl;
+    }
+
+    if(!client && lockOut)
+        this->serverPtr->mutexOut.unlock();
+}
+
+const void Server::ServerController::printSelfInfo(std::ostream* out, const char* userName) const {
+    if(userName == nullptr || strlen(userName) == 0)
+        throw ControllerException(USER_IS_NOT_CONNECTED_YET);
+
+    auto stream = (out == nullptr) ? this->serverPtr->out : out;
+
+    bool lockOut = false;
+
+    if(out == nullptr)
+        lockOut = this->serverPtr->mutexOut.try_lock();
+
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+    bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
+
+    auto userString = std::string(userName);
+    for (auto &currentUser: this->serverPtr->users)
+        if(currentUser.second->userName == userString) {
+            *stream << std::endl
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "ID"
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "USERNAME"
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "IP"
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "PORT"
+                    << std::endl << std::endl;
+
+            std::pair<std::string, std::string> addressInfo;
+            try { addressInfo = getAddressInfoBySocket(currentUser.second->socket); }
+            catch (...) { addressInfo = std::pair<std::string, std::string>("", ""); }
+
+            *stream << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << currentUser.first
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((!currentUser.second->userName.empty()) ? currentUser.second->userName : "Not connected yet.")
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((!addressInfo.first.empty()) ? addressInfo.first : "Couldn't resolve IP.")
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((!addressInfo.second.empty()) ? addressInfo.second : "Couldn't resolve PORT.")
+                    << std::endl << std::endl;
+
+            bool first = true;
+            for(auto &currentSubscribe: this->serverPtr->subscriptions) {
+                if(currentSubscribe.first != currentUser.second->userName)
+                    continue;
+
+                if(first) {
+                    first = false;
+
+                    *stream << std::endl
+                            << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "EVENTNAME"
+                            << std::endl<< std::endl;
+                }
+
+                *stream << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << currentSubscribe.second
+                        << std::endl;
+            }
+
+            if(first)
+                *stream << "User has no subscriptions." << std::endl;
+
+            *stream << std::endl;
+
+            if(lockSubscriptions)
+                this->serverPtr->mutexSubscriptions.unlock();
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+
+            if(out == nullptr && lockOut)
+                this->serverPtr->mutexOut.unlock();
+
+            return;
+        }
+
+    if(lockSubscriptions)
+        this->serverPtr->mutexSubscriptions.unlock();
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
+
+    if(out == nullptr && lockOut)
+        this->serverPtr->mutexOut.unlock();
+
+    throw ControllerException(USER_IS_NOT_EXISTS);
+}
 const void Server::ServerController::printSubscriptionsInfo() const {
-    if(this->serverPtr->events.empty())
-        *this->serverPtr->out << "Events table is empty." << std::endl;
+    bool lockOut = this->serverPtr->mutexOut.try_lock();
+    bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
+
+    if(this->serverPtr->subscriptions.empty())
+        *this->serverPtr->out << "Subscriptions table is empty." << std::endl;
     else {
         *this->serverPtr->out << std::endl
                               << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "USERNAME"
@@ -425,17 +914,31 @@ const void Server::ServerController::printSubscriptionsInfo() const {
 
         *this->serverPtr->out << std::endl;
     }
+
+    if(lockSubscriptions)
+        this->serverPtr->mutexSubscriptions.unlock();
+    if(lockOut)
+        this->serverPtr->mutexOut.unlock();
 }
-const void Server::ServerController::printEventsInfo() const {
+const void Server::ServerController::printEventsInfo(std::ostream* out) const {
+    auto stream = (out == nullptr) ? this->serverPtr->out : out;
+
+    bool lockOut = false;
+
+    if(out == nullptr)
+        lockOut = this->serverPtr->mutexOut.try_lock();
+
+    bool lockEvents = this->serverPtr->mutexEvents.try_lock();
+
     if(this->serverPtr->events.empty())
-        *this->serverPtr->out << "Events table is empty." << std::endl;
+        *stream << "Events table is empty." << std::endl;
     else {
-        *this->serverPtr->out << std::endl
-                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "ID"
-                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "EVENTNAME"
-                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "START"
-                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "PERIOD"
-                              << std::endl << std::endl;
+        *stream << std::endl
+                << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "ID"
+                << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "EVENTNAME"
+                << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "START"
+                << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "PERIOD"
+                << std::endl << std::endl;
 
         for (auto &current: this->serverPtr->events) {
             std::chrono::time_point<std::chrono::system_clock, std::chrono::milliseconds> castPoint(current.second->startMoment);
@@ -454,35 +957,60 @@ const void Server::ServerController::printEventsInfo() const {
                 result = std::to_string(days) + " days " + std::to_string(hours) + ":" + std::to_string(minutes) + ":" + std::to_string(seconds);
             }
 
-            *this->serverPtr->out << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << (std::string(1, Command::PREFIX) + std::to_string(current.first))
-                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.second->eventName
-                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << timeString
-                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((period == 0) ? "Single event." : result)
-                                  << std::endl;
+            *stream << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << (std::string(1, Command::PREFIX) + std::to_string(current.first))
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.second->eventName
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << timeString
+                    << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((period == 0) ? "Single event." : result)
+                    << std::endl;
         }
 
-        *this->serverPtr->out << std::endl;
+        *stream << std::endl;
     }
+
+    if(lockEvents)
+        this->serverPtr->mutexEvents.unlock();
+
+    if(out == nullptr && lockOut)
+        this->serverPtr->mutexOut.unlock();
 }
 const void Server::ServerController::printUsersInfo() const {
+    bool lockOut = this->serverPtr->mutexOut.try_lock();
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
     if(this->serverPtr->users.empty())
         *this->serverPtr->out << "Users table is empty." << std::endl;
     else {
         *this->serverPtr->out << std::endl
                               << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "ID"
                               << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "USERNAME"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "IP"
+                              << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << "PORT"
                               << std::endl << std::endl;
 
         for (auto &current: this->serverPtr->users) {
+            std::pair<std::string, std::string> addressInfo;
+            try { addressInfo = getAddressInfoBySocket(current.second->socket); }
+            catch (...) { addressInfo = std::pair<std::string, std::string>("", ""); }
+
             *this->serverPtr->out << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << (std::string(1, Command::PREFIX) + std::to_string(current.first))
-                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << current.second->userName
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((!current.second->userName.empty()) ? current.second->userName : "Not connected yet.")
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((!addressInfo.first.empty()) ? addressInfo.first : "Couldn't resolve IP.")
+                                  << std::left << std::setw(Command::MAX_LENGTH_OF_ARGUMENT) << std::setfill(' ') << ((!addressInfo.second.empty()) ? addressInfo.second : "Couldn't resolve PORT.")
                                   << std::endl;
         }
 
         *this->serverPtr->out << std::endl;
     }
+
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
+    if(lockOut)
+        this->serverPtr->mutexOut.unlock();
 }
 const void Server::ServerController::printAccountsInfo() const {
+    bool lockOut = this->serverPtr->mutexOut.try_lock();
+    bool lockAccounts = this->serverPtr->mutexAccounts.try_lock();
+
     if(this->serverPtr->accounts.empty())
         *this->serverPtr->out << "Accounts table is empty." << std::endl;
     else {
@@ -498,20 +1026,36 @@ const void Server::ServerController::printAccountsInfo() const {
         }
         *this->serverPtr->out << std::endl;
     }
+
+    if(lockAccounts)
+        this->serverPtr->mutexAccounts.unlock();
+    if(lockOut)
+        this->serverPtr->mutexOut.unlock();
 }
 
 const void Server::ServerController::exit() const {
     this->serverPtr->generalInterrupt = true;
 }
 const void Server::ServerController::finit(const char *filename) const {
+    bool lockFilename = this->serverPtr->mutexFilename.try_lock();
     this->serverPtr->filename = std::string(filename);
+    if(lockFilename)
+        this->serverPtr->mutexFilename.unlock();
 }
 const void Server::ServerController::save() const throw(ControllerException) {
+    bool lockFilename = this->serverPtr->mutexFilename.try_lock();
     auto filename = (this->serverPtr->filename.empty()) ? DEFAULT_FILENAME: this->serverPtr->filename;
+    if(lockFilename)
+        this->serverPtr->mutexFilename.unlock();
+
     auto stream = std::ofstream(filename);
 
     if(!stream.is_open())
         throw ControllerException(COULD_NOT_OPEN_FILE);
+
+    bool lockEvents = this->serverPtr->mutexEvents.try_lock();
+    bool lockAccounts = this->serverPtr->mutexAccounts.try_lock();
+    bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
 
     stream << this->serverPtr->events.size() << std::endl;
     for(auto& current: this->serverPtr->events)
@@ -533,9 +1077,28 @@ const void Server::ServerController::save() const throw(ControllerException) {
                 stream << currentSubscribe.second << std::endl;
     }
 
+    if(lockSubscriptions)
+        this->serverPtr->mutexSubscriptions.unlock();
+    if(lockAccounts)
+        this->serverPtr->mutexAccounts.unlock();
+    if(lockEvents)
+        this->serverPtr->mutexEvents.unlock();
+
     stream.close();
 }
 const void Server::ServerController::load() const throw(ControllerException) {
+    bool lockFilename = this->serverPtr->mutexFilename.try_lock();
+    auto filename = (this->serverPtr->filename.empty()) ? DEFAULT_FILENAME: this->serverPtr->filename;
+    if(lockFilename)
+        this->serverPtr->mutexFilename.unlock();
+
+    auto stream = std::ifstream(filename);
+    if(!stream.is_open())
+        throw ControllerException(COULD_NOT_OPEN_FILE);
+
+    bool tryLockArray[9];
+    this->serverPtr->lockAll(tryLockArray);
+
     if(this->serverPtr->timerThread != nullptr) {
         this->serverPtr->timerInterrupt = true;
         if(this->serverPtr->timerThread.get()->joinable())
@@ -555,12 +1118,6 @@ const void Server::ServerController::load() const throw(ControllerException) {
 
     this->serverPtr->users.clear();
 
-    auto filename = (this->serverPtr->filename.empty()) ? DEFAULT_FILENAME: this->serverPtr->filename;
-    auto stream = std::ifstream(filename);
-
-    if(!stream.is_open())
-        throw ControllerException(COULD_NOT_OPEN_FILE);
-
     std::stringstream stringStream;
 
     std::string eventName;
@@ -579,12 +1136,18 @@ const void Server::ServerController::load() const throw(ControllerException) {
         }
         else if(count > 0) {
             std::getline(stream, eventName);
-            if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+            if(stream.eof()) {
+                this->serverPtr->unlockAll(tryLockArray);
+                throw ControllerException(COULD_NOT_PARSE_FILE);
+            }
             std::getline(stream, startString);
             stringStream.clear();
             stringStream.str(startString);
             stringStream >> start;
-            if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+            if(stream.eof()) {
+                this->serverPtr->unlockAll(tryLockArray);
+                throw ControllerException(COULD_NOT_PARSE_FILE);
+            }
             std::getline(stream, periodString);
             stringStream.clear();
             stringStream.str(periodString);
@@ -601,6 +1164,7 @@ const void Server::ServerController::load() const throw(ControllerException) {
                     this->serverPtr->events.insert(std::pair<int, Server::Event*>(index, event));
                     ++index;
                 } catch (const Command::CommandException &exception) {
+                    this->serverPtr->unlockAll(tryLockArray);
                     throw ControllerException(COULD_NOT_PARSE_FILE);
                 }
             }
@@ -625,9 +1189,15 @@ const void Server::ServerController::load() const throw(ControllerException) {
         }
         else if(count > 0) {
             std::getline(stream, login);
-            if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+            if(stream.eof()) {
+                this->serverPtr->unlockAll(tryLockArray);
+                throw ControllerException(COULD_NOT_PARSE_FILE);
+            }
             std::getline(stream, password);
-            if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+            if(stream.eof()) {
+                this->serverPtr->unlockAll(tryLockArray);
+                throw ControllerException(COULD_NOT_PARSE_FILE);
+            }
             std::getline(stream, countString);
             stringStream.clear();
             stringStream.str(countString);
@@ -636,7 +1206,10 @@ const void Server::ServerController::load() const throw(ControllerException) {
             std::vector<std::string> resultSubs;
             std::string currentSub;
             for(auto subIndex = 0; subIndex < subCount; ++subIndex) {
-                if(stream.eof()) throw ControllerException(COULD_NOT_PARSE_FILE);
+                if(stream.eof()) {
+                    this->serverPtr->unlockAll(tryLockArray);
+                    throw ControllerException(COULD_NOT_PARSE_FILE);
+                }
                 std::getline(stream, currentSub);
 
                 bool containsInCurrent = false;
@@ -659,9 +1232,11 @@ const void Server::ServerController::load() const throw(ControllerException) {
 
             try {
                 this->serverPtr->accounts.insert(std::pair<std::string, std::string>(Command::checkASCII(login), Command::checkASCII(password)));
+
                 for(auto& current: resultSubs)
                     this->serverPtr->subscriptions.push_back(std::pair<std::string, std::string>(Command::checkASCII(login), Command::checkASCII(current)));
-            } catch (const Command::CommandException& exception){
+            } catch (const Command::CommandException& exception) {
+                this->serverPtr->unlockAll(tryLockArray);
                 throw ControllerException(COULD_NOT_PARSE_FILE);
             }
             --count;
@@ -678,8 +1253,16 @@ const void Server::ServerController::load() const throw(ControllerException) {
     this->serverPtr->timerInterrupt = false;
     auto bind = std::bind(&Server::timerThreadInitialize, std::placeholders::_1);
     this->serverPtr->timerThread = std::make_shared<std::thread>(bind, this->serverPtr);
+
+    this->serverPtr->unlockAll(tryLockArray);
+    return;
 }
 const void Server::ServerController::detach(const char *userName) const throw(ControllerException) {
+    if(userName == nullptr || strlen(userName) == 0)
+        throw ControllerException(USER_IS_NOT_CONNECTED_YET);
+
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
     for(auto& current: this->serverPtr->users)
         if(current.second->userName == userName) {
             auto temp = current.second->socket;
@@ -687,18 +1270,53 @@ const void Server::ServerController::detach(const char *userName) const throw(Co
             this->serverPtr->clearSocket(current.first, temp);
             if(current.second->thread != nullptr && current.second->thread.get()->joinable())
                 current.second->thread.get()->join();
+
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
             return;
         }
 
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
     throw ControllerException(USER_IS_NOT_EXISTS);
 }
+
+const void Server::ServerController::close(const int socket) const throw(ControllerException) {
+    bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
+    for(auto& current: this->serverPtr->users)
+        if(current.second->socket == socket) {
+            auto temp = current.second->socket;
+            current.second->socket = -1;
+            this->serverPtr->clearSocket(current.first, temp);
+
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+            return;
+        }
+
+    if(lockUsers)
+        this->serverPtr->mutexUsers.unlock();
+    throw ControllerException(USER_IS_NOT_EXISTS);
+}
+
 const void Server::ServerController::del(const char *userName) const throw(ControllerException) {
+    if(userName == nullptr || strlen(userName) == 0)
+        throw ControllerException(USER_IS_NOT_CONNECTED_YET);
+
+    bool lockAccounts = this->serverPtr->mutexAccounts.try_lock();
+
     auto userFind = this->serverPtr->accounts.find(std::string(userName));
-    if(userFind == this->serverPtr->accounts.end())
+    if(userFind == this->serverPtr->accounts.end()) {
+        if(lockAccounts)
+            this->serverPtr->mutexAccounts.unlock();
         throw ControllerException(USER_IS_NOT_EXISTS);
+    }
     else {
         try { detach(userName); }
-        catch (const ControllerException& exception) {}
+        catch (const ControllerException& exception) { }
+
+        bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
 
         for(auto current = this->serverPtr->subscriptions.begin(); current != this->serverPtr->subscriptions.end(); ++current)
             if(current->first == std::string(userName)) {
@@ -706,15 +1324,77 @@ const void Server::ServerController::del(const char *userName) const throw(Contr
                 --current;
             }
 
+        if(lockSubscriptions)
+            this->serverPtr->mutexSubscriptions.unlock();
+
         this->serverPtr->accounts.erase(userFind);
+        if(lockAccounts)
+            this->serverPtr->mutexAccounts.unlock();
     }
 }
 const void Server::ServerController::reg(const char *userName, const char *password) const throw(ControllerException) {
+    if(userName == nullptr || strlen(userName) == 0)
+        throw ControllerException(USER_IS_NOT_CONNECTED_YET);
+
+    bool lockAccounts = this->serverPtr->mutexAccounts.try_lock();
+
     auto userFind = this->serverPtr->accounts.find(userName);
-    if(userFind == this->serverPtr->accounts.end())
+    if(userFind == this->serverPtr->accounts.end()) {
         this->serverPtr->accounts.insert(std::pair<std::string, std::string>(userName, password));
-    else
+        if(lockAccounts)
+            this->serverPtr->mutexAccounts.unlock();
+    }
+    else {
+        if(lockAccounts)
+            this->serverPtr->mutexAccounts.unlock();
         throw ControllerException(USER_IS_ALREADY_EXISTS);
+    }
+}
+const void Server::ServerController::connect(const char* userName, const char* password, const int clientSocket) const throw(ControllerException) {
+    try { getThreadIdByUserName(userName); }
+    catch (const ControllerException& exception) {
+        bool lockUsers = this->serverPtr->mutexUsers.try_lock();
+
+        std::map<int, User*>::iterator userFind;
+        for(userFind = this->serverPtr->users.begin(); userFind != this->serverPtr->users.end(); ++userFind)
+            if(userFind->second->socket == clientSocket) {
+                if(!userFind->second->userName.empty()) {
+                    if(lockUsers)
+                        this->serverPtr->mutexUsers.unlock();
+                    throw ControllerException(USER_IS_ALREADY_CONNECTED);
+                }
+                break;
+            }
+
+        bool lockAccounts = this->serverPtr->mutexAccounts.try_lock();
+
+        auto accountFind = this->serverPtr->accounts.find(userName);
+        if(userFind == this->serverPtr->users.end() || accountFind == this->serverPtr->accounts.end()) {
+            if(lockAccounts)
+                this->serverPtr->mutexAccounts.unlock();
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+            throw ControllerException(USER_IS_NOT_EXISTS);
+        }
+
+        if(lockAccounts)
+            this->serverPtr->mutexAccounts.unlock();
+
+        if(accountFind->second != std::string(password)) {
+            if(lockUsers)
+                this->serverPtr->mutexUsers.unlock();
+            throw ControllerException(WRONG_PASSWORD);
+        }
+
+        userFind->second->userName = userName;
+
+        if(lockUsers)
+            this->serverPtr->mutexUsers.unlock();
+
+        return;
+    }
+
+    throw ControllerException(USER_IS_ALREADY_CONNECTED);
 }
 
 // ServerController::ControllerException
@@ -737,11 +1417,23 @@ const char* Server::ServerController::ControllerException::what() const noexcept
         case USER_IS_NOT_EXISTS:
             return "User isn't exists.";
 
+        case USER_IS_NOT_CONNECTED_YET:
+            return "User isn't connected yet.";
+
+        case USER_IS_ALREADY_CONNECTED:
+            return "User is already connected.";
+
         case EVENT_IS_ALREADY_EXISTS:
             return "Event is already exists.";
 
         case EVENT_IS_NOT_EXISTS:
             return "Event isn't exists.";
+
+        case COULD_NOT_GET_CLIENT_INFO_BY_SOCKET:
+            return "It's impossible to get info by socket.";
+
+        case WRONG_PASSWORD:
+            return "Wrong password.";
     }
 
     return "Unknown exception.";

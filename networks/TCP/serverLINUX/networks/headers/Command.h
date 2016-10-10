@@ -13,8 +13,7 @@ protected:
         COULD_NOT_RESOLVE_COMMAND = 0x1,
         COULD_NOT_RESOLVE_ARGUMENT = 0x2,
         ARGUMENT_LOGIC_ERROR = 0x3,
-        COMMAND_OR_ARGUMENT_IS_TOO_LONG = 0x4,
-        COULD_NOT_PROVIDE_ACCESS = 0x5
+        COMMAND_OR_ARGUMENT_IS_TOO_LONG = 0x4
     };
 
     std::string* expr;
@@ -40,12 +39,10 @@ public:
 protected:
     const std::vector<std::string> prepareCommand() const throw(CommandException);
     char* getNameFromCommand(const std::string& command, const bool isEvent) const throw(CommandException, Server::ServerController::ControllerException);
-    explicit Command(std::string* expr, Server::ServerController* controller);
+    explicit Command(std::string* expr, Server::ServerController* controller) throw(std::invalid_argument);
     virtual ~Command();
 
 public:
-    virtual const void parseAndExecute() const throw(CommandException, Server::ServerController::ControllerException);
-
     static const void checkFilename(const std::string &filename) throw(CommandException);
     static const std::string& checkASCII(const std::string &password) throw(CommandException);
     static const std::chrono::milliseconds parseDate(const std::string &string) throw(CommandException);
