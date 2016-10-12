@@ -1,4 +1,4 @@
-7
+5
 event1
 1476921783000
 0
@@ -14,22 +14,12 @@ event4
 event5
 1475995920000
 30
-event231764
-1476185750000
-10
-blah
-1476186810000
-10
 4
 u1
 p1
-7
+3
 event4
 event1
-event2
-event3
-event231764
-blah
 event5
 u2
 p2
@@ -45,6 +35,4 @@ event1
 event3
 valera1995
 282
-2
-event231764
-event4
+0

@@ -16,9 +16,10 @@ int main(int argc, char *argv[]) {
         return 0xFF;
     }
     else if(argc == 2)
-        filename = argv[0];
+        filename = argv[1];
 
     try {
+
         Server(&std::cout, &std::cin, &std::cerr, PORT, filename).start();
     }
     catch (const Server::ServerException& exception) {

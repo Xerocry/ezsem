@@ -82,7 +82,11 @@ const void Client::start() throw(ClientException) {
 
     std::string clientMessage;
 
+#ifdef _WIN_
+#endif
+
     while(!this->globalInterrupt) {
+#ifdef _LINUX_
         fd_set set;
         FD_ZERO(&set);
         FD_SET(STDIN_FILENO, &set);
@@ -91,8 +95,14 @@ const void Client::start() throw(ClientException) {
 
         if(!FD_ISSET(STDIN_FILENO, &set))
             continue;
+#endif
 
         std::getline(*this->in, clientMessage);
+
+#ifdef _WIN_
+        if(this->globalInterrupt)
+            break;
+#endif
 
         if(clientMessage.empty())
             continue;
@@ -112,14 +122,6 @@ const void Client::start() throw(ClientException) {
         if (sendMessage == SOCKET_ERROR)
 #endif
             throw ClientException(COULD_NOT_SEND_MESSAGE);
-
-        clientMessage.erase(std::remove(clientMessage.begin(), clientMessage.end(), ' '), clientMessage.end());
-        clientMessage.erase(std::remove(clientMessage.begin(), clientMessage.end(), '\r'), clientMessage.end());
-        clientMessage.erase(std::remove(clientMessage.begin(), clientMessage.end(), '\n'), clientMessage.end());
-        std::transform(clientMessage.begin(), clientMessage.end(), clientMessage.begin(), ::tolower);
-
-        if(clientMessage == "exit")
-            break;
     }
 }
 
@@ -135,6 +137,9 @@ const void Client::feedbackExecutor() {
         }
         catch (const ClientException& exception) {
             this->globalInterrupt = true;
+#ifdef _WIN_
+            *this->out << "Connection lost. Press \"Enter\" to exit." << std::endl;
+#endif
             break;
         }
     }
@@ -179,6 +184,9 @@ const std::string Client::readLine(const SOCKET socket) throw(ClientException) {
 }
 
 const void Client::stop() throw(ClientException) {
+    if(!this->globalInterrupt)
+        send(generalSocket, "exit", 4, EMPTY_FLAGS);
+
     if(readThread != nullptr && readThread->joinable())
         readThread->join();
 
