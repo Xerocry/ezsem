@@ -1,6 +1,11 @@
 #include "../headers/Client.h"
 
+#ifdef _LINUX_
+static const uint16_t PORT = 65100;
+#endif
+#ifdef _WIN_
 static const char* PORT = "65100";
+#endif
 static const char* ADDRESS = "127.0.0.1";
 
 int main(int argc, char *argv[]) {

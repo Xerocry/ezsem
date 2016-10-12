@@ -183,7 +183,7 @@ private:
     int generalBind = -1, generalFlags = -1;
 
 #ifdef _LINUX_
-    int generalSocket = -1,
+    int generalSocket = -1;
 #endif
 #ifdef _WIN_
     SOCKET generalSocket = INVALID_SOCKET;

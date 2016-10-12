@@ -3,6 +3,14 @@
 
 #include "../headers/Global.h"
 
+#ifdef _LINUX_
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+#endif
+#ifdef _WIN_
 // For getaddrinfo() definition.
 
 #include <windef.h>
@@ -22,6 +30,7 @@
 #endif
 
 // End getaddrinfo() include.
+#endif
 
 #include <iostream>
 #include <thread>
@@ -36,6 +45,7 @@ private:
         COULD_NOT_SEND_MESSAGE = 0x5,
         COULD_NOT_RECEIVE_MESSAGE = 0x6,
         COULD_NOT_SHUT_SOCKET_DOWN = 0x7,
+        COULD_NOT_CLOSE_SOCKET = 0x8,
     };
 
     static const int EMPTY_FLAGS = 0;
@@ -46,8 +56,16 @@ private:
     std::ostream* out;
     std::istream* in;
 
+    bool globalInterrupt;
+
     int generalWSAStartup = -1;
+
+#ifdef _LINUX_
+    int generalSocket = -1;
+#endif
+#ifdef _WIN_
     SOCKET generalSocket = INVALID_SOCKET;
+#endif
 
 public:
     class ClientException: public std::exception {
@@ -59,14 +77,20 @@ public:
         const int code() const;
     };
 
+
+#ifdef _LINUX_
+    explicit Client(std::ostream* out, std::istream* in,  const uint16_t port, const char* address) throw(ClientException);
+#endif
+#ifdef _WIN_
     explicit Client(std::ostream* out, std::istream* in,  const char* port, const char* address) throw(ClientException);
+#endif
     const void start() throw(ClientException);
 
     static void* readThreadInitialize(void *thisPtr);
-    const void feedbackExecutor() const;
+    const void feedbackExecutor();
 
 #ifdef _LINUX_
-    static const std::string readLine(const int socket) throw(ServerException);
+    static const std::string readLine(const int socket) throw(ClientException);
 #endif
 #ifdef _WIN_
     static const std::string readLine(const SOCKET socket) throw(ClientException);

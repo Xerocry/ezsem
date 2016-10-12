@@ -335,7 +335,14 @@ const void Server::acceptClient(const int threadId, const SOCKET clientSocket) t
 
     while(!this->generalInterrupt) {
         std::string message;
-        try{ message = readLine(threadId, clientSocket); }
+        try{
+#ifdef _LINUX_
+            message = readLine(clientSocket);
+#endif
+#ifdef _WIN_
+            message = readLine(threadId, clientSocket);
+#endif
+        }
         catch (const ServerException& exception) {
             if(exception.code() == COULD_NOT_RECEIVE_MESSAGE)
                 break;
@@ -389,6 +396,7 @@ const std::string Server::readLine(const int threadId, const SOCKET socket) cons
 
 #ifdef _LINUX_
     for(auto index = 0; index < MESSAGE_SIZE; ++index) {
+        auto readSize = recv(socket, &resolvedSymbol, 1, EMPTY_FLAGS);
         if(readSize <= 0)
             throw ServerException(COULD_NOT_RECEIVE_MESSAGE);
         else if(resolvedSymbol == '\n')
@@ -459,12 +467,16 @@ const void Server::removeClientThread(const int threadId) throw(ServerException)
     if(userFind != this->users.end()) {
         const auto clientSocket = userFind->second->socket;
         clearSocket(threadId, clientSocket);
-
+#ifdef _WIN_
         if(!userFind->second->serverInterrupt) {
+#endif
+
             if (userFind->second->thread != nullptr && userFind->second->thread->joinable())
                 userFind->second->thread->detach();
             this->users.erase(threadId);
+#ifdef _WIN_
         }
+#endif
     }
 
     if(lockUsers)
@@ -577,7 +589,7 @@ const void Server::stop() throw(ServerException){
 #ifdef _LINUX_
         auto temp = current.second->socket;
         current.second->socket = -1;
-        this->serverPtr->clearSocket(current.first, temp);
+        clearSocket(current.first, temp);
 
         if (current.second->thread != nullptr && current.second->thread.get()->joinable())
             current.second->thread.get()->join();
