@@ -440,7 +440,8 @@ const void Server::writeLine(const std::string& message, const SOCKET socket) th
     if(message.empty())
         return;
 
-    char* output = new char(message.size() + 1);
+    char output[MESSAGE_SIZE];
+    bzero(output, sizeof(output));
     strcpy(output, message.data());
 
 #ifdef _TCP_
@@ -467,16 +468,19 @@ const std::string Server::readLine(const int threadId, const SOCKET socket) cons
     auto result = std::string();
 
 #ifdef _UDP_
-    char buffer[MESSAGE_SIZE];
+    char input[MESSAGE_SIZE];
+    bzero(input, sizeof(input));
     auto size = sizeof(clientAddress);
-    recvfrom(socket, buffer, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &clientAddress, (socklen_t*) &size);
+    recvfrom(socket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &clientAddress, (socklen_t*) &size);
+    result = input;
+
+    if(result.back() == '\n')
+        result.erase(result.size() - 1);
+
     if(result == std::string(DETACH_STRING)) {
         sendto(socket, DETACH_STRING, strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &clientAddress, sizeof(clientAddress));
         throw ServerException(COULD_NOT_RECEIVE_MESSAGE);
     }
-    result = buffer;
-    if(result.back() == '\n')
-        result.erase(result.size() - 1);
 #endif
 
 #ifdef _TCP_

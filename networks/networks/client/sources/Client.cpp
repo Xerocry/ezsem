@@ -189,10 +189,11 @@ const std::string Client::readLine() throw(ClientException) {
     }
 #endif
 #ifdef _UDP_
-    char buffer[MESSAGE_SIZE];
+    char input[MESSAGE_SIZE];
+    bzero(input, sizeof(input));
     auto size = sizeof(serverAddress);
-    recvfrom(generalSocket, buffer, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, (socklen_t*) &size);
-    result = buffer;
+    recvfrom(generalSocket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, (socklen_t*) &size);
+    result = input;
 
     if(result.back() == '\n')
         result.erase(result.size() - 1);
