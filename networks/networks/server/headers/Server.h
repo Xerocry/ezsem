@@ -143,6 +143,11 @@ private:
     static const int EMPTY_FLAGS = 0;
     static const int MESSAGE_SIZE = 1000;
 
+#ifdef _UDP_
+    static constexpr const char* CONNECT_STRING = "*/*c*o*n*n*e*c*t*/*";
+    static constexpr const char* ACCEPT_STRING = "*/*a*c*c*e*p*t*/*";
+#endif
+
     static constexpr const char *DEFAULT_FILENAME = "server.data";
     static constexpr const char *BACKUP_FILENAME = "server.backup";
 

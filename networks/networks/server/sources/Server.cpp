@@ -25,7 +25,13 @@ Server::Server(std::ostream* out, std::istream* in, std::ostream* error, const c
     this->filename = std::string(filename);
 
 #ifdef _LINUX_
+
+#ifdef _TCP_
     generalSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+#endif
+#ifdef _UDP_
+    generalSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+#endif
     if(generalSocket < 0)
         throw ServerException(COULD_NOT_CREATE_SOCKET);
 
@@ -47,9 +53,12 @@ Server::Server(std::ostream* out, std::istream* in, std::ostream* error, const c
     if (fcntlResult < 0)
         throw ServerException(COULD_NOT_SET_NON_BLOCKING);
 
+#ifdef _TCP_
     listen(generalSocket, BACKLOG);
 
     *this->out << "Listen socket." << std::endl;
+#endif
+
 #endif
 #ifdef _WIN_
     WSADATA wsaData;
@@ -110,14 +119,32 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
     while(!this->generalInterrupt) {
         auto clientAddress = new sockaddr_in;
         auto size = sizeof(struct sockaddr_in);
+#ifdef _TCP_
         auto clientSocket = accept(generalSocket, (sockaddr *) clientAddress, (socklen_t *) &size);
+#endif
+#ifdef _UDP_
+        char connectionBuffer[MESSAGE_SIZE];
+        bzero(connectionBuffer, sizeof(connectionBuffer));
+        auto clientSocket = recvfrom(generalSocket, connectionBuffer, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, (socklen_t *) &size);
+#endif
+
 #ifdef _LINUX_
-        if (clientSocket >= 0)
+        if (clientSocket >= 0) {
 #endif
 #ifdef _WIN_
-        if (clientSocket != INVALID_SOCKET)
+       if (clientSocket != INVALID_SOCKET) {
 #endif
+
+#ifdef _UDP_
+
+            if(std::string(connectionBuffer) == std::string(CONNECT_STRING)) {
+                sendto(generalSocket, ACCEPT_STRING, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, size);
+            }
+#endif
+#ifdef _TCP_
             createClientThread(clientSocket, clientAddress);
+#endif
+        }
         else
             delete clientAddress;
     }

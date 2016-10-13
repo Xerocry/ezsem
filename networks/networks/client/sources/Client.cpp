@@ -13,23 +13,43 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
     this->out = out;
 
 #ifdef _LINUX_
+
+#ifdef _TCP_
     generalSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+#endif
+#ifdef _UDP_
+    generalSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+#endif
     if(generalSocket < 0)
         throw ClientException(COULD_NOT_CREATE_SOCKET);
 
     *this->out << "Socket has been successfully created." << std::endl;
 
-    struct sockaddr_in hints;
-    bzero(&hints, sizeof(hints));
-    hints.sin_family = AF_INET;
-    hints.sin_port = htons(port);
-    hints.sin_addr.s_addr = inet_addr(address);
+#ifdef _TCP_
+    struct sockaddr_in serverAddress;
+#endif
+    bzero(&serverAddress, sizeof(serverAddress));
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(port);
+    serverAddress.sin_addr.s_addr = inet_addr(address);
 
-    auto serverConnection = connect(generalSocket, (struct sockaddr *) &hints, sizeof(hints));
+#ifdef _UDP_
+    sendto(generalSocket, CONNECT_STRING, strlen(CONNECT_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+
+    if(readLine() != std::string(ACCEPT_STRING))
+        throw ClientException(COULD_NOT_CREATE_CONNECTION);
+
+    *this->out << "Connection established." << std::endl;
+#endif
+
+#ifdef _TCP_
+    auto serverConnection = connect(generalSocket, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
     if(serverConnection < 0)
         throw ClientException(COULD_NOT_CREATE_CONNECTION);
 
     *this->out << "Connection established." << std::endl;
+#endif
+
 #endif
 #ifdef _WIN_
     WSADATA wsaData;
@@ -113,7 +133,12 @@ const void Client::start() throw(ClientException) {
         if(clientMessage.size() > MESSAGE_SIZE)
             break;
 
+#ifdef _TCP_
         auto sendMessage = send(generalSocket, clientMessage.data(), (int) clientMessage.size(), EMPTY_FLAGS);
+#endif
+#ifdef _UDP_
+        auto sendMessage = sendto(generalSocket, clientMessage.data(), (int) clientMessage.size(), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+#endif
 
 #ifdef _LINUX_
         if (sendMessage < 0)
@@ -133,7 +158,7 @@ void* Client::readThreadInitialize(void *thisPtr) {
 const void Client::feedbackExecutor() {
     while(true) {
         try {
-            *this->out << readLine(generalSocket) << std::endl;
+            *this->out << readLine() << std::endl;
         }
         catch (const ClientException& exception) {
             this->globalInterrupt = true;
@@ -145,19 +170,16 @@ const void Client::feedbackExecutor() {
     }
 }
 
-#ifdef _LINUX_
-const std::string Client::readLine(const int socket) throw(ClientException) {
-#endif
-#ifdef _WIN_
-const std::string Client::readLine(const SOCKET socket) throw(ClientException) {
-#endif
+const std::string Client::readLine() throw(ClientException) {
     auto result = std::string();
 
+#ifdef _LINUX_
+
+#ifdef _TCP_
     char resolvedSymbol = ' ';
 
-#ifdef _LINUX_
     for(auto index = 0; index < MESSAGE_SIZE; ++index) {
-        auto readSize = recv(socket, &resolvedSymbol, 1, EMPTY_FLAGS);
+        auto readSize = recv(generalSocket, &resolvedSymbol, 1, EMPTY_FLAGS);
         if(readSize <= 0)
             throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
         else if(resolvedSymbol == '\n')
@@ -166,9 +188,22 @@ const std::string Client::readLine(const SOCKET socket) throw(ClientException) {
             result.push_back(resolvedSymbol);
     }
 #endif
+#ifdef _UDP_
+    char buffer[MESSAGE_SIZE];
+    auto size = sizeof(serverAddress);
+    recvfrom(generalSocket, buffer, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, (socklen_t*) &size);
+    result = buffer;
+    if(result.back() == '\n')
+        result.erase(result.size() - 1);
+#endif
+
+#endif
+
 #ifdef _WIN_
+    char resolvedSymbol = ' ';
+
     while(true) {
-        auto readSize = recv(socket, &resolvedSymbol, 1, EMPTY_FLAGS);
+        auto readSize = recv(generalSocket, &resolvedSymbol, 1, EMPTY_FLAGS);
         if(readSize == 0)
             throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
         else if(readSize < 0)
@@ -185,7 +220,12 @@ const std::string Client::readLine(const SOCKET socket) throw(ClientException) {
 
 const void Client::stop() throw(ClientException) {
     if(!this->globalInterrupt)
+#ifdef _TCP_
         send(generalSocket, "exit", 4, EMPTY_FLAGS);
+#endif
+#ifdef _UDP_
+        sendto(generalSocket, "exit", 4, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+#endif
 
     if(readThread != nullptr && readThread->joinable())
         readThread->join();
@@ -194,9 +234,11 @@ const void Client::stop() throw(ClientException) {
     if(generalSocket <= 0)
         return;
 
+#ifdef _TCP_
     auto shutdownSocket = shutdown(generalSocket, SHUT_RDWR);
     if (shutdownSocket != 0)
         new ClientException(COULD_NOT_SHUT_SOCKET_DOWN);
+#endif
 
     auto socketClose = close(generalSocket);
     if(socketClose != 0)

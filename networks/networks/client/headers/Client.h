@@ -52,6 +52,11 @@ private:
     static const int EMPTY_FLAGS = 0;
     static const int MESSAGE_SIZE = 1000;
 
+#ifdef _UDP_
+    static constexpr const char* CONNECT_STRING = "*/*c*o*n*n*e*c*t*/*";
+    static constexpr const char* ACCEPT_STRING = "*/*a*c*c*e*p*t*/*";
+#endif
+
     std::shared_ptr<std::thread> readThread;
 
     std::ostream* out;
@@ -60,6 +65,10 @@ private:
     bool globalInterrupt;
 
     int generalWSAStartup = -1;
+
+#ifdef _UDP_
+    struct sockaddr_in serverAddress;
+#endif
 
 #ifdef _LINUX_
     int generalSocket = -1;
@@ -90,12 +99,8 @@ public:
     static void* readThreadInitialize(void *thisPtr);
     const void feedbackExecutor();
 
-#ifdef _LINUX_
-    static const std::string readLine(const int socket) throw(ClientException);
-#endif
-#ifdef _WIN_
-    static const std::string readLine(const SOCKET socket) throw(ClientException);
-#endif
+    const std::string readLine() throw(ClientException);
+
     const void stop() throw(ClientException);
     ~Client();
 };
