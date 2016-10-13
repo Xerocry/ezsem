@@ -125,7 +125,7 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
 #ifdef _UDP_
         char connectionBuffer[MESSAGE_SIZE];
         bzero(connectionBuffer, sizeof(connectionBuffer));
-        auto clientSocket = recvfrom(generalSocket, connectionBuffer, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, (socklen_t *) &size);
+        auto clientSocket = (int) recvfrom(generalSocket, connectionBuffer, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, (socklen_t *) &size);
 #endif
 
 #ifdef _LINUX_
@@ -138,7 +138,9 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
 #ifdef _UDP_
 
             if(std::string(connectionBuffer) == std::string(CONNECT_STRING)) {
-                sendto(generalSocket, ACCEPT_STRING, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, size);
+                clientSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+                sendto(clientSocket, ACCEPT_STRING, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, size);
+                createClientThread(clientSocket, clientAddress);
             }
 #endif
 #ifdef _TCP_
@@ -316,17 +318,29 @@ const void Server::refreshTiming(const int eventId) {
         this->mutexTimings.unlock();
 }
 
+#ifdef _UDP_
+void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const sockaddr_in* clientAddress) {
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
 void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket) {
 #endif
 #ifdef _WIN_
 void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket) {
 #endif
+#endif
     auto serverPtr = ((Server*)thisPtr);
 
     bool lockOut, lockError;
 
-    try { serverPtr->acceptClient(threadId, clientSocket); }
+    try {
+#ifdef _TCP_
+        serverPtr->acceptClient(threadId, clientSocket);
+#endif
+#ifdef _UDP_
+        serverPtr->acceptClient(threadId, clientSocket, clientAddress);
+#endif
+    }
     catch (const ServerException& exception) {
         lockError = serverPtr->mutexError.try_lock();
         *serverPtr->error << "Thread 0x" << threadId << ". " << exception.what() << std::endl;
@@ -349,11 +363,17 @@ void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const SO
 
     return NULL;
 }
+
+#ifdef _UDP_
+const void Server::acceptClient(const int threadId, const int clientSocket, const sockaddr_in* clientAddress) throw(ServerException) {
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
 const void Server::acceptClient(const int threadId, const int clientSocket) throw(ServerException) {
 #endif
 #ifdef _WIN_
 const void Server::acceptClient(const int threadId, const SOCKET clientSocket) throw(ServerException) {
+#endif
 #endif
     bool lockOut = this->mutexOut.try_lock();
     *this->out << "Thread 0x" << threadId << ". Client has been connected." << std::endl;
@@ -364,7 +384,12 @@ const void Server::acceptClient(const int threadId, const SOCKET clientSocket) t
         std::string message;
         try{
 #ifdef _LINUX_
+#ifdef _TCP_
             message = readLine(clientSocket);
+#endif
+#ifdef _UDP_
+            message = readLine(clientSocket, clientAddress);
+#endif
 #endif
 #ifdef _WIN_
             message = readLine(threadId, clientSocket);
@@ -392,33 +417,69 @@ const void Server::acceptClient(const int threadId, const SOCKET clientSocket) t
         catch(...) {
             *stream << "Strange resolve command error." << std::endl;
         }
-
+#ifdef _TCP_
         writeLine(stream->str(), clientSocket);
+#endif
+#ifdef _UDP_
+        writeLine(stream->str(), clientSocket, clientAddress);
+#endif
     }
 }
 
+#ifdef _UDP_
+const void Server::writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress) throw(ServerException) {
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
 const void Server::writeLine(const std::string& message, const int socket) throw(ServerException) {
 #endif
 #ifdef _WIN_
 const void Server::writeLine(const std::string& message, const SOCKET socket) throw(ServerException) {
 #endif
+#endif
     if(message.empty())
         return;
 
-    auto output = message.data();
+    char* output = new char(message.size() + 1);
+    strcpy(output, message.data());
 
+#ifdef _TCP_
     send(socket, output, (int) strlen(output), EMPTY_FLAGS);
+#endif
+#ifdef _UDP_
+    sendto(socket, output, (int) strlen(output), EMPTY_FLAGS, (sockaddr *) clientAddress, sizeof(struct sockaddr_in));
+#endif
 }
 
+#ifdef _UDP_
+#ifdef _LINUX_
+const std::string Server::readLine(const int socket, const sockaddr_in* clientAddress) throw(ServerException) {
+#endif
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
 const std::string Server::readLine(const int socket) throw(ServerException) {
 #endif
 #ifdef _WIN_
 const std::string Server::readLine(const int threadId, const SOCKET socket) const throw(ServerException) {
 #endif
+#endif
     auto result = std::string();
 
+#ifdef _UDP_
+    char buffer[MESSAGE_SIZE];
+    auto size = sizeof(clientAddress);
+    recvfrom(socket, buffer, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &clientAddress, (socklen_t*) &size);
+    if(result == std::string(DETACH_STRING)) {
+        sendto(socket, DETACH_STRING, strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &clientAddress, sizeof(clientAddress));
+        throw ServerException(COULD_NOT_RECEIVE_MESSAGE);
+    }
+    result = buffer;
+    if(result.back() == '\n')
+        result.erase(result.size() - 1);
+#endif
+
+#ifdef _TCP_
     char resolvedSymbol = ' ';
 
 #ifdef _LINUX_
@@ -449,15 +510,16 @@ const std::string Server::readLine(const int threadId, const SOCKET socket) cons
             result.push_back(resolvedSymbol);
     }
 #endif
+#endif
 
     return result;
 }
 
 #ifdef _LINUX_
-const void Server::createClientThread(const int clientSocket, sockaddr_in* address) {
+const void Server::createClientThread(const int clientSocket, sockaddr_in* clientAddress) {
 #endif
 #ifdef _WIN_
-const void Server::createClientThread(const SOCKET clientSocket, sockaddr_in* address) {
+const void Server::createClientThread(const SOCKET clientSocket, sockaddr_in* clientAddress) {
 #endif
     bool lockUsers = this->mutexUsers.try_lock();
 
@@ -469,17 +531,27 @@ const void Server::createClientThread(const SOCKET clientSocket, sockaddr_in* ad
     } while(result != this->users.end());
     --index;
 
+#ifdef _TCP_
     auto bind = std::bind(&Server::clientThreadInitialize, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+#endif
+#ifdef _UDP_
+    auto bind = std::bind(&Server::clientThreadInitialize, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+#endif
 
     auto user = new User;
     user->userName = "";
+#ifdef _TCP_
     user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket);
+#endif
+#ifdef _UDP_
+    user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket, clientAddress);
+#endif
     user->socket = clientSocket;
 #ifdef _WIN_
     user->clientInterrupt = false;
     user->serverInterrupt = false;
 #endif
-    user->address = address;
+    user->address = clientAddress;
 
     this->users.insert(std::pair<int, Server::User*>(index, user));
 
@@ -521,14 +593,18 @@ const void Server::clearSocket(const int threadId, const SOCKET socket) throw(Se
     if(socket < 0)
         return;
 
+#ifdef _TCP_
     auto socketShutdown = shutdown(socket, SHUT_RDWR);
     if(socketShutdown != 0)
         throw ServerException(COULD_NOT_SHUT_SOCKET_DOWN);
+#endif
+
 #endif
 #ifdef _WIN_
     if(socket == INVALID_SOCKET)
         return;
 
+#ifdef _TCP_
     if(threadId != -1) {
         auto socketShutdown = shutdown(socket, SD_BOTH);
         if(socketShutdown == SOCKET_ERROR)
@@ -536,10 +612,16 @@ const void Server::clearSocket(const int threadId, const SOCKET socket) throw(Se
     }
 #endif
 
-    bool lockOut = this->mutexOut.try_lock();
+#endif
+
+    bool lockOut;
+
+#ifdef _TCP_
+    lockOut = this->mutexOut.try_lock();
     *this->out <<  "Thread 0x" << threadId << ". Socket is down." << std::endl;
     if(lockOut)
         this->mutexOut.unlock();
+#endif
 
 #ifdef _LINUX_
     auto socketClose = close(socket);
@@ -613,6 +695,13 @@ const void Server::stop() throw(ServerException){
         commandThread.get()->join();
 
     for (auto &current: this->users) {
+#ifdef _UDP_
+        writeLine(DETACH_STRING, current.second->socket, current.second->address);
+
+        if (current.second->thread != nullptr && current.second->thread.get()->joinable())
+            current.second->thread.get()->join();
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
         auto temp = current.second->socket;
         current.second->socket = -1;
@@ -627,6 +716,7 @@ const void Server::stop() throw(ServerException){
 
         if (current.second->thread != nullptr && current.second->thread->joinable())
             current.second->thread->join();
+#endif
 #endif
     }
 
@@ -835,7 +925,7 @@ const void Server::ServerController::eventNotify(const char *eventName) const {
                 if(currentUsers.second->userName == currentSubscription.first) {
                     std::stringstream stream;
                     stream << nowStruct->tm_hour << ":" << nowStruct->tm_min << ":" << nowStruct->tm_sec << " Notify about the event \"" << currentSubscription.second << "\"." << std::endl;
-                    writeLine(stream.str(), currentUsers.second->socket);
+                    writeLine(stream.str(), currentUsers.second->socket, currentUsers.second->address);
                 }
 
     if(lockUsers)
@@ -1314,6 +1404,13 @@ const void Server::ServerController::load() const throw(ControllerException) {
     this->serverPtr->events.clear();
 
     for(auto& current: this->serverPtr->users) {
+#ifdef _UDP_
+        writeLine(DETACH_STRING, current.second->socket, current.second->address);
+
+        if (current.second->thread != nullptr && current.second->thread.get()->joinable())
+            current.second->thread.get()->join();
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
         auto temp = current.second->socket;
         current.second->socket = -1;
@@ -1331,6 +1428,7 @@ const void Server::ServerController::load() const throw(ControllerException) {
             current.second->thread->join();
 
         this->serverPtr->users.erase(current.first);
+#endif
 #endif
     }
 
@@ -1493,6 +1591,13 @@ const void Server::ServerController::detach(const char *userName) const throw(Co
 
     for(auto& current: this->serverPtr->users)
         if(current.second->userName == userName) {
+#ifdef _UDP_
+            writeLine(DETACH_STRING, current.second->socket, current.second->address);
+
+            if (current.second->thread != nullptr && current.second->thread->joinable())
+                current.second->thread->join();
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
             auto temp = current.second->socket;
             current.second->socket = -1;
@@ -1509,6 +1614,7 @@ const void Server::ServerController::detach(const char *userName) const throw(Co
                 current.second->thread->join();
 
             this->serverPtr->users.erase(current.first);
+#endif
 #endif
 
             if(lockUsers)
@@ -1532,6 +1638,10 @@ const void Server::ServerController::close(const SOCKET socket) const throw(Cont
 
     for(auto& current: this->serverPtr->users)
         if(current.second->socket == socket) {
+#ifdef _UDP_
+            writeLine(DETACH_STRING, current.second->socket, current.second->address);
+#endif
+#ifdef _TCP_
 #ifdef _LINUX_
             auto temp = current.second->socket;
             current.second->socket = -1;
@@ -1540,6 +1650,7 @@ const void Server::ServerController::close(const SOCKET socket) const throw(Cont
 #ifdef _WIN_
             current.second->serverInterrupt = false;
             current.second->clientInterrupt = true;
+#endif
 #endif
 
             if(lockUsers)

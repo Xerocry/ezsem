@@ -146,6 +146,7 @@ private:
 #ifdef _UDP_
     static constexpr const char* CONNECT_STRING = "*/*c*o*n*n*e*c*t*/*";
     static constexpr const char* ACCEPT_STRING = "*/*a*c*c*e*p*t*/*";
+    static constexpr const char* DETACH_STRING = "*/*d*e*t*a*c*h*/*";
 #endif
 
     static constexpr const char *DEFAULT_FILENAME = "server.data";
@@ -217,22 +218,37 @@ public:
 
 private:
 #ifdef _LINUX_
+#ifdef _TCP_
     static void* clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket);
     const void acceptClient(const int threadId, const int clientSocket) throw(ServerException);
+#endif
+#ifdef _UDP_
+    static void* clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const sockaddr_in* clientAddress);
+    const void acceptClient(const int threadId, const int clientSocket, const sockaddr_in* clientAddress) throw(ServerException);
+#endif
 
-    const void createClientThread(const int clientSocket, sockaddr_in* address);
+    const void createClientThread(const int clientSocket, sockaddr_in* clientAddress);
     const void removeClientThread(const int threadId) throw(ServerException);
 
     const void clearSocket(const int threadId, const int socket) throw(ServerException);
-
+#ifdef _TCP_
     static const void writeLine(const std::string& message, const int socket) throw(ServerException);
+#endif
+#ifdef _UDP_
+    static const void writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress) throw(ServerException);
+#endif
+#ifdef _TCP_
     static const std::string readLine(const int socket) throw(ServerException);
+#endif
+#ifdef _UDP_
+    static const std::string readLine(const int socket, const sockaddr_in* clientAddress) throw(ServerException);
+#endif
 #endif
 #ifdef _WIN_
     static void* clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket);
     const void acceptClient(const int threadId, const SOCKET clientSocket) throw(ServerException);
 
-    const void createClientThread(const SOCKET clientSocket, sockaddr_in* address);
+    const void createClientThread(const SOCKET clientSocket, sockaddr_in* clientAddress);
     const void removeClientThread(const int threadId) throw(ServerException);
 
     const void clearSocket(const int threadId, const SOCKET socket) throw(ServerException);

@@ -193,8 +193,14 @@ const std::string Client::readLine() throw(ClientException) {
     auto size = sizeof(serverAddress);
     recvfrom(generalSocket, buffer, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, (socklen_t*) &size);
     result = buffer;
+
     if(result.back() == '\n')
         result.erase(result.size() - 1);
+
+    if(result == std::string(DETACH_STRING)) {
+        sendto(generalSocket, DETACH_STRING, strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+        throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
+    }
 #endif
 
 #endif

@@ -55,6 +55,7 @@ private:
 #ifdef _UDP_
     static constexpr const char* CONNECT_STRING = "*/*c*o*n*n*e*c*t*/*";
     static constexpr const char* ACCEPT_STRING = "*/*a*c*c*e*p*t*/*";
+    static constexpr const char* DETACH_STRING = "*/*d*e*t*a*c*h*/*";
 #endif
 
     std::shared_ptr<std::thread> readThread;
