@@ -1,9 +1,9 @@
 #include "../headers/Client.h"
 
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
 static const uint16_t PORT = 65100;
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
 static const char* PORT = "65100";
 #endif
 static const char* ADDRESS = "127.0.0.1";
@@ -11,10 +11,10 @@ static const char* ADDRESS = "127.0.0.1";
 int main(int argc, char *argv[]) {
 
     std::string address = ADDRESS;
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
     uint16_t port = PORT;
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
     std::string port = PORT;
 #endif
 
@@ -27,20 +27,20 @@ int main(int argc, char *argv[]) {
     else if(argc == 3) {
         address = argv[1];
 
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
         port = (uint16_t) std::atoi(argv[2]);
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
         port = argv[2];
 #endif
     }
     
     try {
         Client(&(std::cout), &(std::cin),
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
                 port,
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
                 port.data(),
 #endif
                address.data()).start();

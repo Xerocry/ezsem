@@ -1,10 +1,9 @@
-//#include <iostream>
 #include "../headers/Server.h"
 
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
 static const uint16_t PORT = 65100;
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
 static const char* PORT = "65100";
 #endif
 

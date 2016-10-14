@@ -117,8 +117,10 @@ public:
 #endif
 #ifdef _WIN_
         SOCKET socket = INVALID_SOCKET;
+#ifdef _TCP_
         bool clientInterrupt;
         bool serverInterrupt;
+#endif
 #endif
 
         sockaddr_in* address;
@@ -205,10 +207,10 @@ public:
         const int code() const;
     };
 
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
     explicit Server(std::ostream* out, std::istream* in, std::ostream* error, const uint16_t port, const char* filename) throw(ServerException);
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
     explicit Server(std::ostream* out, std::istream* in, std::ostream* error, const char* port, const char* filename) throw(ServerException);
 #endif
 
@@ -232,29 +234,46 @@ private:
 
     const void clearSocket(const int threadId, const int socket) throw(ServerException);
 #ifdef _TCP_
-    static const void writeLine(const std::string& message, const int socket) throw(ServerException);
+    const void writeLine(const std::string& message, const int socket) throw(ServerException);
 #endif
 #ifdef _UDP_
-    static const void writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress) throw(ServerException);
+    const void writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress) throw(ServerException);
 #endif
 #ifdef _TCP_
-    static const std::string readLine(const int socket) throw(ServerException);
+    const std::string readLine(const int socket) throw(ServerException);
 #endif
 #ifdef _UDP_
-    static const std::string readLine(const int socket, const sockaddr_in* clientAddress) throw(ServerException);
+    const std::string readLine(const int socket, const sockaddr_in* clientAddress) throw(ServerException);
 #endif
 #endif
 #ifdef _WIN_
+
+#ifdef _TCP_
     static void* clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket);
     const void acceptClient(const int threadId, const SOCKET clientSocket) throw(ServerException);
+#endif
+#ifdef _UDP_
+    static void* clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress);
+    const void acceptClient(const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress) throw(ServerException);
+#endif
 
     const void createClientThread(const SOCKET clientSocket, sockaddr_in* clientAddress);
     const void removeClientThread(const int threadId) throw(ServerException);
 
     const void clearSocket(const int threadId, const SOCKET socket) throw(ServerException);
 
-    static const void writeLine(const std::string& message, const SOCKET socket) throw(ServerException);
+#ifdef _TCP_
+    const void writeLine(const std::string& message, const SOCKET socket) throw(ServerException);
+#endif
+#ifdef _UDP_
+    const void writeLine(const std::string& message, const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException);
+#endif
+#ifdef _TCP_
     const std::string readLine(const int threadId, const SOCKET socket) const throw(ServerException);
+#endif
+#ifdef _UDP_
+    static const std::string readLine(const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException);
+#endif
 #endif
 
     static void* commandThreadInitialize(void *thisPtr);

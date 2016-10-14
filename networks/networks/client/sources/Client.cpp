@@ -3,17 +3,16 @@
 #include "../headers/Client.h"
 
 
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
 Client::Client(std::ostream* out, std::istream* in, const uint16_t port, const char* address) throw(ClientException) {
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
 Client::Client(std::ostream* out, std::istream* in, const char* port, const char* address) throw(ClientException) {
 #endif
     this->in = in;
     this->out = out;
 
 #ifdef _LINUX_
-
 #ifdef _TCP_
     generalSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 #endif
@@ -49,7 +48,6 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
 
     *this->out << "Connection established." << std::endl;
 #endif
-
 #endif
 #ifdef _WIN_
     WSADATA wsaData;
@@ -59,6 +57,7 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
 
     *this->out << "WSA has been successfully started." << std::endl;
 
+#ifdef _TCP_
     struct addrinfo hints;
     ZeroMemory(&hints, sizeof(hints));
     hints.ai_family = AF_INET;
@@ -91,6 +90,27 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
         throw ClientException(COULD_NOT_CREATE_CONNECTION);
 
     *this->out << "Socket has been successfully created." << std::endl;
+#endif
+#ifdef _UDP_
+    generalSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (generalSocket == SOCKET_ERROR)
+        throw ClientException(COULD_NOT_CREATE_SOCKET);
+
+    *this->out << "Socket has been successfully created." << std::endl;
+
+    ZeroMemory(&serverAddress, sizeof(serverAddress));
+    serverAddress.sin_family = AF_INET;
+    serverAddress.sin_port = htons(port);
+    serverAddress.sin_addr.S_un.S_addr = inet_addr(address);
+
+    sendto(generalSocket, CONNECT_STRING, (int) strlen(CONNECT_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+
+    if(readLine() != std::string(ACCEPT_STRING))
+        throw ClientException(COULD_NOT_CREATE_CONNECTION);
+
+    *this->out << "Connection established." << std::endl;
+#endif
+
 #endif
 }
 
@@ -174,7 +194,6 @@ const std::string Client::readLine() throw(ClientException) {
     auto result = std::string();
 
 #ifdef _LINUX_
-
 #ifdef _TCP_
     char resolvedSymbol = ' ';
 
@@ -203,10 +222,10 @@ const std::string Client::readLine() throw(ClientException) {
         throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
     }
 #endif
-
 #endif
 
 #ifdef _WIN_
+#ifdef _TCP_
     char resolvedSymbol = ' ';
 
     while(true) {
@@ -221,6 +240,22 @@ const std::string Client::readLine() throw(ClientException) {
             result.push_back(resolvedSymbol);
     }
 #endif
+#ifdef _UDP_
+    char input[MESSAGE_SIZE];
+    memset(input, 0, sizeof(input));
+    auto size = sizeof(serverAddress);
+    recvfrom(generalSocket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, (socklen_t*) &size);
+    result = input;
+
+    if(result.back() == '\n')
+        result.erase(result.size() - 1);
+
+    if(result == std::string(DETACH_STRING)) {
+        sendto(generalSocket, DETACH_STRING, (int) strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+        throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
+    }
+#endif
+#endif
 
     return result;
 }
@@ -228,10 +263,10 @@ const std::string Client::readLine() throw(ClientException) {
 const void Client::stop() throw(ClientException) {
     if(!this->globalInterrupt)
 #ifdef _TCP_
-        send(generalSocket, "exit", 4, EMPTY_FLAGS);
+        send(generalSocket, "exit\n", 5, EMPTY_FLAGS);
 #endif
 #ifdef _UDP_
-        sendto(generalSocket, "exit", 4, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+        sendto(generalSocket, "exit\n", 5, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
 #endif
 
     if(readThread != nullptr && readThread->joinable())
@@ -252,15 +287,16 @@ const void Client::stop() throw(ClientException) {
         throw ClientException(COULD_NOT_CLOSE_SOCKET);
 
     *this->out << "Socket is closed." << std::endl;
-
 #endif
 #ifdef _WIN_
     if(generalSocket <= 0 && generalWSAStartup != 0)
         return;
 
+#ifdef _TCP_
     auto shutdownSocket = shutdown(generalSocket, SD_SEND);
     if (shutdownSocket == SOCKET_ERROR)
         new ClientException(COULD_NOT_SHUT_SOCKET_DOWN);
+#endif
 
     closesocket(generalSocket);
     generalSocket = INVALID_SOCKET;

@@ -31,6 +31,8 @@
 
 // End getaddrinfo() include.
 
+#include <w32api/inaddr.h>
+
 #endif
 
 #include <iostream>
@@ -89,10 +91,10 @@ public:
     };
 
 
-#ifdef _LINUX_
+#if defined(_LINUX_) || defined(_UDP_)
     explicit Client(std::ostream* out, std::istream* in,  const uint16_t port, const char* address) throw(ClientException);
 #endif
-#ifdef _WIN_
+#if defined(_WIN_) && defined(_TCP_)
     explicit Client(std::ostream* out, std::istream* in,  const char* port, const char* address) throw(ClientException);
 #endif
     const void start() throw(ClientException);
