@@ -477,7 +477,7 @@ const void Server::acceptClient(const int threadId, const SOCKET clientSocket) t
 
 #ifdef _UDP_
 #ifdef _LINUX_
-const void Server::writeLine(const std::string& message, const int socket) throw(ServerException) {
+const void Server::writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress) throw(ServerException) {
 #endif
 #ifdef _WIN_
 const void Server::writeLine(const std::string& message, const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException) {

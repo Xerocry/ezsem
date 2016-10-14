@@ -6,4 +6,4 @@ set(SOURCE_FILES sources/main.cpp headers/Client.h sources/Client.cpp)
 
 add_executable(client ${SOURCE_FILES})
 
-target_link_libraries(client advapi32 mswsock wsock32 ws2_32)
+#target_link_libraries(client advapi32 mswsock wsock32 ws2_32)

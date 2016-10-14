@@ -13,6 +13,7 @@
 #ifdef _LINUX_
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <unistd.h>
 #endif
 #ifdef _WIN_
 #include <windef.h>
