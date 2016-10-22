@@ -1,0 +1,11 @@
+* source PROJECT
+R_R5         0 N30635  10k  
+V_V+         VCC 0 15Vdc
+C_C1         N30565 N30341  1u  
+V_V-         0 VEE 15Vdc
+R_R1         N30635 N30565  1MEG  
+R_R2         0 N30341  10k  
+X_D1         0 N30565 VCC VEE N30341 AD741
+R_R3         N30341 N30308  10k  
+R_R4         N30308 N30635  20k  
+X_D2         N30308 0 VCC VEE N30635 AD741

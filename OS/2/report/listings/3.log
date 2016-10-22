@@ -29,14 +29,3 @@ nikita@nikita-pc:~/temp1$ ls -l
 -rw-rw-r-- 1 nikita nikita   0 окт 18 12:02 tempfile
 -rw-rw-r-- 1 nikita nikita   0 окт 18 12:02 templink
 nikita@nikita-pc:~/temp1$ rm templink tempfile
-
-nikita@nikita-pc:~/temp1$ >tempfile
-nikita@nikita-pc:~/temp1$ ln -s tempfile dddd
-nikita@nikita-pc:~/temp1$ ln -s tempfile gggg
-nikita@nikita-pc:~/temp1$ ln -s tempfile yyyy
-nikita@nikita-pc:~/temp1$ sudo sh 3.sh tempfile
-lrwxrwxrwx 1 nikita nikita    8 окт 18 12:30 dddd -> tempfile
-lrwxrwxrwx 1 nikita nikita    8 окт 18 12:30 gggg -> tempfile
-lrwxrwxrwx 1 nikita nikita    8 окт 18 12:30 yyyy -> tempfile
-
-

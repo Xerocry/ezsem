@@ -1,1 +1,7 @@
-nikita@nikita-pc:~$ ls / -l -R | awk '{if ($0~/^\//) path=substr($0, 0, length($0)-1); else { if($0~/^1/) $(NF-2)=path"/"$(NF-2); else {$NF=path"/"$NF} print $0} }' | grep -v ^/ | sort -k1.1,1.1 | uniq -w1
+nikita@nikita-pc:~$ sudo ls / -l -R | awk '{if ($0~/^\//) path=substr($0, 0, length($0)-1); else { if($0~/^1/) $(NF-2)=path"/"$(NF-2); else {$NF=path"/"$NF} print $0} }' | grep -v ^/ | sort -k1.1,1.1 | uniq -w1
+-r--r----- 1 root root 745 мар 30 2016 /et/sudoers
+brw-rw---- 1 root disk 1, 0 окт 22 09:43 /de/ram0
+c--------- 1 root root 5, 2 окт 22 09:43 /dev/pt/ptmx
+drwx------ 2 root lp 4096 апр 21 2016 /etc/cup/ssl
+lrwxrwxrwx 1 nikita nikita 10 июл 30 05:44 ControlPanel -> /home/nikita/files/software/altera/13.1/quartus/linux/jre/bi/./jcontrol
+total /104

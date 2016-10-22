@@ -8,7 +8,7 @@ total 20
 -rw-rw-r-- 3 nikita nikita    0 окт 18 11:01 link_to_tempfile
 drwxrwxr-x 2 nikita nikita 4096 окт 18 11:02 tempdir
 -rw-rw-r-- 3 nikita nikita    0 окт 18 11:01 tempfile
-nikita@nikita-pc:~/temp1$ sudo sh 1.2.sh tempfile
+nikita@nikita-pc:~/temp1$ sudo sh 2.sh tempfile
 11278137 -rw-rw-r-- 3 nikita nikita    0 окт 18 11:01 link_to_tempfile
 11278137 -rw-rw-r-- 3 nikita nikita    0 окт 18 11:01 tempfile
 11278137 -rw-rw-r-- 3 nikita nikita 0 окт 18 11:01 link_to_tempfile

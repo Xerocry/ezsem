@@ -1,0 +1,162 @@
+
+**** 06/28/15 18:57:08 ********* PSpice 9.2 (Mar 2000) ******** ID# 1 ********
+
+ ** Profile: "MAIN-sim"  [ d:\student\myproject\project-main-sim.sim ] 
+
+
+ ****     CIRCUIT DESCRIPTION
+
+
+******************************************************************************
+
+
+
+
+** Creating circuit file "project-main-sim.sim.cir" 
+** WARNING: THIS AUTOMATICALLY GENERATED FILE MAY BE OVERWRITTEN BY SUBSEQUENT SIMULATIONS
+
+*Libraries: 
+* Local Libraries :
+* From [PSPICE NETLIST] section of D:\Program Files\Orcad\PSpice\PSpice.ini file:
+.lib "nom.lib" 
+
+*Analysis directives: 
+.TRAN  0 16 9.2 
+.PROBE V(*) I(*) W(*) D(*) NOISE(*) 
+.INC ".\project-MAIN.net" 
+
+
+
+**** INCLUDING project-MAIN.net ****
+* source PROJECT
+R_R5         0 N30635  10k  
+V_V+         VCC 0 15Vdc
+C_C1         N30565 N30341  1u  
+V_V-         0 VEE 15Vdc
+R_R1         N30635 N30565  1MEG  
+R_R2         0 N30341  10k  
+X_D1         0 N30565 VCC VEE N30341 AD741
+R_R3         N30341 N30308  10k  
+R_R4         N30308 N30635  20k  
+X_D2         N30308 0 VCC VEE N30635 AD741
+
+**** RESUMING project-main-sim.sim.cir ****
+.END
+
+**** 06/28/15 18:57:08 ********* PSpice 9.2 (Mar 2000) ******** ID# 1 ********
+
+ ** Profile: "MAIN-sim"  [ d:\student\myproject\project-main-sim.sim ] 
+
+
+ ****     Diode MODEL PARAMETERS
+
+
+******************************************************************************
+
+
+
+
+               X_D1.dx         X_D1.dy         X_D2.dx         X_D2.dy         
+          IS  800.000000E-18  800.000000E-18  800.000000E-18  800.000000E-18 
+          RS                    1.000000E-03                    1.000000E-03 
+         CJO                   10.000000E-12                   10.000000E-12 
+
+
+**** 06/28/15 18:57:08 ********* PSpice 9.2 (Mar 2000) ******** ID# 1 ********
+
+ ** Profile: "MAIN-sim"  [ d:\student\myproject\project-main-sim.sim ] 
+
+
+ ****     BJT MODEL PARAMETERS
+
+
+******************************************************************************
+
+
+
+
+               X_D1.qx         X_D2.qx         
+               NPN             NPN             
+          IS  800.000000E-18  800.000000E-18 
+          BF   93.75           93.75         
+          NF    1               1            
+          BR    1               1            
+          NR    1               1            
+          CN    2.42            2.42         
+           D     .87             .87         
+
+
+**** 06/28/15 18:57:08 ********* PSpice 9.2 (Mar 2000) ******** ID# 1 ********
+
+ ** Profile: "MAIN-sim"  [ d:\student\myproject\project-main-sim.sim ] 
+
+
+ ****     INITIAL TRANSIENT SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+(  VCC)   15.0000  (  VEE)  -15.0000  (N30308)-18.75E-06 (N30341)    -.0391     
+
+(N30565) 19.46E-06 (N30635)     .0798 (X_D1.6) 3.771E-06 (X_D1.7)    -.0395     
+
+(X_D1.8)    -.0395 (X_D1.9)    0.0000 (X_D2.6)-7.648E-06 (X_D2.7)     .0803     
+
+(X_D2.8)     .0803 (X_D2.9)    0.0000 (X_D1.10)    -.6077                       
+
+(X_D1.11)   14.9600                   (X_D1.12)   14.9600                       
+
+(X_D1.13)    -.5938                   (X_D1.14)    -.5938                       
+
+(X_D1.53)   14.0000                   (X_D1.54)  -14.0000                       
+
+(X_D1.90)    -.0078                   (X_D1.91)   25.0000                       
+
+(X_D1.92)  -25.0000                   (X_D1.99)    0.0000                       
+
+(X_D2.10)    -.6077                   (X_D2.11)   14.9600                       
+
+(X_D2.12)   14.9600                   (X_D2.13)    -.5938                       
+
+(X_D2.14)    -.5938                   (X_D2.53)   14.0000                       
+
+(X_D2.54)  -14.0000                   (X_D2.90)     .0120                       
+
+(X_D2.91)   25.0000                   (X_D2.92)  -25.0000                       
+
+(X_D2.99)    0.0000                   
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_V+        -3.334E-03
+    V_V-        -3.334E-03
+    X_D1.vb      3.771E-11
+    X_D1.vc      1.404E-11
+    X_D1.ve      1.455E-11
+    X_D1.vlim   -7.823E-06
+    X_D1.vlp    -2.501E-11
+    X_D1.vln    -2.499E-11
+    X_D2.vb     -7.648E-11
+    X_D2.vc      1.392E-11
+    X_D2.ve      1.455E-11
+    X_D2.vlim    1.205E-05
+    X_D2.vlp    -2.499E-11
+    X_D2.vln    -2.501E-11
+
+    TOTAL POWER DISSIPATION   1.00E-01  WATTS
+
+
+
+          JOB CONCLUDED
+
+          TOTAL JOB TIME             .31
+

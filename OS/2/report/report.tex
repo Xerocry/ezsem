@@ -1,0 +1,211 @@
+\documentclass[14pt,a4paper,report]{report}
+\usepackage[a4paper, mag=1000, left=2.5cm, right=1cm, top=2cm, bottom=2cm, headsep=0.7cm, footskip=1cm]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks]{hyperref}
+\usepackage{listings} 
+\usepackage{fancyhdr}
+\usepackage{caption}
+\usepackage{graphicx}
+\hypersetup{
+	colorlinks = true,
+	linkcolor  = black
+}
+
+\usepackage{titlesec}
+\titleformat{\chapter}
+{\Large\bfseries} % format
+{}                % label
+{0pt}             % sep
+{\huge}           % before-code
+
+
+\DeclareCaptionFont{white}{\color{white}} 
+
+% Listing description
+\usepackage{listings} 
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\lstset{ 
+	% Listing settings
+	inputencoding = utf8,			
+	extendedchars = \true, 
+	keepspaces = true, 			  	 % Поддержка кириллицы и пробелов в комментариях
+	language = C,            	 	 % Язык программирования (для подсветки)
+	basicstyle = \small\sffamily, 	 % Размер и начертание шрифта для подсветки кода
+	%numbers = left,               	 % Где поставить нумерацию строк (слева\справа)
+	numberstyle = \tiny,          	 % Размер шрифта для номеров строк
+	stepnumber = 1,               	 % Размер шага между двумя номерами строк
+	numbersep = 5pt,              	 % Как далеко отстоят номера строк от подсвечиваемого кода
+	backgroundcolor = \color{white}, % Цвет фона подсветки - используем \usepackage{color}
+	showspaces = false,           	 % Показывать или нет пробелы специальными отступами
+	showstringspaces = false,    	 % Показывать или нет пробелы в строках
+	showtabs = false,           	 % Показывать или нет табуляцию в строках
+	%frame = single,              	 % Рисовать рамку вокруг кода
+	tabsize = 2,                  	 % Размер табуляции по умолчанию равен 2 пробелам
+	captionpos = t,             	 % Позиция заголовка вверху [t] или внизу [b] 
+	breaklines = true,           	 % Автоматически переносить строки (да\нет)
+	breakatwhitespace = false,   	 % Переносить строки только если есть пробел
+	escapeinside = {\%*}{*)}      	 % Если нужно добавить комментарии в коде
+}
+
+\begin{document}
+
+\def\contentsname{Содержание}
+
+% Titlepage
+\begin{titlepage}
+	\begin{center}
+		\textsc{Санкт-Петербургский политехнический 
+			университет Петра Великого\\[5mm]
+			Кафедра компьютерных систем и программных технологий}
+		
+		\vfill
+		
+		\textbf{Отчёт по лабораторной работе\\[3mm]
+			Курс: Операционные системы»\\[6mm]
+			Тема: «Файловые системы»\\[35mm]
+		}
+	\end{center}
+	
+	\hfill
+	\begin{minipage}{.5\textwidth}
+		Выполнил студент:\\[2mm] 
+		Бояркин Никита Сергеевич\\
+		Группа: 43501/3\\[5mm]
+		
+		Проверил:\\[2mm] 
+		Душутина Елена Владимировна
+	\end{minipage}
+	\vfill
+	\begin{center}
+		Санкт-Петербург\\ \the\year\ г.
+	\end{center}
+\end{titlepage}
+
+% Contents
+\tableofcontents
+\clearpage
+
+\chapter{Лабораторная работа №2}
+
+\section{Характеристики системы}
+
+Некоторая информация об операционной системе и текущем пользователе:
+
+\lstinputlisting{listings/0.log}
+
+\section{Ход работы}
+
+\subsection{Фильтрация по одному примеру каждого типа файла}
+
+\subsubsection{Решение в командной строке}
+
+Разработаем команду, которая выведет по одному примеру каждого типа файла из корневого каталога:
+
+\lstinputlisting{listings/1.log}
+
+Рассмотрим команду подробно:
+
+\begin{itemize}
+	\item \emph{ls / -l -R} - устанавливаем рекурсивный поиск по корневому каталогу с выводом полной информации.
+	\item \emph{awk} - скрипт, который добавляет полный путь в название файла.
+	\item \emph{if (\$0\textasciitilde/\textasciicircum\textbackslash//) path=substr(\$0, 0, length(\$0)-1); } - если строка начинается с / (каталог), то сохраняем текущий путь в переменную.
+	\item \emph{else \{ if(\$0\textasciitilde/\textasciicircum1/) \$(NF-2)=path"/"\$(NF-2);} - иначе, если это символьная ссылка (начинается с l), то изменяем путь в столбце (NF-2).
+	\item \emph{else \{\$NF=path"/"\$NF\} print \$0\} \} } - иначе заменяем путь в последнем столбце (NF).
+	\item \emph{grep -v \textasciicircum/} - избавляемся от вывода каталогов.
+	\item \emph{sort -k1.1,1.1} - сортировка по первому символу.
+	\item \emph{uniq -w1} - уникальность по первому символу.
+\end{itemize}
+
+\clearpage
+
+В результате работы команды были получены типы файлов с префиксами \emph{-, b, c, d, l}, однако есть еще два типа файлов, их префиксы \emph{p, s}. Рассмотрим каждый префикс подробнее:
+
+\begin{itemize}
+	\item \emph{-} файл, обеспечивает хранение символьных и двоичных данных.
+	\item \emph{b} - блочное устройство, обеспечивает обращение к аппаратному обеспечению компьютера. Пример блочного устройства - жесткий диск.
+	\item \emph{c} - символьное устройство, обеспечивает обращение к аппаратному обеспечению компьютера. Пример символьного устройства - терминал.
+	\item \emph{d} - каталог, обеспечивает организацию доступа к файлам.
+	\item \emph{l} - символьная ссылка, обеспечивает предоставление доступа к файлам, расположенным на любых носителях.
+	\item \emph{p} - канал (FIFO), обеспечивает организацию взаимодействия процессов в операционной системе.
+	\item \emph{s} - сокет, обеспечивает организацию взаимодействия процессов в операционной системе.
+\end{itemize}
+
+\subsubsection{Решение в виде bash скрипта}
+
+Решение аналогично предыдущему пункту, однако оформлено в виде \emph{bash} скрипта. Отличие заключается в получении имени файла из аргументов командной строки и запись решения в этот файл:
+
+\lstinputlisting{listings/1.sh}
+
+Запуск скрипта на исполнение происходит следующим образом:
+
+\begin{verbatim}
+nikita@nikita-pc:~/temp1$ sudo sh 1.sh filename
+\end{verbatim}
+
+В папке со скриптом создался файл \emph{filename}, в котором находится результат работы скрипта, аналогичный предыдущему пункту. 
+
+\subsection{Получение всех жестких ссылок на файл}
+
+С помощью использования индексного дескриптора найдем все ссылки на указанный файл:
+
+\lstinputlisting{listings/2.sh}
+
+Результаты работы скрипта:
+
+\lstinputlisting{listings/2.log}
+
+\subsection{Анализ всех способов формирования ссылок}
+
+Рассмотрим действия команд \emph{link, ln, ln -s, cp}. С помощью команды \emph{ls -l} выясним какого рода объекты они порождают:
+
+\lstinputlisting{listings/3.log}
+
+Сделаем вывод о назначении команд \emph{link, ln, ln -s, cp}: 
+
+\begin{itemize}
+	\item \emph{link} - позволяет создавать только жесткие ссылки.
+	\item \emph{ln} - без ключей создает жесткую ссылку на файл.
+	\item \emph{ln -s} - с ключем \emph{-s} создает символьную ссылку на файл.
+	\item \emph{cp} - создает новый файл.
+\end{itemize}
+
+\subsubsection{Вывод всех символьных ссылок на файл}
+
+Напишем скрипт подсчитывающий все символьные ссылки на указанный файл:
+
+\lstinputlisting{listings/3.sh}
+
+Результат работы скрипта:
+
+\lstinputlisting{listings/3.r.log}
+
+\subsection{}
+
+\subsection{Утилита find}
+
+\emph{find} - утилита для поиска файлов по имени и другим свойствам в UNIX-подобных ОС. Может проводить поиск в одном или нескольких каталогах, с использованием критериев, заданных пользователем. По умолчанию возвращает все файлы в рабочей директории. также \emph{find} позволяет применять действия ко всем найденным файлам.
+
+Рассмотрим возможности команды \emph{find} с несколькими ключами:
+
+\lstinputlisting{listings/5.log}
+
+Рассмотрим результат исследования команды с несколькими ключами подробнее:
+
+\begin{itemize}
+	\item \emph{find -type} - осуществляет поиск по типу файла.
+	\item \emph{find -name} - осуществляет поиск файлов по имени, в основном используется для поиска по маске.
+	\item \emph{find -size} - осуществляет поиск файлов по размеру. Можно устанавливать нижнюю границу размера файла, верхнюю или обе вместе.
+	\item \emph{find -exec} - позволяет создавать вложенные команды. Аргумент "\{\}" заменяется на имя рассматриваемого файла, каждый раз, когда он встречается среди аргументов команды. Все символы за флагом \emph{-exec} считаются ее аргументами до символа ";".
+\end{itemize}
+
+\subsection{Утилиты od и *dump}
+
+Рассмотрим команды \emph{od} и \emph{hexdump} с флагами \emph{-c, -bc}:
+
+\lstinputlisting{listings/6.log}
+
+\end{document}

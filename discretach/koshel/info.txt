@@ -1,0 +1,33 @@
+1) Разъем X1 - трехконтактный
+Вилка на плату 2.54мм  1x3
+http://www.chipdip.ru/product/wf-3/
+
+2) Разъем X2 - трехконтактный
+Вилка штыревая 2.54мм 1x3
+http://www.chipdip.ru/product/pls-3/
+http://www.platan.ru/cgi-bin/qwery.pl/id=132511368
+
+3) Резистор R1 - сопротивление 1МОм
+0805, 1% погрешность, L 2mm, W 1.25mm
+http://www.chipdip.ru/product0/9000079578/
+
+4) Резисторы R2, R3, R5 - сопротивление 10кОм
+0402, 1% погрешность (0805 и 0603 только 5%), L 1mm, W 0.5mm
+http://www.chipdip.ru/product0/9000189664/
+0805, 1% погрешность, L 2mm, W 1.25mm
+http://www.platan.ru/cgi-bin/qwery.pl/id=2006378174
+
+5) Резистор R4 - сопротивление 20кОм
+0402, 1% погрешность (0805 и 0603 только 5%), L 1mm, W 0.5mm
+http://www.chipdip.ru/product0/9000189725/
+
+6) Конденсатор C1 - емкость 1мкФ
+0805, 10% погрешность, L 2mm, W 1.25mm
+http://www.chipdip.ru/product0/768017701/
+http://www.chipdip.ru/product/grm21br71c105k/
+http://www.platan.ru/cgi-bin/qwery.pl/id=390960682
+
+7) Операционные усилители D1, D2
+UA741 (должен быть AD741, но его нигде не найти) аналогичен AD741 по пинам и напряжению питания, корпус SO8
+http://www.chipdip.ru/product/ua741cn/
+http://www.platan.ru/cgi-bin/qwery.pl/id=942451429
