@@ -1,0 +1,72 @@
+nikita@nikita-pc:~$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+udev            976M     0  976M   0% /dev
+tmpfs           199M  6,4M  193M   4% /run
+/dev/sda1       292G   58G  220G  21% /
+tmpfs           995M  184K  995M   1% /dev/shm
+tmpfs           5,0M  4,0K  5,0M   1% /run/lock
+tmpfs           995M     0  995M   0% /sys/fs/cgroup
+tmpfs           199M   44K  199M   1% /run/user/1000
+/dev/sdb1       8,8M  2,0K  8,8M   1% /media/m1
+/dev/sdb3       464M  8,0K  464M   1% /media/m1/m2
+/dev/sdb5       488M  8,0K  488M   1% /media/m1/m2/m3
+/dev/sdb7       243M     0  243M   0% /media/m1/m2/m3/m4
+/dev/sdc1       8,8M  2,0K  8,8M   1% /media/nikita/537A-C630
+/dev/sdc7       243M     0  243M   0% /media/nikita/7C61-9A3B
+/dev/sdc3       464M  8,0K  464M   1% /media/nikita/6928-C491
+/dev/sdc5       488M  8,0K  488M   1% /media/nikita/79B7-D3F9
+
+nikita@nikita-pc:~$ df -i
+Filesystem       Inodes   IUsed    IFree IUse% Mounted on
+udev             249697     562   249135    1% /dev
+tmpfs            254514     780   253734    1% /run
+/dev/sda1      19406848 1095765 18311083    6% /
+tmpfs            254514       7   254507    1% /dev/shm
+tmpfs            254514       5   254509    1% /run/lock
+tmpfs            254514      16   254498    1% /sys/fs/cgroup
+tmpfs            254514      27   254487    1% /run/user/1000
+/dev/sdb1             0       0        0     - /media/m1
+/dev/sdb3             0       0        0     - /media/m1/m2
+/dev/sdb5             0       0        0     - /media/m1/m2/m3
+/dev/sdb7             0       0        0     - /media/m1/m2/m3/m4
+/dev/sdc1             0       0        0     - /media/nikita/537A-C630
+/dev/sdc7             0       0        0     - /media/nikita/7C61-9A3B
+/dev/sdc3             0       0        0     - /media/nikita/6928-C491
+/dev/sdc5             0       0        0     - /media/nikita/79B7-D3F9
+
+nikita@nikita-pc:~$ df -ih
+Filesystem     Inodes IUsed IFree IUse% Mounted on
+udev             244K   562  244K    1% /dev
+tmpfs            249K   780  248K    1% /run
+/dev/sda1         19M  1,1M   18M    6% /
+tmpfs            249K     7  249K    1% /dev/shm
+tmpfs            249K     5  249K    1% /run/lock
+tmpfs            249K    16  249K    1% /sys/fs/cgroup
+tmpfs            249K    27  249K    1% /run/user/1000
+/dev/sdb1           0     0     0     - /media/m1
+/dev/sdb3           0     0     0     - /media/m1/m2
+/dev/sdb5           0     0     0     - /media/m1/m2/m3
+/dev/sdb7           0     0     0     - /media/m1/m2/m3/m4
+/dev/sdc1           0     0     0     - /media/nikita/537A-C630
+/dev/sdc7           0     0     0     - /media/nikita/7C61-9A3B
+/dev/sdc3           0     0     0     - /media/nikita/6928-C491
+/dev/sdc5           0     0     0     - /media/nikita/79B7-D3F9
+
+nikita@nikita-pc:~$ df -hT
+Filesystem     Type      Size  Used Avail Use% Mounted on
+udev           devtmpfs  976M     0  976M   0% /dev
+tmpfs          tmpfs     199M  6,4M  193M   4% /run
+/dev/sda1      ext4      292G   58G  220G  21% /
+tmpfs          tmpfs     995M  184K  995M   1% /dev/shm
+tmpfs          tmpfs     5,0M  4,0K  5,0M   1% /run/lock
+tmpfs          tmpfs     995M     0  995M   0% /sys/fs/cgroup
+tmpfs          tmpfs     199M   48K  199M   1% /run/user/1000
+/dev/sdb1      vfat      8,8M  2,0K  8,8M   1% /media/m1
+/dev/sdb3      vfat      464M  8,0K  464M   1% /media/m1/m2
+/dev/sdb5      vfat      488M  8,0K  488M   1% /media/m1/m2/m3
+/dev/sdb7      vfat      243M     0  243M   0% /media/m1/m2/m3/m4
+/dev/sdc1      vfat      8,8M  2,0K  8,8M   1% /media/nikita/537A-C630
+/dev/sdc7      vfat      243M     0  243M   0% /media/nikita/7C61-9A3B
+/dev/sdc3      vfat      464M  8,0K  464M   1% /media/nikita/6928-C491
+/dev/sdc5      vfat      488M  8,0K  488M   1% /media/nikita/79B7-D3F9
+

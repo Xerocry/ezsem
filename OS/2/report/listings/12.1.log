@@ -1,0 +1,19 @@
+nikita@nikita-pc:~/temp1$ od 10.exe -cDN25
+0000000 177   E   L   F 002 001 001 003  \0  \0  \0  \0  \0  \0  \0  \0
+             1179403647        50397442               0               0
+0000020 002  \0   >  \0 001  \0  \0  \0 020
+                4063234               1              16
+0000031
+
+nikita@nikita-pc:~/temp1$ cat /usr/share/mime/magic 
+(...)
+>0=ELF
+1>5=
+2>16=
+>0=ELF
+(...)
+
+nikita@nikita-pc:~/temp1$ file 10.exe 
+10.exe: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=4313133fea619662726492cb4c369c7479552556, not stripped
+
+

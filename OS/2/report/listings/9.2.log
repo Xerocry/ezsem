@@ -1,0 +1,6 @@
+nikita@nikita-pc:~/temp1$ sudo chmod -R u+s tempfolder/
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/
+drws---rwx 2 nikita nikita 4096 окт 20 11:06 tempfolder/
+nikita@nikita-pc:~/temp1$ ls -l /usr/bin/passwd 
+-rwsr-xr-x 1 root root 54256 мар 29  2016 /usr/bin/passwd
+

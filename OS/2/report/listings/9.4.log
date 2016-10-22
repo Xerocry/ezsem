@@ -1,0 +1,25 @@
+nikita@nikita-pc:~/temp1$ sudo chmod -R u=rx,g=rx,o=rx tempfolder/
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/
+dr-xr-xr-x 2 nikita nikita 4096 окт 20 11:06 tempfolder/
+nikita@nikita-pc:~/temp1$ echo "test" > tempfolder/file1
+bash: tempfolder/file1: Permission denied
+nikita@nikita-pc:~/temp1$ cat tempfolder/file1
+content
+nikita@nikita-pc:~/temp1$ rm tempfolder/file1
+rm: remove write-protected regular file 'tempfolder/file1'? n
+
+nikita@nikita-pc:~/temp1$ sudo chmod -R u=wx,g=wx,o=wx tempfolder/
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/
+d-wx-wx-wx 2 nikita nikita 4096 окт 20 11:36 tempfolder/
+nikita@nikita-pc:~/temp1$ echo "content">tempfolder/file1
+nikita@nikita-pc:~/temp1$ cat tempfolder/file1
+cat: tempfolder/file1: Permission denied
+
+nikita@nikita-pc:~/temp1$ sudo chmod -R u=,g=,o= tempfolder/
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/
+d--------- 2 nikita nikita 4096 окт 20 11:36 tempfolder/
+nikita@nikita-pc:~/temp1$ echo "content">tempfolder/file1
+bash: tempfolder/file1: Permission denied
+nikita@nikita-pc:~/temp1$ cat tempfolder/file1
+cat: tempfolder/file1: Permission denied
+

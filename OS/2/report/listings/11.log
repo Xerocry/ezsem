@@ -1,0 +1,99 @@
+nikita@nikita-pc:~/temp1$ df
+Filesystem     1K-blocks     Used Available Use% Mounted on
+udev              998788        0    998788   0% /dev
+tmpfs             203612     6420    197192   4% /run
+/dev/sda1      305481976 59911132 230030212  21% /
+tmpfs            1018056      220   1017836   1% /dev/shm
+tmpfs               5120        4      5116   1% /run/lock
+tmpfs            1018056        0   1018056   0% /sys/fs/cgroup
+tmpfs             203612       60    203552   1% /run/user/1000
+/dev/sdb1        2002624     5664   1996960   1% /media/nikita/4B52-FD2E
+
+nikita@nikita-pc:~/temp1$ lsblk -o +FSTYPE
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT              FSTYPE
+sda      8:0    0 298,1G  0 disk                         
+├─sda1   8:1    0 296,1G  0 part /                       ext4
+├─sda2   8:2    0     1K  0 part                         
+└─sda5   8:5    0     2G  0 part [SWAP]                  swap
+sdb      8:16   1   1,9G  0 disk                         
+└─sdb1   8:17   1   1,9G  0 part /media/nikita/4B52-FD2E vfat
+
+nikita@nikita-pc:~/temp1$ cat /etc/fstab
+# /etc/fstab: static file system information.
+#
+# Use 'blkid' to print the universally unique identifier for a
+# device; this may be used with UUID= as a more robust way to name devices
+# that works even if disks are added and removed. See fstab(5).
+#
+# <file system> <mount point>   <type>  <options>       <dump>  <pass>
+# / was on /dev/sda1 during installation
+UUID=8a48f05f-7dd3-45d8-946b-567d6661e2a7 /               ext4    errors=remount-ro 0       1
+# swap was on /dev/sda5 during installation
+UUID=bc8eabbf-fae3-45b4-bd1d-93c3862f9937 none            swap    sw              0       0
+
+nikita@nikita-pc:~/temp1$ cat /etc/mtab
+sysfs /sys sysfs rw,nosuid,nodev,noexec,relatime 0 0
+proc /proc proc rw,nosuid,nodev,noexec,relatime 0 0
+udev /dev devtmpfs rw,nosuid,relatime,size=998788k,nr_inodes=249697,mode=755 0 0
+devpts /dev/pts devpts rw,nosuid,noexec,relatime,gid=5,mode=620,ptmxmode=000 0 0
+tmpfs /run tmpfs rw,nosuid,noexec,relatime,size=203612k,mode=755 0 0
+/dev/sda1 / ext4 rw,relatime,errors=remount-ro,data=ordered 0 0
+securityfs /sys/kernel/security securityfs rw,nosuid,nodev,noexec,relatime 0 0
+tmpfs /dev/shm tmpfs rw,nosuid,nodev 0 0
+tmpfs /run/lock tmpfs rw,nosuid,nodev,noexec,relatime,size=5120k 0 0
+tmpfs /sys/fs/cgroup tmpfs ro,nosuid,nodev,noexec,mode=755 0 0
+cgroup /sys/fs/cgroup/systemd cgroup rw,nosuid,nodev,noexec,relatime,xattr,release_agent=/lib/systemd/systemd-cgroups-agent,name=systemd 0 0
+pstore /sys/fs/pstore pstore rw,nosuid,nodev,noexec,relatime 0 0
+cgroup /sys/fs/cgroup/cpu,cpuacct cgroup rw,nosuid,nodev,noexec,relatime,cpu,cpuacct 0 0
+cgroup /sys/fs/cgroup/devices cgroup rw,nosuid,nodev,noexec,relatime,devices 0 0
+cgroup /sys/fs/cgroup/hugetlb cgroup rw,nosuid,nodev,noexec,relatime,hugetlb 0 0
+cgroup /sys/fs/cgroup/blkio cgroup rw,nosuid,nodev,noexec,relatime,blkio 0 0
+cgroup /sys/fs/cgroup/net_cls,net_prio cgroup rw,nosuid,nodev,noexec,relatime,net_cls,net_prio 0 0
+cgroup /sys/fs/cgroup/memory cgroup rw,nosuid,nodev,noexec,relatime,memory 0 0
+cgroup /sys/fs/cgroup/cpuset cgroup rw,nosuid,nodev,noexec,relatime,cpuset 0 0
+cgroup /sys/fs/cgroup/perf_event cgroup rw,nosuid,nodev,noexec,relatime,perf_event 0 0
+cgroup /sys/fs/cgroup/pids cgroup rw,nosuid,nodev,noexec,relatime,pids 0 0
+cgroup /sys/fs/cgroup/freezer cgroup rw,nosuid,nodev,noexec,relatime,freezer 0 0
+systemd-1 /proc/sys/fs/binfmt_misc autofs rw,relatime,fd=26,pgrp=1,timeout=0,minproto=5,maxproto=5,direct 0 0
+hugetlbfs /dev/hugepages hugetlbfs rw,relatime 0 0
+debugfs /sys/kernel/debug debugfs rw,relatime 0 0
+mqueue /dev/mqueue mqueue rw,relatime 0 0
+fusectl /sys/fs/fuse/connections fusectl rw,relatime 0 0
+tmpfs /run/user/1000 tmpfs rw,nosuid,nodev,relatime,size=203612k,mode=700,uid=1000,gid=1000 0 0
+gvfsd-fuse /run/user/1000/gvfs fuse.gvfsd-fuse rw,nosuid,nodev,relatime,user_id=1000,group_id=1000 0 0
+/dev/sdb1 /media/nikita/4B52-FD2E vfat rw,nosuid,nodev,relatime,uid=1000,gid=1000,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,showexec,utf8,flush,errors=remount-ro 0 0
+
+nikita@nikita-pc:~/temp1$ cat /proc/filesystems 
+nodev	sysfs
+nodev	rootfs
+nodev	ramfs
+nodev	bdev
+nodev	proc
+nodev	cpuset
+nodev	cgroup
+nodev	tmpfs
+nodev	devtmpfs
+nodev	debugfs
+nodev	tracefs
+nodev	securityfs
+nodev	sockfs
+nodev	bpf
+nodev	pipefs
+nodev	devpts
+	ext3
+	ext2
+	ext4
+	squashfs
+nodev	hugetlbfs
+	vfat
+nodev	ecryptfs
+	fuseblk
+nodev	fuse
+nodev	fusectl
+nodev	pstore
+nodev	mqueue
+nodev	autofs
+
+
+
+

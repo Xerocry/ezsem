@@ -1,0 +1,38 @@
+nikita@nikita-pc:~/temp1$ ls
+0.log  1.log  1.sh  2.log  2.sh  3.log  3.sh  5.log
+nikita@nikita-pc:~/temp1$ find -name "*.log"
+./5.log
+./2.log
+./1.log
+./3.log
+./0.log
+nikita@nikita-pc:~/temp1$ find -name "3*"
+./3.sh
+./3.log
+nikita@nikita-pc:~/temp1$ ls ../temp
+cat.txt       file_name    gdbtest    my_open.c  prog1.c    v1
+defigned.txt  file_name.c  gdbtest.c  pipe       res.txt    v2
+eqv           foo.c        libfoo.so  pipe.c     result
+example       foo.o        my_open    prog       script.sh
+nikita@nikita-pc:~/temp1$ find ../temp -name "*.txt"
+../temp/cat.txt
+../temp/defigned.txt
+../temp/res.txt
+nikita@nikita-pc:~/temp1$ find -size +500c
+.
+./2.sh
+./5.log
+./2.log
+./3.log
+./1.sh
+nikita@nikita-pc:~/temp1$ find -size -500c
+./1.log
+./3.sh
+./0.log
+nikita@nikita-pc:~/temp1$ find -size -500c -exec ls -l {} \;
+-rw-rw-r-- 1 nikita nikita 206 окт 18 10:28 ./1.log
+-rw-rw-r-- 1 nikita nikita 360 окт 18 12:34 ./3.sh
+-rw-rw-r-- 1 nikita nikita 257 окт 18 10:49 ./0.log
+
+
+

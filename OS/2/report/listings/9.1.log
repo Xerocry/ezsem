@@ -1,0 +1,28 @@
+nikita@nikita-pc:~/temp1$ mkdir tempfolder
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/
+drwxrwxr-x 2 nikita nikita 4096 окт 20 10:52 tempfolder/
+nikita@nikita-pc:~/temp1$ >tempfolder/file1
+nikita@nikita-pc:~/temp1$ >tempfolder/file2
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/file1
+-rw-rw-r-- 1 nikita nikita 0 окт 20 10:52 tempfolder/file1
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/file2
+-rw-rw-r-- 1 nikita nikita 0 окт 20 10:52 tempfolder/file2
+
+nikita@nikita-pc:~/temp1$ sudo chmod -R u=rwx,g=,o=rwx tempfolder/
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/
+drwx---rwx 2 nikita nikita 4096 окт 20 10:52 tempfolder/
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/file1
+-rwx---rwx 1 nikita nikita 0 окт 20 10:52 tempfolder/file1
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/file2
+-rwx---rwx 1 nikita nikita 0 окт 20 10:52 tempfolder/file2
+
+nikita@nikita-pc:~/temp1$ sudo chmod u=rx,g=rwx,o= tempfolder/file1
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/file1
+-r-xrwx--- 1 nikita nikita 0 окт 20 10:52 tempfolder/file1
+
+nikita@nikita-pc:~/temp1$ sudo chown root:root tempfolder/file2
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/file2
+-rwx---rwx 1 root root 0 окт 20 10:52 tempfolder/file2
+
+
+

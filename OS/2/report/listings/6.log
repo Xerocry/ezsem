@@ -1,0 +1,21 @@
+nikita@nikita-pc:~/temp1$ echo "content">tempfile
+nikita@nikita-pc:~/temp1$ ls -l tempfile 
+-rw-rw-r-- 1 nikita nikita 8 окт 18 12:55 tempfile
+nikita@nikita-pc:~/temp1$ od tempfile 
+0000000 067543 072156 067145 005164
+0000010
+nikita@nikita-pc:~/temp1$ od -c tempfile 
+0000000   c   o   n   t   e   n   t  \n
+0000010
+nikita@nikita-pc:~/temp1$ od -bc tempfile 
+0000000 143 157 156 164 145 156 164 012
+          c   o   n   t   e   n   t  \n
+0000010
+nikita@nikita-pc:~/temp1$ hexdump -v -e '"%2_ad | " 2 "%_c" "|\n"' tempfile 
+ 0 | co|
+ 2 | nt|
+ 4 | en|
+ 6 | t\n|
+
+
+

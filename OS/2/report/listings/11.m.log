@@ -1,0 +1,27 @@
+nikita@nikita-pc:/$ sudo mkdir /media/m1
+nikita@nikita-pc:/$ sudo mkfs.vfat /dev/sdb1
+mkfs.fat 3.0.28 (2015-05-16)
+nikita@nikita-pc:/$ sudo mount -t vfat /dev/sdb1 /media/m1/
+
+nikita@nikita-pc:/$ sudo mkdir /media/m1/m2
+nikita@nikita-pc:/$ sudo mkfs.vfat /dev/sdb3
+mkfs.fat 3.0.28 (2015-05-16)
+nikita@nikita-pc:/$ sudo mount -t vfat /dev/sdb3 /media/m1/m2/
+
+nikita@nikita-pc:/$ sudo mkdir /media/m1/m2/m3
+nikita@nikita-pc:/$ sudo mkfs.vfat /dev/sdb5
+mkfs.fat 3.0.28 (2015-05-16)
+nikita@nikita-pc:/$ sudo mount -t vfat /dev/sdb5 /media/m1/m2/m3/
+
+nikita@nikita-pc:/$ sudo mkdir /media/m1/m2/m3/m4
+nikita@nikita-pc:/$ sudo mkfs.vfat /dev/sdb7
+mkfs.fat 3.0.28 (2015-05-16)
+nikita@nikita-pc:/$ sudo mount -t vfat /dev/sdb7 /media/m1/m2/m3/m4/
+
+nikita@nikita-pc:/$ cat /etc/mtab | grep sdb
+/dev/sdb1 /media/m1 vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro 0 0
+/dev/sdb3 /media/m1/m2 vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro 0 0
+/dev/sdb5 /media/m1/m2/m3 vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro 0 0
+/dev/sdb7 /media/m1/m2/m3/m4 vfat rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro 0 0
+
+

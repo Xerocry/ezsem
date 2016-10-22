@@ -1,0 +1,8 @@
+nikita@nikita-pc:~/temp1$ sudo gedit /etc/magic
+(* 
+	0 string MAGIC_HEADER MyType
+*)
+nikita@nikita-pc:~/temp1$ echo "MAGIC_HEADER">tempfile
+nikita@nikita-pc:~/temp1$ file tempfile 
+tempfile: MyType
+

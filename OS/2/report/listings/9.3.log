@@ -1,0 +1,4 @@
+nikita@nikita-pc:~/temp1$ sudo chmod -R u=,g=rwx,o=rwx tempfolder/
+nikita@nikita-pc:~/temp1$ cat tempfolder/file1
+cat: tempfolder/file1: Permission denied
+

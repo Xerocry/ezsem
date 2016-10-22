@@ -1,0 +1,31 @@
+nikita@nikita-pc:~/temp1$ file -v 10.exe
+file-5.25
+magic file from /etc/magic:/usr/share/misc/magic
+
+nikita@nikita-pc:~/temp1$ file -l tempfolder/
+(...)
+Binary patterns:
+Strength = 380@6: OpenSSH private key []
+Strength = 361@66: EICAR virus test files []
+Strength = 340@585: sc68 Atari ST music []
+(...)
+
+nikita@nikita-pc:~/temp1$ >tempfile
+nikita@nikita-pc:~/temp1$ file tempfile 
+tempfile: empty
+
+nikita@nikita-pc:~/temp1$ echo "content">tempfile
+nikita@nikita-pc:~/temp1$ file tempfile 
+tempfile: empty
+
+nikita@nikita-pc:~/temp1$ echo "content">tempfile
+nikita@nikita-pc:~/temp1$ file tempfile 
+tempfile: ASCII text
+
+nikita@nikita-pc:~/temp1$ file 10.cpp 
+10.cpp: C source, ASCII text
+
+nikita@nikita-pc:~/temp1$ file 1.sh 
+1.sh: Bourne-Again shell script, UTF-8 Unicode text executable
+
+
