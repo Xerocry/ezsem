@@ -1,0 +1,15 @@
+nikita@nikita-pc:~/temp1$ sudo chmod -R u=rwx,g=,o= tempfolder/
+nikita@nikita-pc:~/temp1$ ls -ld tempfolder/
+drwx------ 2 nikita nikita 4096 окт 20 11:36 tempfolder/
+nikita@nikita-pc:~/temp1$ sudo chmod u=rwx,g=,o= 10.exe
+nikita@nikita-pc:~/temp1$ ls -ld 10.exe 
+-rwx------ 1 nikita nikita 1227384 окт 20 12:08 10.exe
+nikita@nikita-pc:~/temp1$ cat tempfolder/file1
+content
+nikita@nikita-pc:~/temp1$ ./10.exe tempfolder/file1
+content
+
+
+
+
+

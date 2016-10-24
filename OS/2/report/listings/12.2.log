@@ -16,10 +16,6 @@ tempfile: empty
 
 nikita@nikita-pc:~/temp1$ echo "content">tempfile
 nikita@nikita-pc:~/temp1$ file tempfile 
-tempfile: empty
-
-nikita@nikita-pc:~/temp1$ echo "content">tempfile
-nikita@nikita-pc:~/temp1$ file tempfile 
 tempfile: ASCII text
 
 nikita@nikita-pc:~/temp1$ file 10.cpp 

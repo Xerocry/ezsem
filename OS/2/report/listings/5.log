@@ -1,5 +1,19 @@
 nikita@nikita-pc:~/temp1$ ls
 0.log  1.log  1.sh  2.log  2.sh  3.log  3.sh  5.log
+nikita@nikita-pc:~/temp1$ find
+.
+./2.sh
+./5.log
+./2.log
+./1.log
+./3.sh
+./3.log
+./0.log
+./tempfolder
+./1.sh
+nikita@nikita-pc:~/temp1$ find -type d
+.
+./tempfolder
 nikita@nikita-pc:~/temp1$ find -name "*.log"
 ./5.log
 ./2.log

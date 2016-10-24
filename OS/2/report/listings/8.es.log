@@ -1,0 +1,8 @@
+nikita@nikita-pc:~$ sudo cat /etc/shadow
+root:!:16950:0:99999:7:::
+daemon:*:16911:0:99999:7:::
+bin:*:16911:0:99999:7:::
+sys:*:16911:0:99999:7:::
+(...)
+usbmux:*:16911:0:99999:7:::
+nikita:$6$rQrZ9lk/$MnoiobKSEiHH3ot0gXa8Gf9cYQuBPoG8ouhFYTVHjAb3oCwL.MAm5Nq/wfTW0RWIWgt/mED0sSR65JI6bU9.u/:16950:0:99999:7:::

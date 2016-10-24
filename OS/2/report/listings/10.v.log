@@ -1,0 +1,15 @@
+nikita@nikita-pc:~/temp1$ sudo chmod u=rwx,g=x,o=x 10.exe
+nikita@nikita-pc:~/temp1$ sudo chmod u+s 10.exe
+nikita@nikita-pc:~/temp1$ sudo chmod g+s 10.exe
+nikita@nikita-pc:~/temp1$ ls -l 10.exe 
+-rws--s--x 1 nikita nikita 1227384 окт 20 12:08 10.exe
+nikita@nikita-pc:~/temp1$ sudo chmod -R 700 tempfolder/
+nikita@nikita-pc:~/temp1$ ls -l tempfolder/
+total 8
+-rwx------ 1 nikita nikita 8 окт 20 11:39 file1
+-rwx------ 1 nikita nikita 8 окт 20 11:36 file2
+nikita@nikita-pc:~/temp1$ sudo su bratishka
+bratishka@nikita-pc:/home/nikita/temp1$ cat tempfolder/file1
+cat: tempfolder/file1: Permission denied
+bratishka@nikita-pc:/home/nikita/temp1$ ./10.exe tempfolder/file1
+content

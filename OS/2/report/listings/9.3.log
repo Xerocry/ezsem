@@ -1,4 +1,7 @@
 nikita@nikita-pc:~/temp1$ sudo chmod -R u=,g=rwx,o=rwx tempfolder/
+nikita@nikita-pc:~/temp1$ ls -l tempfolder/
+----rwxrwx 1 nikita nikita 0 окт 20 10:52 tempfolder/file1
+----rwxrwx 1 nikita nikita 0 окт 20 10:52 tempfolder/file2
 nikita@nikita-pc:~/temp1$ cat tempfolder/file1
 cat: tempfolder/file1: Permission denied
 

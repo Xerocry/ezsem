@@ -1,0 +1,14 @@
+nikita@nikita-pc:~/temp1$ sudo chmod -R 700 tempfolder/
+nikita@nikita-pc:~/temp1$ sudo chmod 700 10.exe
+
+nikita@nikita-pc:~/temp1$ sudo useradd bratishka
+nikita@nikita-pc:~/temp1$ sudo passwd bratishka
+Enter new UNIX password: 
+Retype new UNIX password: 
+passwd: password updated successfully
+nikita@nikita-pc:~/temp1$ sudo su bratishka
+
+bratishka@nikita-pc:/home/nikita/temp1$ cat tempfolder/file1
+cat: tempfolder/file1: Permission denied
+bratishka@nikita-pc:/home/nikita/temp1$ ./10.exe tempfolder/file1
+bash: ./10.exe: Permission denied

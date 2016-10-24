@@ -1,0 +1,17 @@
+nikita@nikita-pc:~/temp1$ sudo passwd
+Enter new UNIX password: 
+Retype new UNIX password: 
+passwd: password updated successfully
+
+nikita@nikita-pc:~/temp1$ sudo passwd nikita
+Changing password for nikita.
+passwd: Authentication token manipulation error
+passwd: password unchanged
+
+nikita@nikita-pc:~/temp1$ sudo passwd
+Changing password for nikita.
+Enter new UNIX password: 
+Retype new UNIX password: 
+Password unchanged
+
+

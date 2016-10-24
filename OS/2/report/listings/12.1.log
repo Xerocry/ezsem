@@ -7,10 +7,10 @@ nikita@nikita-pc:~/temp1$ od 10.exe -cDN25
 
 nikita@nikita-pc:~/temp1$ cat /usr/share/mime/magic 
 (...)
->0=ELF
-1>5=
-2>16=
->0=ELF
+>0=?ELF
+1>5=??
+2>16=??
+>0=?ELF
 (...)
 
 nikita@nikita-pc:~/temp1$ file 10.exe 

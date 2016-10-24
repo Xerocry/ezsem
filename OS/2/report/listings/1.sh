@@ -10,4 +10,4 @@ fi
 
 # Исполняем команду из предыдущего пункта, перенаправляя вывод в файл
 
-ls / -l -R | awk '{if ($0~/^\//) path=substr($0, 0, length($0)-1); else { if($0~/^1/) $(NF-2)=path"/"$(NF-2); else {$NF=path"/"$NF} print $0} }' | grep -v ^/ | sort -k1.1,1.1 | uniq -w1 > $filename
+ls / -l -R 2>/dev/null | awk '{if ($0~/^\//) path=substr($0, 0, length($0)); else { if($0~/^l/) $(NF-2)=path"/"$(NF-2); else {$NF=path"/"$NF} print $0} }' | grep -v ^/ | sort -k1.1,1.1 | uniq -w1 > $filename

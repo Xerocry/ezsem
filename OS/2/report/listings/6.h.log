@@ -1,0 +1,8 @@
+nikita@nikita-pc:~/temp1$ hexdump -C tempfile 
+0000000  63 6f 6e 74 65 6e 74 0a                           |content.|
+0000008
+nikita@nikita-pc:~/temp1$ hexdump -e '"%2_ad | " 2 "%_c" "|\n"' tempfile 
+ 0 | co|
+ 2 | nt|
+ 4 | en|
+ 6 | t\n|
