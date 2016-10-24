@@ -88,6 +88,7 @@ public:
         const void eventCreate(const char* eventName, const std::chrono::milliseconds& start, const std::chrono::seconds& period) const throw(ControllerException);
         const void eventDrop(const char* eventName) const throw(ControllerException);
         const void eventSubscribe(const char* eventName, const char* userName) const throw(ControllerException);
+        const void eventUnsubscribeAll(const char* eventName) const throw(ControllerException);
         const void eventUnsubscribe(const char* eventName, const char* userName) const throw(ControllerException);
         const void eventNotify(const char *eventName) const;
         const void help(std::ostream* out) const;

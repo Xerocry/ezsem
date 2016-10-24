@@ -217,8 +217,8 @@ const void Server::eventTimer() {
             this->mutexTimings.unlock();
 
         for(auto& current: resultVector) {
-            refreshTiming(current);
             this->controller->eventNotify(this->controller->getEventNameByEventId(current));
+            refreshTiming(current);
         }
     }
 }
@@ -301,7 +301,7 @@ const void Server::refreshTiming(const int eventId) {
 
     if(eraseCompleted) {
         if(event->period.count() == 0) {
-            this->events.erase(eventId);
+            this->controller->eventDrop(this->controller->getEventNameByEventId(eventId));
 
             if(lockEvents)
                 this->mutexEvents.unlock();
@@ -319,7 +319,7 @@ const void Server::refreshTiming(const int eventId) {
 
     if(now + std::chrono::seconds(buffer) >= timing) {
         if(event->period.count() == 0) {
-            this->events.erase(eventId);
+            this->controller->eventDrop(this->controller->getEventNameByEventId(eventId));
 
             if(lockEvents)
                 this->mutexEvents.unlock();
@@ -901,6 +901,7 @@ const int Server::ServerController::getEventIdByEventName(const char *eventName)
 
     if(lockEvents)
         this->serverPtr->mutexEvents.unlock();
+
     throw ControllerException(EVENT_IS_NOT_EXISTS);
 }
 const char* Server::ServerController::getEventNameByEventId(const int eventId) const throw(ControllerException) {
@@ -973,6 +974,8 @@ const void Server::ServerController::eventCreate(const char *eventName, const st
 const void Server::ServerController::eventDrop(const char *eventName) const throw(ControllerException) {
     auto eventId = getEventIdByEventName(eventName);
 
+    eventUnsubscribeAll(eventName);
+
     bool lockEvents = this->serverPtr->mutexEvents.try_lock();
     this->serverPtr->events.erase(eventId);
     if(lockEvents)
@@ -1034,6 +1037,27 @@ const void Server::ServerController::eventSubscribe(const char *eventName, const
     if(lockSubscriptions)
         this->serverPtr->mutexSubscriptions.unlock();
 }
+
+const void Server::ServerController::eventUnsubscribeAll(const char *eventName) const throw(ControllerException) {
+    getEventIdByEventName(eventName);
+
+    std::string eventString(eventName);
+
+    bool lockSubscriptions = this->serverPtr->mutexSubscriptions.try_lock();
+
+    std::vector<std::vector<std::pair<std::string, std::string>>::iterator> removableIterators;
+
+    for(auto current = this->serverPtr->subscriptions.begin(); current != this->serverPtr->subscriptions.end(); ++current)
+        if(current->second == eventString)
+            removableIterators.push_back(current);
+
+    for(auto current: removableIterators)
+        this->serverPtr->subscriptions.erase(current);
+
+    if(lockSubscriptions)
+        this->serverPtr->mutexSubscriptions.unlock();
+}
+
 const void Server::ServerController::eventUnsubscribe(const char *eventName, const char *userName) const throw(ControllerException) {
     getEventIdByEventName(eventName);
     getThreadIdByUserName(userName);
@@ -1476,6 +1500,7 @@ const void Server::ServerController::load() const throw(ControllerException) {
 
     this->serverPtr->timings.clear();
     this->serverPtr->events.clear();
+    this->serverPtr->accounts.clear();
 
     for(auto& current: this->serverPtr->users) {
 #ifdef _UDP_
