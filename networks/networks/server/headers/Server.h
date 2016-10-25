@@ -148,9 +148,11 @@ private:
     static const int MESSAGE_SIZE = 1000;
 
 #ifdef _UDP_
-    static constexpr const char* CONNECT_STRING = "*/*c*o*n*n*e*c*t*/*";
-    static constexpr const char* ACCEPT_STRING = "*/*a*c*c*e*p*t*/*";
-    static constexpr const char* DETACH_STRING = "*/*d*e*t*a*c*h*/*";
+    static constexpr const char* SEND_STRING = "@S";
+    static constexpr const char* RESPONSE_STRING = "@R";
+    static constexpr const char* CONNECT_STRING = "@C";
+    static constexpr const char* ACCEPT_STRING = "@A";
+    static constexpr const char* DETACH_STRING = "@D";
 #endif
 
     static constexpr const char *DEFAULT_FILENAME = "server.data";

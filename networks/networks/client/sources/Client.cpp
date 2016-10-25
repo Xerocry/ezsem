@@ -190,6 +190,13 @@ const void Client::feedbackExecutor() {
     }
 }
 
+#ifdef _UDP_
+const void Client::writeLine() throw(ClientException) {
+     sendto(generalSocket, DETACH_STRING, strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+
+}
+#endif
+
 const std::string Client::readLine() throw(ClientException) {
     auto result = std::string();
 
