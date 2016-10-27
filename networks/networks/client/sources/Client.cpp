@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <string.h>
+#include <sstream>
 #include "../headers/Client.h"
 
 
@@ -33,10 +34,10 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
     serverAddress.sin_addr.s_addr = inet_addr(address);
 
 #ifdef _UDP_
-    sendto(generalSocket, CONNECT_STRING, strlen(CONNECT_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
-
-    if(readLine() != std::string(ACCEPT_STRING))
+    try { writeLine(ATTACH_STRING, true); }
+    catch (const ClientException& exception) {
         throw ClientException(COULD_NOT_CREATE_CONNECTION);
+    }
 
     *this->out << "Connection established." << std::endl;
 #endif
@@ -103,10 +104,10 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
     serverAddress.sin_port = htons(port);
     serverAddress.sin_addr.S_un.S_addr = inet_addr(address);
 
-    sendto(generalSocket, CONNECT_STRING, (int) strlen(CONNECT_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
-
-    if(readLine() != std::string(ACCEPT_STRING))
+    try { writeLine(ATTACH_STRING, true); }
+    catch (const ClientException& exception) {
         throw ClientException(COULD_NOT_CREATE_CONNECTION);
+    }
 
     *this->out << "Connection established." << std::endl;
 #endif
@@ -155,11 +156,6 @@ const void Client::start() throw(ClientException) {
 
 #ifdef _TCP_
         auto sendMessage = send(generalSocket, clientMessage.data(), (int) clientMessage.size(), EMPTY_FLAGS);
-#endif
-#ifdef _UDP_
-        auto sendMessage = sendto(generalSocket, clientMessage.data(), (int) clientMessage.size(), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
-#endif
-
 #ifdef _LINUX_
         if (sendMessage < 0)
 #endif
@@ -167,6 +163,10 @@ const void Client::start() throw(ClientException) {
         if (sendMessage == SOCKET_ERROR)
 #endif
             throw ClientException(COULD_NOT_SEND_MESSAGE);
+#endif
+#ifdef _UDP_
+        writeLine(clientMessage, false);
+#endif
     }
 }
 
@@ -191,17 +191,138 @@ const void Client::feedbackExecutor() {
 }
 
 #ifdef _UDP_
-const void Client::writeLine() throw(ClientException) {
-     sendto(generalSocket, DETACH_STRING, strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+const void Client::writeLine(const std::string message, const bool special) throw(ClientException) {
+    auto result = std::string(message);
 
+    if(special) {
+        currentPackageNumber = (message == std::string(ATTACH_STRING)) ? 0 : -1;
+        if(currentPackageNumber == -1)
+            return;
+    }
+    else {
+        currentPackageNumber = progressivePackageNumber;
+        ++progressivePackageNumber;
+    }
+
+    std::remove(result.begin(), result.end(), '\r');
+    if(result.back() != '\n')
+        result.push_back('\n');
+
+    result.insert(0, "@");
+    result.insert(0, std::to_string(currentPackageNumber));
+    result.insert(0, SEND_STRING);
+
+    responseArrived = false;
+
+    for(auto tryIndex = 0; tryIndex < TRIES_COUNT; ++tryIndex) {
+        sendto(generalSocket, result.data(), result.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+
+        if(currentPackageNumber == 0 && readLine() == ATTACH_STRING)
+            return;
+        else if(currentPackageNumber != 0) {
+            auto iterationsWait = ITERATIONS_COUNT;
+            while (!responseArrived && iterationsWait != 0)
+                --iterationsWait;
+
+            if (responseArrived)
+                return;
+        }
+    }
+
+    throw ClientException(COULD_NOT_SEND_MESSAGE);
 }
 #endif
 
 const std::string Client::readLine() throw(ClientException) {
     auto result = std::string();
 
-#ifdef _LINUX_
+#ifdef _UDP_
+
+    int iterationIndex = 0;
+
+    char input[MESSAGE_SIZE];
+    while(!this->globalInterrupt) {
+        if(currentPackageNumber == 0 && iterationIndex == 1) {
+            result.clear();
+            break;
+        }
+
+        ++iterationIndex;
+
+        bzero(input, sizeof(input));
+        auto size = sizeof(serverAddress);
+        recvfrom(generalSocket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) &serverAddress, (socklen_t *) &size);
+        result = input;
+
+        std::remove(result.begin(), result.end(), '\r');
+        if (result.back() == '\n')
+            result.pop_back();
+
+        if (result.size() < 3)
+            continue;
+
+        auto prefix = result.substr(0, 2);
+
+        if(prefix == std::string(SEND_STRING)) {
+            auto response = result.substr(2, result.size() - 2);
+            auto find = response.find_first_of('@', 0);
+
+            if(find == std::string::npos || find >= response.size() - 1)
+                continue;
+
+            auto stream = std::stringstream(response.substr(0, find));
+
+            int packageNumber;
+            stream >> packageNumber;
+            if(stream.fail())
+                continue;
+
+            if(packageNumber == 0)
+                continue;
+
+            result = response.substr(find + 1, response.size() - find - 1);
+
+            response = std::string(RESPONSE_STRING) + std::to_string(packageNumber);
+            sendto(generalSocket, response.data(), response.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+
+            if(packageNumber == 1) {
+                if(result == std::string(DETACH_STRING))
+                    throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
+                else
+                    continue;
+            }
+
+            break;
+        }
+        else if(prefix == std::string(RESPONSE_STRING)) {
+            auto stream = std::stringstream(result.substr(2, result.size() - 2));
+
+            int packageNumber;
+            stream >> packageNumber;
+            if(stream.fail())
+                continue;
+
+            if(packageNumber != currentPackageNumber)
+                continue;
+
+            responseArrived = true;
+
+            if(packageNumber == currentPackageNumber == 0) {
+                result = ATTACH_STRING;
+                break;
+            }
+
+            continue;
+        }
+        else
+            continue;
+    }
+
+#endif
+
 #ifdef _TCP_
+#ifdef _LINUX_
+
     char resolvedSymbol = ' ';
 
     for(auto index = 0; index < MESSAGE_SIZE; ++index) {
@@ -214,25 +335,7 @@ const std::string Client::readLine() throw(ClientException) {
             result.push_back(resolvedSymbol);
     }
 #endif
-#ifdef _UDP_
-    char input[MESSAGE_SIZE];
-    bzero(input, sizeof(input));
-    auto size = sizeof(serverAddress);
-    recvfrom(generalSocket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, (socklen_t*) &size);
-    result = input;
-
-    if(result.back() == '\n')
-        result.erase(result.size() - 1);
-
-    if(result == std::string(DETACH_STRING)) {
-        sendto(generalSocket, DETACH_STRING, strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
-        throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
-    }
-#endif
-#endif
-
 #ifdef _WIN_
-#ifdef _TCP_
     char resolvedSymbol = ' ';
 
     while(true) {
@@ -247,21 +350,6 @@ const std::string Client::readLine() throw(ClientException) {
             result.push_back(resolvedSymbol);
     }
 #endif
-#ifdef _UDP_
-    char input[MESSAGE_SIZE];
-    memset(input, 0, sizeof(input));
-    auto size = sizeof(serverAddress);
-    recvfrom(generalSocket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, (socklen_t*) &size);
-    result = input;
-
-    if(result.back() == '\n')
-        result.erase(result.size() - 1);
-
-    if(result == std::string(DETACH_STRING)) {
-        sendto(generalSocket, DETACH_STRING, (int) strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
-        throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
-    }
-#endif
 #endif
 
     return result;
@@ -273,7 +361,7 @@ const void Client::stop() throw(ClientException) {
         send(generalSocket, "exit\n", 5, EMPTY_FLAGS);
 #endif
 #ifdef _UDP_
-        sendto(generalSocket, "exit\n", 5, EMPTY_FLAGS, (struct sockaddr*) &serverAddress, sizeof(serverAddress));
+        writeLine("exit", false);
 #endif
 
     if(readThread != nullptr && readThread->joinable())

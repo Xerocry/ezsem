@@ -114,6 +114,11 @@ public:
         std::string userName;
         std::shared_ptr<std::thread> thread;
 
+#ifdef _UDP_
+        int currentPackageNumber;
+        int progressivePackageNumber;
+#endif
+
 #ifdef _LINUX_
         int socket = -1;
 #endif
@@ -137,9 +142,10 @@ private:
         COULD_NOT_RECEIVE_MESSAGE = 0x5,
         COULD_NOT_SHUT_SOCKET_DOWN = 0x6,
         COULD_NOT_CLOSE_SOCKET = 0x7,
+        COULD_NOT_SEND_MESSAGE = 0x8,
 #ifdef _WIN_
-        COULD_NOT_STARTUP = 0x8,
-        COULD_NOT_RESOLVE_ADDRESS = 0x9,
+        COULD_NOT_STARTUP = 0x9,
+        COULD_NOT_RESOLVE_ADDRESS = 0xA,
 #endif
     };
 
@@ -150,7 +156,6 @@ private:
 #ifdef _UDP_
     static constexpr const char* SEND_STRING = "@S";
     static constexpr const char* RESPONSE_STRING = "@R";
-    static constexpr const char* CONNECT_STRING = "@C";
     static constexpr const char* ACCEPT_STRING = "@A";
     static constexpr const char* DETACH_STRING = "@D";
 #endif
@@ -251,7 +256,6 @@ private:
 #endif
 #endif
 #ifdef _WIN_
-
 #ifdef _TCP_
     static void* clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket);
     const void acceptClient(const int threadId, const SOCKET clientSocket) throw(ServerException);

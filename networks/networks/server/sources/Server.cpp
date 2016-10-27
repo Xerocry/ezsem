@@ -498,6 +498,46 @@ const void Server::writeLine(const std::string& message, const SOCKET socket) th
     send(socket, message.data(), (int) message.size(), EMPTY_FLAGS);
 #endif
 #ifdef _UDP_
+    auto result = std::string(message);
+
+    if(special) {
+        currentPackageNumber = (message == std::string(ATTACH_STRING)) ? 0 : -1;
+        if(currentPackageNumber == -1)
+            return;
+    }
+    else {
+        currentPackageNumber = progressivePackageNumber;
+        ++progressivePackageNumber;
+    }
+
+    std::remove(result.begin(), result.end(), '\r');
+    if(result.back() != '\n')
+        result.push_back('\n');
+
+    result.insert(0, "@");
+    result.insert(0, std::to_string(currentPackageNumber));
+    result.insert(0, SEND_STRING);
+
+    responseArrived = false;
+
+    for(auto tryIndex = 0; tryIndex < TRIES_COUNT; ++tryIndex) {
+        sendto(generalSocket, result.data(), result.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+
+        if(currentPackageNumber == 0 && readLine() == ATTACH_STRING)
+            return;
+        else if(currentPackageNumber != 0) {
+            auto iterationsWait = ITERATIONS_COUNT;
+            while (!responseArrived && iterationsWait != 0)
+                --iterationsWait;
+
+            if (responseArrived)
+                return;
+        }
+    }
+
+    throw ServerException(COULD_NOT_SEND_MESSAGE);
+
+
     sendto(socket, message.data(), (int) message.size(), EMPTY_FLAGS, (sockaddr *) clientAddress, sizeof(struct sockaddr_in));
 #endif
 }
@@ -612,6 +652,8 @@ const void Server::createClientThread(const SOCKET clientSocket, sockaddr_in* cl
     user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket);
 #endif
 #ifdef _UDP_
+    user->currentPackageNumber = -1;
+    user->progressivePackageNumber = 2;
     user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket, clientAddress);
 #endif
     user->socket = clientSocket;
@@ -1949,6 +1991,9 @@ const char* Server::ServerException::what() const noexcept {
 
         case COULD_NOT_CLOSE_SOCKET:
             return "It's impossible to close socket.";
+
+        case COULD_NOT_SEND_MESSAGE:
+            return "It's impossible to send message.";
 
 #ifdef _WIN_
         case COULD_NOT_STARTUP:

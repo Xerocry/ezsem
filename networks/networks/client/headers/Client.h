@@ -37,6 +37,7 @@
 
 #include <iostream>
 #include <thread>
+#include <map>
 
 class Client {
 private:
@@ -55,10 +56,17 @@ private:
     static const int MESSAGE_SIZE = 1000;
 
 #ifdef _UDP_
+    static const int TRIES_COUNT = 5;
+    static const int ITERATIONS_COUNT = 10000;
+
     static constexpr const char* SEND_STRING = "@S";
     static constexpr const char* RESPONSE_STRING = "@R";
     static constexpr const char* ATTACH_STRING = "@A";
     static constexpr const char* DETACH_STRING = "@D";
+
+    bool responseArrived;
+    int progressivePackageNumber = 2;
+    int currentPackageNumber;
 #endif
 
     std::shared_ptr<std::thread> readThread;
@@ -103,7 +111,7 @@ public:
     static void* readThreadInitialize(void *thisPtr);
     const void feedbackExecutor();
 #ifdef _UDP_
-    const void writeLine() throw(ClientException);
+    const void writeLine(const std::string message, const bool special) throw(ClientException);
 #endif
     const std::string readLine() throw(ClientException);
 
