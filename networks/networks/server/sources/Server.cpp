@@ -10,6 +10,7 @@
 #include <fstream>
 #include <sstream>
 #include <iomanip>
+#include <algorithm>
 
 #if defined(_LINUX_) || defined(_UDP_)
 Server::Server(std::ostream* out, std::istream* in, std::ostream* error, const uint16_t port, const char* filename) throw(ServerException) {
@@ -134,6 +135,10 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
     auto bind = std::bind(&Server::commandThreadInitialize, std::placeholders::_1);
     commandThread = std::make_shared<std::thread>(bind, this);
 
+#ifdef _UDP_
+    const auto attachMessage = std::string(SEND_STRING) + "0@" +  std::string(ATTACH_STRING);
+#endif
+
     while(!this->generalInterrupt) {
         auto clientAddress = new sockaddr_in;
         auto size = sizeof(struct sockaddr_in);
@@ -146,6 +151,7 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
 #ifdef _LINUX_
         bzero(connectionBuffer, sizeof(connectionBuffer));
         auto clientSocket = (int) recvfrom(generalSocket, connectionBuffer, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, (socklen_t *) &size);
+
 #endif
 #ifdef _WIN_
         memset(connectionBuffer, 0, sizeof(connectionBuffer));
@@ -162,9 +168,16 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
 
 #ifdef _UDP_
 #ifdef _LINUX_
-            if(std::string(connectionBuffer) == std::string(CONNECT_STRING)) {
+            auto connectionString = std::string(connectionBuffer);
+
+            std::remove(connectionString.begin(), connectionString.end(), '\r');
+            if(connectionString.back() == '\n')
+                connectionString.pop_back();
+
+            if(connectionString == attachMessage) {
                 clientSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-                sendto(clientSocket, ACCEPT_STRING, MESSAGE_SIZE, EMPTY_FLAGS, (sockaddr *) clientAddress, size);
+                auto responseString = std::string(RESPONSE_STRING) + "0";
+                sendto(clientSocket, responseString.data(), responseString.size(), EMPTY_FLAGS, (sockaddr *) clientAddress, size);
                 createClientThread(clientSocket, clientAddress);
             }
 #endif
@@ -354,7 +367,8 @@ const void Server::refreshTiming(const int eventId) {
 
 #ifdef _UDP_
 #ifdef _LINUX_
-void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const sockaddr_in* clientAddress) {
+void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const sockaddr_in* clientAddress,
+                                     int* currentPackageNumber, int* progressivePackageNumber, bool* responseArrived) {
 #endif
 #ifdef _WIN_
 void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress) {
@@ -377,7 +391,7 @@ void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const SO
         serverPtr->acceptClient(threadId, clientSocket);
 #endif
 #ifdef _UDP_
-        serverPtr->acceptClient(threadId, clientSocket, clientAddress);
+        serverPtr->acceptClient(threadId, clientSocket, clientAddress, currentPackageNumber, progressivePackageNumber, responseArrived);
 #endif
     }
     catch (const ServerException& exception) {
@@ -405,7 +419,8 @@ void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const SO
 
 #ifdef _UDP_
 #ifdef _LINUX_
-const void Server::acceptClient(const int threadId, const int clientSocket, const sockaddr_in* clientAddress) throw(ServerException) {
+const void Server::acceptClient(const int threadId, const int clientSocket, const sockaddr_in* clientAddress,
+                                int* currentPackageNumber, int* progressivePackageNumber, bool* responseArrived) throw(ServerException) {
 #endif
 #ifdef _WIN_
 const void Server::acceptClient(const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress) throw(ServerException) {
@@ -432,7 +447,7 @@ const void Server::acceptClient(const int threadId, const SOCKET clientSocket) t
             message = readLine(clientSocket);
 #endif
 #ifdef _UDP_
-            message = readLine(clientSocket, clientAddress);
+            message = readLine(clientSocket, clientAddress, currentPackageNumber, responseArrived, false);
 #endif
 #endif
 #ifdef _WIN_
@@ -470,14 +485,16 @@ const void Server::acceptClient(const int threadId, const SOCKET clientSocket) t
         writeLine(stream->str(), clientSocket);
 #endif
 #ifdef _UDP_
-        writeLine(stream->str(), clientSocket, clientAddress);
+        writeLine(stream->str(), clientSocket, clientAddress, currentPackageNumber, progressivePackageNumber, responseArrived, false, false);
 #endif
     }
 }
 
 #ifdef _UDP_
 #ifdef _LINUX_
-const void Server::writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress) throw(ServerException) {
+const void Server::writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress,
+                             int* currentPackageNumber, int* progressivePackageNumber, bool* responseArrived,
+                             const bool special, const bool waitThreadRead) throw(ServerException) {
 #endif
 #ifdef _WIN_
 const void Server::writeLine(const std::string& message, const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException) {
@@ -501,13 +518,14 @@ const void Server::writeLine(const std::string& message, const SOCKET socket) th
     auto result = std::string(message);
 
     if(special) {
-        currentPackageNumber = (message == std::string(ATTACH_STRING)) ? 0 : -1;
-        if(currentPackageNumber == -1)
+        *currentPackageNumber = (message == std::string(ATTACH_STRING)) ? 0 :
+                                ((message == std::string(DETACH_STRING)) ? 1 : -1);
+        if(*currentPackageNumber == -1)
             return;
     }
     else {
-        currentPackageNumber = progressivePackageNumber;
-        ++progressivePackageNumber;
+        *currentPackageNumber = *progressivePackageNumber;
+        ++(*progressivePackageNumber);
     }
 
     std::remove(result.begin(), result.end(), '\r');
@@ -515,36 +533,35 @@ const void Server::writeLine(const std::string& message, const SOCKET socket) th
         result.push_back('\n');
 
     result.insert(0, "@");
-    result.insert(0, std::to_string(currentPackageNumber));
+    result.insert(0, std::to_string(*currentPackageNumber));
     result.insert(0, SEND_STRING);
 
-    responseArrived = false;
+    *responseArrived = false;
 
     for(auto tryIndex = 0; tryIndex < TRIES_COUNT; ++tryIndex) {
-        sendto(generalSocket, result.data(), result.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+        auto size = sizeof(struct sockaddr_in);
+        sendto(socket, result.data(), result.size(), EMPTY_FLAGS, (sockaddr *) clientAddress, size);
 
-        if(currentPackageNumber == 0 && readLine() == ATTACH_STRING)
+        if(!waitThreadRead && readLine(socket, clientAddress, currentPackageNumber, responseArrived, true) == RESPONSE_STRING)
             return;
-        else if(currentPackageNumber != 0) {
+        else {
             auto iterationsWait = ITERATIONS_COUNT;
-            while (!responseArrived && iterationsWait != 0)
+            while (!(*responseArrived) && iterationsWait != 0)
                 --iterationsWait;
 
-            if (responseArrived)
+            if (*responseArrived)
                 return;
         }
     }
 
     throw ServerException(COULD_NOT_SEND_MESSAGE);
-
-
-    sendto(socket, message.data(), (int) message.size(), EMPTY_FLAGS, (sockaddr *) clientAddress, sizeof(struct sockaddr_in));
 #endif
 }
 
 #ifdef _UDP_
 #ifdef _LINUX_
-const std::string Server::readLine(const int socket, const sockaddr_in* clientAddress) throw(ServerException) {
+const std::string Server::readLine(const int socket, const sockaddr_in* clientAddress,
+                                   int* currentPackageNumber, bool* responseArrived, bool responseExecutor) throw(ServerException) {
 #endif
 #ifdef _WIN_
 const std::string Server::readLine(const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException) {
@@ -566,20 +583,91 @@ const std::string Server::readLine(const int threadId, const SOCKET socket) cons
     bzero(input, sizeof(input));
 #endif
 #ifdef _WIN_
+    ????????????????????
     auto input = new char[MESSAGE_SIZE];
-    while(result.empty()) {
+    while(!this->generalInterrupt && result.empty()) {
         memset(input, 0, MESSAGE_SIZE);
 #endif
-        auto size = sizeof(struct sockaddr_in);
-        recvfrom(socket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr*) &clientAddress, (socklen_t *) &size);
-        result = input;
+        int iterationIndex = 0;
+        while(!this->generalInterrupt) {
+            if(responseExecutor && iterationIndex == 1) {
+                result.clear();
+                break;
+            }
 
-        if (result.back() == '\n')
-            result.erase(result.size() - 1);
+            ++iterationIndex;
 
-        if (result == std::string(DETACH_STRING)) {
-            sendto(socket, DETACH_STRING, (int) strlen(DETACH_STRING), EMPTY_FLAGS, (struct sockaddr *) &clientAddress, sizeof(clientAddress));
-            throw ServerException(COULD_NOT_RECEIVE_MESSAGE);
+            bzero(input, sizeof(input));
+            auto size = sizeof(clientAddress);
+            recvfrom(socket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) &clientAddress, (socklen_t *) &size);
+            result = input;
+
+            std::remove(result.begin(), result.end(), '\r');
+            if(result.back() == '\n')
+                result.pop_back();
+
+            if(result.size() < 3)
+                continue;
+
+            auto prefix = result.substr(0, 2);
+
+            if(prefix == std::string(SEND_STRING)) {
+                auto response = result.substr(2, result.size() - 2);
+                auto find = response.find_first_of('@', 0);
+
+                if(find == std::string::npos || find >= response.size() - 1)
+                    continue;
+
+                auto stream = std::stringstream(response.substr(0, find));
+
+                int packageNumber;
+                stream >> packageNumber;
+                if(stream.fail())
+                    continue;
+
+                if(packageNumber == 0)
+                    continue;
+
+                auto message = std::string(result);
+
+                result = response.substr(find + 1, response.size() - find - 1);
+
+                response = std::string(RESPONSE_STRING) + std::to_string(packageNumber);
+                sendto(socket, response.data(), response.size(), EMPTY_FLAGS, (struct sockaddr *) &clientAddress, sizeof(clientAddress));
+
+                if(packageNumber == 1) {
+                    if(result == std::string(DETACH_STRING)) {
+                        sendto(socket, message.data(), message.size(), EMPTY_FLAGS, (struct sockaddr *) &clientAddress, sizeof(clientAddress));
+                        throw ServerException(COULD_NOT_RECEIVE_MESSAGE);
+                    }
+                    else
+                        continue;
+                }
+
+                break;
+            }
+            else if(prefix == std::string(RESPONSE_STRING)) {
+                auto stream = std::stringstream(result.substr(2, result.size() - 2));
+
+                int packageNumber;
+                stream >> packageNumber;
+                if(stream.fail())
+                    continue;
+
+                if(packageNumber != *currentPackageNumber)
+                    continue;
+
+                *responseArrived = true;
+
+                if(responseExecutor) {
+                    result = RESPONSE_STRING;
+                    break;
+                }
+
+                continue;
+            }
+            else
+                continue;
         }
 #ifdef _WIN_
     }
@@ -643,7 +731,8 @@ const void Server::createClientThread(const SOCKET clientSocket, sockaddr_in* cl
     auto bind = std::bind(&Server::clientThreadInitialize, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
 #endif
 #ifdef _UDP_
-    auto bind = std::bind(&Server::clientThreadInitialize, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4);
+    auto bind = std::bind(&Server::clientThreadInitialize, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4,
+                          std::placeholders::_5, std::placeholders::_6, std::placeholders::_7);
 #endif
 
     auto user = new User;
@@ -654,7 +743,8 @@ const void Server::createClientThread(const SOCKET clientSocket, sockaddr_in* cl
 #ifdef _UDP_
     user->currentPackageNumber = -1;
     user->progressivePackageNumber = 2;
-    user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket, clientAddress);
+    user->responseArrived = false;
+    user->thread = std::make_shared<std::thread>(bind, this, index, clientSocket, clientAddress, &(user->currentPackageNumber), &(user->progressivePackageNumber), &(user->responseArrived));
 #endif
     user->socket = clientSocket;
 #if defined(_WIN_) && defined(_TCP_)
@@ -807,7 +897,9 @@ const void Server::stop() throw(ServerException){
 
     for (auto &current: this->users) {
 #ifdef _UDP_
-        writeLine(DETACH_STRING, current.second->socket, current.second->address);
+        writeLine(DETACH_STRING, current.second->socket, current.second->address,
+                  &(current.second->currentPackageNumber), &(current.second->progressivePackageNumber), &(current.second->responseArrived),
+                  true, true);
 
         if (current.second->thread != nullptr && current.second->thread.get()->joinable())
             current.second->thread.get()->join();
@@ -1035,15 +1127,17 @@ const void Server::ServerController::eventNotify(const char *eventName) const {
     auto eventString = std::string(eventName);
     for(auto& currentSubscription: this->serverPtr->subscriptions)
         if(currentSubscription.second == eventString)
-            for(auto& currentUsers : this->serverPtr->users)
-                if(currentUsers.second->userName == currentSubscription.first) {
+            for(auto& currentUser : this->serverPtr->users)
+                if(currentUser.second->userName == currentSubscription.first) {
                     std::stringstream stream;
                     stream << nowStruct->tm_hour << ":" << nowStruct->tm_min << ":" << nowStruct->tm_sec << " Notify about the event \"" << currentSubscription.second << "\"." << std::endl;
 #ifdef _TCP_
-                    this->serverPtr->writeLine(stream.str(), currentUsers.second->socket);
+                    this->serverPtr->writeLine(stream.str(), currentUser.second->socket);
 #endif
 #ifdef _UDP_
-                    this->serverPtr->writeLine(stream.str(), currentUsers.second->socket, currentUsers.second->address);
+                    this->serverPtr->writeLine(stream.str(), currentUser.second->socket, currentUser.second->address,
+                                               &(currentUser.second->currentPackageNumber), &(currentUser.second->progressivePackageNumber), &(currentUser.second->responseArrived),
+                                               true, true);
 #endif
                 }
 
@@ -1546,7 +1640,9 @@ const void Server::ServerController::load() const throw(ControllerException) {
 
     for(auto& current: this->serverPtr->users) {
 #ifdef _UDP_
-        this->serverPtr->writeLine(DETACH_STRING, current.second->socket, current.second->address);
+        this->serverPtr->writeLine(DETACH_STRING, current.second->socket, current.second->address,
+                                   &(current.second->currentPackageNumber), &(current.second->progressivePackageNumber), &(current.second->responseArrived),
+                                   true, true);
 
         if (current.second->thread != nullptr && current.second->thread.get()->joinable())
             current.second->thread.get()->join();
@@ -1733,7 +1829,9 @@ const void Server::ServerController::detach(const char *userName) const throw(Co
     for(auto& current: this->serverPtr->users)
         if(current.second->userName == userName) {
 #ifdef _UDP_
-            this->serverPtr->writeLine(DETACH_STRING, current.second->socket, current.second->address);
+            this->serverPtr->writeLine(DETACH_STRING, current.second->socket, current.second->address,
+                                       &(current.second->currentPackageNumber), &(current.second->progressivePackageNumber), &(current.second->responseArrived),
+                                       true, true);
 
             if (current.second->thread != nullptr && current.second->thread->joinable())
                 current.second->thread->join();
@@ -1783,7 +1881,9 @@ const void Server::ServerController::close(const SOCKET socket) const throw(Cont
     for(auto& current: this->serverPtr->users)
         if(current.second->socket == socket) {
 #ifdef _UDP_
-            this->serverPtr->writeLine(DETACH_STRING, current.second->socket, current.second->address);
+            this->serverPtr->writeLine(DETACH_STRING, current.second->socket, current.second->address,
+                                       &(current.second->currentPackageNumber), &(current.second->progressivePackageNumber), &(current.second->responseArrived),
+                                       true, false);
 
             this->serverPtr->clearSocket(current.first, current.second->socket);
             current.second->thread->detach();

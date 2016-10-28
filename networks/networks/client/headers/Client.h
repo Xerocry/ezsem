@@ -74,7 +74,7 @@ private:
     std::ostream* out;
     std::istream* in;
 
-    bool globalInterrupt;
+    bool generalInterrupt;
 
     int generalWSAStartup = -1;
 

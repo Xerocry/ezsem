@@ -34,6 +34,8 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
     serverAddress.sin_addr.s_addr = inet_addr(address);
 
 #ifdef _UDP_
+    this->generalInterrupt = false;
+
     try { writeLine(ATTACH_STRING, true); }
     catch (const ClientException& exception) {
         throw ClientException(COULD_NOT_CREATE_CONNECTION);
@@ -116,7 +118,7 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
 }
 
 const void Client::start() throw(ClientException) {
-    this->globalInterrupt = false;
+    this->generalInterrupt = false;
 
     auto bind = std::bind(&Client::readThreadInitialize, std::placeholders::_1);
     readThread = std::make_shared<std::thread>(bind, this);
@@ -126,7 +128,7 @@ const void Client::start() throw(ClientException) {
 #ifdef _WIN_
 #endif
 
-    while(!this->globalInterrupt) {
+    while(!this->generalInterrupt) {
 #ifdef _LINUX_
         fd_set set;
         FD_ZERO(&set);
@@ -141,7 +143,7 @@ const void Client::start() throw(ClientException) {
         std::getline(*this->in, clientMessage);
 
 #ifdef _WIN_
-        if(this->globalInterrupt)
+        if(this->generalInterrupt)
             break;
 #endif
 
@@ -181,7 +183,7 @@ const void Client::feedbackExecutor() {
             *this->out << readLine() << std::endl;
         }
         catch (const ClientException& exception) {
-            this->globalInterrupt = true;
+            this->generalInterrupt = true;
 #ifdef _WIN_
             *this->out << "Connection lost. Press \"Enter\" to exit." << std::endl;
 #endif
@@ -241,7 +243,7 @@ const std::string Client::readLine() throw(ClientException) {
     int iterationIndex = 0;
 
     char input[MESSAGE_SIZE];
-    while(!this->globalInterrupt) {
+    while(!this->generalInterrupt) {
         if(currentPackageNumber == 0 && iterationIndex == 1) {
             result.clear();
             break;
@@ -280,14 +282,18 @@ const std::string Client::readLine() throw(ClientException) {
             if(packageNumber == 0)
                 continue;
 
+            auto message = std::string(result);
+
             result = response.substr(find + 1, response.size() - find - 1);
 
             response = std::string(RESPONSE_STRING) + std::to_string(packageNumber);
             sendto(generalSocket, response.data(), response.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
 
             if(packageNumber == 1) {
-                if(result == std::string(DETACH_STRING))
+                if(result == std::string(DETACH_STRING)) {
+                    sendto(generalSocket, message.data(), message.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
                     throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
+                }
                 else
                     continue;
             }
@@ -307,7 +313,7 @@ const std::string Client::readLine() throw(ClientException) {
 
             responseArrived = true;
 
-            if(packageNumber == currentPackageNumber == 0) {
+            if(packageNumber == 0 && currentPackageNumber == 0) {
                 result = ATTACH_STRING;
                 break;
             }
@@ -356,7 +362,7 @@ const std::string Client::readLine() throw(ClientException) {
 }
 
 const void Client::stop() throw(ClientException) {
-    if(!this->globalInterrupt)
+    if(!this->generalInterrupt)
 #ifdef _TCP_
         send(generalSocket, "exit\n", 5, EMPTY_FLAGS);
 #endif

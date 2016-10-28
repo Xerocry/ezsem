@@ -117,6 +117,7 @@ public:
 #ifdef _UDP_
         int currentPackageNumber;
         int progressivePackageNumber;
+        bool responseArrived;
 #endif
 
 #ifdef _LINUX_
@@ -154,9 +155,12 @@ private:
     static const int MESSAGE_SIZE = 1000;
 
 #ifdef _UDP_
+    static const int TRIES_COUNT = 5;
+    static const int ITERATIONS_COUNT = 10000;
+
     static constexpr const char* SEND_STRING = "@S";
     static constexpr const char* RESPONSE_STRING = "@R";
-    static constexpr const char* ACCEPT_STRING = "@A";
+    static constexpr const char* ATTACH_STRING = "@A";
     static constexpr const char* DETACH_STRING = "@D";
 #endif
 
@@ -234,8 +238,10 @@ private:
     const void acceptClient(const int threadId, const int clientSocket) throw(ServerException);
 #endif
 #ifdef _UDP_
-    static void* clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const sockaddr_in* clientAddress);
-    const void acceptClient(const int threadId, const int clientSocket, const sockaddr_in* clientAddress) throw(ServerException);
+    static void* clientThreadInitialize(void *thisPtr, const int threadId, const int clientSocket, const sockaddr_in* clientAddress,
+                                        int* currentPackageNumber, int* progressivePackageNumber, bool* responseArrived);
+    const void acceptClient(const int threadId, const int clientSocket, const sockaddr_in* clientAddress,
+                            int* currentPackageNumber, int* progressivePackageNumber, bool* responseArrived) throw(ServerException);
 #endif
 
     const void createClientThread(const int clientSocket, sockaddr_in* clientAddress);
@@ -246,13 +252,16 @@ private:
     const void writeLine(const std::string& message, const int socket) throw(ServerException);
 #endif
 #ifdef _UDP_
-    const void writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress) throw(ServerException);
+    const void writeLine(const std::string& message, const int socket, const sockaddr_in* clientAddress,
+                         int* currentPackageNumber, int* progressivePackageNumber, bool* responseArrived,
+                         const bool special, const bool waitThreadRead) throw(ServerException);
 #endif
 #ifdef _TCP_
     const std::string readLine(const int socket) throw(ServerException);
 #endif
 #ifdef _UDP_
-    const std::string readLine(const int socket, const sockaddr_in* clientAddress) throw(ServerException);
+    const std::string readLine(const int socket, const sockaddr_in* clientAddress,
+                         int* currentPackageNumber, bool* responseArrived, bool responseExecutor) throw(ServerException);
 #endif
 #endif
 #ifdef _WIN_
