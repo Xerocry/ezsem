@@ -2,18 +2,18 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/headers" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/sources/ClientCommand.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/sources/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/sources/Command.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/sources/ServerCommand.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/server/sources/Server.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/server/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/sources/ServerCommand.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/sources/main.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/sources/Server.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/sources/ClientCommand.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/server/sources/Command.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/client/headers" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/client/sources/main.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/client/sources/Client.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/client/CMakeLists.txt" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/client/sources/Client.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/client/sources/main.cpp" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/bin" />
       <excludeFolder url="file://$MODULE_DIR$/client/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/outputs" />
@@ -22,17 +22,13 @@
     <orderEntry type="module-library">
       <library name="Header Search Paths">
         <CLASSES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
-          <root url="file:///usr/include" />
-          <root url="file:///usr/local/include" />
+          <root url="file://C:/cygwin64/lib/gcc/x86_64-pc-cygwin/5.4.0/include" />
+          <root url="file://C:/cygwin64/usr/include" />
           <root url="file://$MODULE_DIR$/libraries" />
         </CLASSES>
         <SOURCES>
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include-fixed" />
-          <root url="file:///usr/lib/gcc/x86_64-linux-gnu/5/include" />
-          <root url="file:///usr/include" />
-          <root url="file:///usr/local/include" />
+          <root url="file://C:/cygwin64/lib/gcc/x86_64-pc-cygwin/5.4.0/include" />
+          <root url="file://C:/cygwin64/usr/include" />
           <root url="file://$MODULE_DIR$/libraries" />
         </SOURCES>
       </library>
