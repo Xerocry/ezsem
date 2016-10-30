@@ -1,0 +1,22 @@
+nikita@nikita-VirtualBox:~/files/work$ gcc getopt.c -o getopt
+nikita@nikita-VirtualBox:~/files/work$ ./getopt -a -b -d -C
+found argument "a".
+found argument "b = -d".
+found argument "C = (null)".
+nikita@nikita-VirtualBox:~/files/work$ ./getopt -a -b -C -d
+found argument "a".
+found argument "b = -C".
+found argument "d"
+nikita@nikita-VirtualBox:~/files/work$ ./getopt -a -b3 -C -d
+found argument "a".
+found argument "b = 3".
+found argument "C = (null)".
+found argument "d"
+nikita@nikita-VirtualBox:~/files/work$ ./getopt -a -b3 -b2 -b 2332
+found argument "a".
+found argument "b = 3".
+found argument "b = 2".
+found argument "b = 2332".
+nikita@nikita-VirtualBox:~/files/work$ ./getopt -v
+./getopt: invalid option -- 'v'
+Error found !

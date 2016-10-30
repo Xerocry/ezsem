@@ -1,0 +1,6 @@
+nikita@nikita-VirtualBox:~/files/work$ gcc setenv.c -o setenv
+nikita@nikita-VirtualBox:~/files/work$ ./setenv 
+Home directory: "/something"
+User name: "nikita"
+New parametr from __environ: "MY_SUPER_PARAMETR=SUPER"
+New parametr from getenv: "SUPER"

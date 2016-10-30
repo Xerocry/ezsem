@@ -1,0 +1,9 @@
+nikita@nikita-VirtualBox:~/files/work$ gcc getenv.c -o getenv
+nikita@nikita-VirtualBox:~/files/work$ ./getenv 
+Home directory: "/home/nikita"
+User name: "nikita"
+nikita@nikita-VirtualBox:~/files/work$ gcc getenv.c -o getenv
+nikita@nikita-VirtualBox:~/files/work$ ./getenv 
+Home directory: "/home/nikita"
+User name: "nikita"
+Program directory: "/home/nikita/files/work"
