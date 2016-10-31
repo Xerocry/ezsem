@@ -1,0 +1,28 @@
+AutoECO Report
+FILE-A: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+FILE-B: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MNL
+If "*EOF*" immediately follows, no changes were made
+Adding footprint AX/RC05
+Adding footprint RAD/CK05
+Adding footprint DIP.100/8/W.300/L.450
+Adding package R
+Adding package C
+Adding package AD741
+Adding component R5
+Adding component C1
+Adding component R1
+Adding component R2
+Adding component D1
+Adding component R3
+Adding component R4
+Adding component D2
+Adding net 0
+Adding net N30565
+Adding net N30341
+Adding net N30308
+Adding net N30635
+Adding net VCC
+Adding net VEE
+Deleting net DEFAULT
+*EOF*
+No errors found
