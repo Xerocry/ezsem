@@ -1585,3 +1585,459 @@ Sun Nov 06 06:15:44 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\templat
 Sun Nov 06 06:15:45 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
 Sun Nov 06 06:15:45 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
 Sun Nov 06 06:15:46 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:36:12 Saved as file BACKUP1.MAX
+Fri Nov 11 19:46:42 Saved as file BACKUP1.MAX
+Fri Nov 11 19:56:51 Saved as file ~undo.max
+Fri Nov 11 19:56:59 Saved as file ~undo.max
+Fri Nov 11 19:57:00 Saved as file ~undo.max
+Fri Nov 11 19:57:03 Saved as file ~undo.max
+Fri Nov 11 19:58:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:58:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:58:39 Loaded file D:\AFILES\STUDENT\TEMP\KULEBINA\LIBRARY.LLB
+Fri Nov 11 19:58:40 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:58:42 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:58:44 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 19:58:45 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:58:46 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:58:47 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 19:58:48 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:00:03 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:00:04 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:19:36 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Fri Nov 11 20:19:36 Saved as file BACKUP1.MAX
+Fri Nov 11 20:19:36 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Fri Nov 11 20:19:37 UserDiv from Layout.INI for AutoECO: 60
+Fri Nov 11 20:19:37 Loaded file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Fri Nov 11 20:19:37 Loaded file D:\DOWNLOADS\PLYB.LLB
+Fri Nov 11 20:19:37 Loaded file D:\AFILES\STUDENT\TEMP\KULEBINA\LIBRARY.LLB
+Fri Nov 11 20:19:37 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\BCON100T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\BCON156T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\BGA.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\CLCC.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DCON050T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DCON085T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DIMM050F.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DIMM050T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DIN.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DIP100B.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DIP100T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DSUBT.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DSUBT_HD.LLB
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\ECON100T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\FBUS.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\ISA.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\JUMPER.LLB
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\LAYOUT.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\LCON100T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\PC104.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\PCI.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\PCON100T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\PCON156T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\PGA.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\PLCC.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\QUAD.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\QUADB.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\RELAY.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\RF.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SBUS.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SIMM050F.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SIMM050T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SIMM100F.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SIMM100T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SIP.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SM.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SOG.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\SOJ.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\STIFF.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TELE.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_AXIAL.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_CAP_P.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_CYLND.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_DIODE.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_DISC.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_RAD.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TO.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TRAINING.LLB
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\VRES.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\WCON100T.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\XT.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\ZIGZAG.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_AXIAL.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\TM_RAD.llb
+Fri Nov 11 20:19:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\DIP100T.llb
+Fri Nov 11 20:19:37 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Fri Nov 11 20:19:37 Loaded file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Fri Nov 11 20:20:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:20:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:20:28 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 20:20:29 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:20:30 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:20:30 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:20:31 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:20:32 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:23:20 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:24:21 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:26:14 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 20:30:22 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 20:49:36 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 20:49:36 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 20:49:36 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:49:37 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:51:26 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 20:54:58 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 20:54:58 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 20:54:58 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:54:59 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:55:30 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 20:55:36 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 20:55:49 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:55:51 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 20:55:52 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 20:56:40 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 20:57:34 Loaded file d:\programfiles86\Orcad\Layout_Plus\library\padstack.llb
+Fri Nov 11 21:09:01 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:09:01 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:09:01 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:09:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:10:47 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:10:47 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:10:47 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:10:47 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:10:58 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:11:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:11:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:11:49 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:11:51 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:11:53 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:23:59 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:24:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:24:01 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:28:18 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:28:18 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:28:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:28:19 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:43 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:29:43 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:29:43 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:44 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:44 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:46 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:47 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:47 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:52 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:54 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:29:55 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:30:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:31:13 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:31:13 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:31:14 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:31:15 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:31:16 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:31:25 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:31:36 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:32:43 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:32:43 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:32:43 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:32:44 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:32:44 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:35:00 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:35:00 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:35:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:35:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:36:08 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:36:08 Saved as file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:36:08 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:36:10 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:36:10 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:36:11 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:36:24 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:07 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:08 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:28 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:29 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:33 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:33 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:35 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:37:35 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:38:07 Saved as file BACKUP1.MAX
+Fri Nov 11 21:40:54 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:40:54 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:40:54 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:40:54 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:40:55 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:41:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:03 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:41:04 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:15 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:15 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:15 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:15 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:17 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:41:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:41:26 Saved as file ~undo.max
+Fri Nov 11 21:41:31 Saved as file ~undo.max
+Fri Nov 11 21:43:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:00 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:02 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:43:05 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:12 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:12 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:12 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:12 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:16 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:43:17 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:22 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:22 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:22 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:22 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:24 Loaded file D:\AFILES\STUDENT\TEMP\KULEBINA\LIBRARY.LLB
+Fri Nov 11 21:43:24 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:43:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:33 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:33 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:33 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:33 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:34 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:43:36 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:41 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:41 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:41 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:41 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:43:43 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:43:46 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:44:23 Saved as file ~undo.max
+Fri Nov 11 21:44:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:44:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:44:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:44:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:44:30 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:44:33 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:44:38 Saved as file ~undo.max
+Fri Nov 11 21:45:16 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:45:16 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:45:19 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:45:22 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:45:44 Saved as file ~undo.max
+Fri Nov 11 21:47:13 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:47:13 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:47:14 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:47:16 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:47:39 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:47:39 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:47:40 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Fri Nov 11 21:47:42 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:49:11 Saved as file ~undo.max
+Fri Nov 11 21:49:19 Saved as file ~undo.max
+Fri Nov 11 21:49:20 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:49:20 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Fri Nov 11 21:51:38 Saved as file BACKUP1.MAX
+Fri Nov 11 22:02:08 Saved as file BACKUP1.MAX
+Fri Nov 11 22:12:38 Saved as file BACKUP1.MAX
+Fri Nov 11 22:23:08 Saved as file BACKUP1.MAX
+Fri Nov 11 22:34:07 Saved as file BACKUP1.MAX
+Fri Nov 11 22:44:38 Saved as file BACKUP1.MAX
+Fri Nov 11 22:55:38 Saved as file BACKUP1.MAX
+Fri Nov 11 22:58:45 Saved as file ~undo.max
+Fri Nov 11 22:58:47 Saved as file ~undo.max
+Fri Nov 11 22:58:57 Saved as file ~undo.max
+Fri Nov 11 23:07:38 Saved as file BACKUP1.MAX
+Fri Nov 11 23:12:05 Saved as file ~undo.max
+Fri Nov 11 23:18:08 Saved as file BACKUP1.MAX
+Fri Nov 11 23:29:38 Saved as file BACKUP1.MAX
+Fri Nov 11 23:40:07 Saved as file BACKUP1.MAX
+Fri Nov 11 23:41:44 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Sat Nov 12 19:07:31 Saved as file ~undo.max
+Sat Nov 12 19:09:59 Saved as file ~undo.max
+Sat Nov 12 19:11:42 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Sat Nov 12 19:16:00 Saved as file ~undo.max
+Sat Nov 12 19:16:45 Saved as file ~undo.max
+Sat Nov 12 19:17:54 Saved as file ~undo.max
+Sat Nov 12 19:19:03 Saved as file ~undo.max
+Sat Nov 12 19:19:16 Saved as file ~undo.max
+Sat Nov 12 19:19:43 Saved as file ~undo.max
+Sat Nov 12 19:19:56 Saved as file ~undo.max
+Sat Nov 12 19:21:51 Saved as file BACKUP1.MAX
+Sat Nov 12 19:24:45 Saved as file ~undo.max
+Sat Nov 12 19:25:59 Saved as file ~undo.max
+Sat Nov 12 19:29:16 Saved as file ~undo.max
+Sat Nov 12 19:32:21 Saved as file BACKUP1.MAX
+Sat Nov 12 19:34:38 Saved as file ~undo.max
+Sat Nov 12 19:35:59 Saved as file ~undo.max
+Sat Nov 12 19:36:06 Saved as file ~undo.max
+Sat Nov 12 19:36:43 Saved as file ~undo.max
+Sat Nov 12 19:36:48 Saved as file ~undo.max
+Sat Nov 12 19:38:54 Saved as file ~undo.max
+Sat Nov 12 19:40:58 Saved as file ~undo.max
+Sat Nov 12 19:42:25 Saved as file ~undo.max
+Sat Nov 12 19:42:33 Saved as file ~undo.max
+Sat Nov 12 19:42:51 Saved as file BACKUP1.MAX
+Sat Nov 12 19:42:51 Saved as file ~undo.max
+Sat Nov 12 19:43:13 Saved as file ~undo.max
+Sat Nov 12 19:43:49 Saved as file ~undo.max
+Sat Nov 12 19:45:33 Saved as file ~undo.max
+Sat Nov 12 19:45:47 Saved as file ~undo.max
+Sat Nov 12 19:46:57 Saved as file ~undo.max
+Sat Nov 12 19:47:28 Saved as file ~undo.max
+Sat Nov 12 19:48:10 Saved as file ~undo.max
+Sat Nov 12 19:49:32 Saved as file ~undo.max
+Sat Nov 12 19:52:53 Saved as file ~undo.max
+Sat Nov 12 19:52:58 Saved as file ~undo.max
+Sat Nov 12 19:53:21 Saved as file BACKUP1.MAX
+Sat Nov 12 19:56:40 Saved as file ~undo.max
+Sat Nov 12 19:56:43 Saved as file ~undo.max
+Sat Nov 12 19:56:43 Saved as file ~undo.max
+Sat Nov 12 19:59:18 Saved as file ~undo.max
+Sat Nov 12 19:59:19 Saved as file ~undo.max
+Sat Nov 12 19:59:49 Saved as file ~undo.max
+Sat Nov 12 19:59:59 Saved as file ~undo.max
+Sat Nov 12 20:02:39 Saved as file ~undo.max
+Sat Nov 12 20:03:43 Saved as file ~undo.max
+Sat Nov 12 20:03:51 Saved as file BACKUP1.MAX
+Sat Nov 12 20:05:52 Saved as file ~undo.max
+Sat Nov 12 20:08:00 Saved as file ~undo.max
+Sat Nov 12 20:10:53 Saved as file ~undo.max
+Sat Nov 12 20:11:03 Saved as file ~undo.max
+Sat Nov 12 20:14:51 Saved as file BACKUP1.MAX
+Sat Nov 12 20:15:29 Saved as file ~undo.max
+Sat Nov 12 20:17:07 Saved as file ~undo.max
+Sat Nov 12 20:17:35 Saved as file ~undo.max
+Sat Nov 12 20:17:41 Saved as file ~undo.max
+Sat Nov 12 20:17:46 Saved as file ~undo.max
+Sat Nov 12 20:17:53 Saved as file ~undo.max
+Sat Nov 12 20:19:39 Saved as file ~undo.max
+Sat Nov 12 20:20:20 Saved as file ~undo.max
+Sat Nov 12 20:21:02 Saved as file ~undo.max
+Sat Nov 12 20:21:26 Saved as file ~undo.max
+Sat Nov 12 20:21:41 Saved as file ~undo.max
+Sat Nov 12 20:22:42 Saved as file ~undo.max
+Sat Nov 12 20:24:41 Saved as file ~undo.max
+Sat Nov 12 20:24:56 Saved as file ~undo.max
+Sat Nov 12 20:25:21 Saved as file BACKUP1.MAX
+Sat Nov 12 20:26:31 Saved as file ~undo.max
+Sat Nov 12 20:26:56 Saved as file ~undo.max
+Sat Nov 12 20:27:06 Saved as file ~undo.max
+Sat Nov 12 20:27:34 Saved as file ~undo.max
+Sat Nov 12 20:30:25 Saved as file ~undo.max
+Sat Nov 12 20:32:47 Saved as file ~undo.max
+Sat Nov 12 20:34:13 Saved as file ~undo.max
+Sat Nov 12 20:34:16 Saved as file ~undo.max
+Sat Nov 12 20:34:17 Saved as file ~undo.max
+Sat Nov 12 20:34:25 Saved as file ~undo.max
+Sat Nov 12 20:34:27 Saved as file ~undo.max
+Sat Nov 12 20:34:52 Saved as file ~undo.max
+Sat Nov 12 20:35:51 Saved as file BACKUP1.MAX
+Sat Nov 12 20:36:17 Saved as file ~undo.max
+Sat Nov 12 20:36:56 Saved as file ~undo.max
+Sat Nov 12 20:39:10 Saved as file ~undo.max
+Sat Nov 12 20:39:30 Saved as file ~undo.max
+Sat Nov 12 20:41:08 Saved as file ~undo.max
+Sat Nov 12 20:42:38 Saved as file ~undo.max
+Sat Nov 12 20:42:49 Saved as file ~undo.max
+Sat Nov 12 20:44:06 Saved as file ~undo.max
+Sat Nov 12 20:46:01 Saved as file ~undo.max
+Sat Nov 12 20:46:21 Saved as file BACKUP1.MAX
+Sat Nov 12 20:50:52 Saved as file ~undo.max
+Sat Nov 12 20:51:11 Saved as file ~undo.max
+Sat Nov 12 20:51:50 Saved as file ~undo.max
+Sat Nov 12 20:55:06 Saved as file ~undo.max
+Sat Nov 12 20:58:25 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Sat Nov 12 20:58:28 Saved as file ~undo.max
+Sat Nov 12 20:59:21 Saved as file BACKUP1.MAX
+Sat Nov 12 21:03:13 Saved as file ~undo.max
+Sat Nov 12 21:04:56 Saved as file ~undo.max
+Sat Nov 12 21:08:49 Saved as file ~undo.max
+Sat Nov 12 21:09:51 Saved as file BACKUP1.MAX
+Sat Nov 12 21:18:05 Saved as file ~undo.max
+Sat Nov 12 21:19:09 Saved as file ~undo.max
+Sat Nov 12 21:19:12 Saved as file ~undo.max
+Sat Nov 12 21:19:13 Saved as file ~undo.max
+Sat Nov 12 21:20:21 Saved as file BACKUP1.MAX
+Sat Nov 12 21:23:33 Saved as file ~undo.max
+Sat Nov 12 21:25:09 Saved as file ~undo.max
+Sat Nov 12 21:27:42 Saved as file ~undo.max
+Sat Nov 12 21:28:17 Saved as file ~undo.max
+Sat Nov 12 21:28:40 Saved as file ~undo.max
+Sat Nov 12 21:29:25 Saved as file ~undo.max
+Sat Nov 12 21:30:51 Saved as file BACKUP1.MAX
+Sat Nov 12 21:35:58 Saved as file ~undo.max
+Sat Nov 12 21:36:26 Saved as file ~undo.max
+Sat Nov 12 21:38:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:19 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 21:38:21 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:38 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:38 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:39 Loaded file D:\AFILES\STUDENT\TEMP\KULEBINA\LIBRARY.LLB
+Sat Nov 12 21:38:39 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 21:38:40 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:48 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:48 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:38:49 Loaded file D:\AFILES\STUDENT\TEMP\KULEBINA\LIBRARY.LLB
+Sat Nov 12 21:38:54 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 21:38:56 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:02 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:04 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 21:39:04 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:18 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:19 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 21:39:22 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:38 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:38 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:39 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 21:39:41 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:50 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:50 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:51 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 21:39:52 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:53 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:39:54 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:40:28 Saved as file ~undo.max
+Sat Nov 12 21:43:21 Saved as file BACKUP1.MAX
+Sat Nov 12 21:50:21 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:50:21 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:50:21 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:50:21 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:51:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:51:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:51:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:51:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 21:54:51 Saved as file BACKUP1.MAX
+Sat Nov 12 21:57:29 Saved as file ~undo.max
+Sat Nov 12 22:02:01 Saved as file ~undo.max
+Sat Nov 12 22:04:17 Saved as file ~undo.max
+Sat Nov 12 22:06:15 Saved as file ~undo.max
+Sat Nov 12 22:06:18 Saved as file ~undo.max
+Sat Nov 12 22:06:21 Saved as file BACKUP1.MAX
+Sat Nov 12 22:17:46 Saved as file BACKUP1.MAX
+Sat Nov 12 22:23:23 Saved as file ~undo.max
+Sat Nov 12 22:23:24 Saved as file ~undo.max
+Sat Nov 12 22:23:52 Saved as file ~undo.max
+Sat Nov 12 22:26:27 Saved as file ~undo.max
+Sat Nov 12 22:29:19 Loaded file D:\AFILES\STUDENT\TEMP\DIFF\BACKUP1.MAX
+Sat Nov 12 22:34:39 Saved as file ~undo.max
+Sat Nov 12 22:34:42 Saved as file ~undo.max
+Sat Nov 12 22:38:57 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Sat Nov 12 22:42:36 Saved as file D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+Sat Nov 12 22:42:44 Loaded file D:\AFILES\STUDENT\TEMP\DIFF\LAYOUT\DIFFAMP.MAX
+Sat Nov 12 22:54:23 Saved as file BACKUP1.MAX
+Sat Nov 12 23:00:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 23:00:27 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 23:00:28 Loaded file D:\AFILES\STUDENT\TEMP\KULEBINA\LIBRARY.LLB
+Sat Nov 12 23:00:28 Loaded file D:\AFILES\STUDENT\TEMP\APDU\SOVIET.LLB
+Sat Nov 12 23:00:30 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sat Nov 12 23:00:30 Loaded file d:\programfiles86\Orcad\Layout_Plus\data\template.imp
+Sun Nov 13 00:34:53 Saved as file BACKUP1.MAX
+Sun Nov 13 00:35:04 Saved as file ~undo.max
+Sun Nov 13 00:36:36 Saved as file ~undo.max
+Sun Nov 13 00:45:23 Saved as file BACKUP1.MAX

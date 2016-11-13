@@ -1,164 +1,28 @@
-Post Processor Report
-OrCAD FILE: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
-Sat Nov 05 22:52:50 2016
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.TOP
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.TOP:
----------------------------------------------------------
-D10:  0.1378 ROUND  --       0 Draws,       4 Flashes
-D11:  0.0500 SQUARE --       0 Draws,      16 Flashes
-D12:  0.0190 x 0.0410 OBLONG    -----      14 Flashes
-D13:  0.0190 x 0.0410 RECTANGLE -----       2 Flashes
-D14:  0.0580 ROUND  --       0 Draws,       4 Flashes
-D15:  0.0580 SQUARE --       0 Draws,       2 Flashes
-D16:  0.0010 ROUND  --       8 Draws,       0 Flashes
-D17:  0.0500 ROUND  --       0 Draws,      21 Flashes
-D18:  0.0190 ROUND  --      88 Draws,       0 Flashes
----------------------------------------------------------
-  9 D-Codes      -----      96 Draws,      63 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.BOT
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.BOT:
----------------------------------------------------------
-D10:  0.1378 ROUND  --       0 Draws,       4 Flashes
-D14:  0.0580 ROUND  --       0 Draws,       4 Flashes
-D15:  0.0580 SQUARE --       0 Draws,       2 Flashes
-D17:  0.0500 ROUND  --       0 Draws,      21 Flashes
-D18:  0.0190 ROUND  --      26 Draws,       0 Flashes
----------------------------------------------------------
-  5 D-Codes      -----      26 Draws,      31 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.GND
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.GND:
----------------------------------------------------------
-D10:  0.1378 ROUND  --       0 Draws,       4 Flashes
-D19:  0.0780 ROUND  --       0 Draws,       4 Flashes
-D20:  0.0780 SQUARE --       0 Draws,       2 Flashes
-D21:  0.0500 ROUND  --       4 Draws,       0 Flashes
-D22:  0.0750 ROUND  --       0 Draws,      21 Flashes
----------------------------------------------------------
-  5 D-Codes      -----       4 Draws,      31 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.PWR
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.PWR:
----------------------------------------------------------
-D10:  0.1378 ROUND  --       0 Draws,       4 Flashes
-D19:  0.0780 ROUND  --       0 Draws,       4 Flashes
-D20:  0.0780 SQUARE --       0 Draws,       2 Flashes
-D21:  0.0500 ROUND  --       4 Draws,       0 Flashes
-D22:  0.0750 ROUND  --       0 Draws,      21 Flashes
----------------------------------------------------------
-  5 D-Codes      -----       4 Draws,      31 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.SMT
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.SMT:
----------------------------------------------------------
-D10:  0.1378 ROUND  --       0 Draws,       4 Flashes
-D11:  0.0500 SQUARE --       0 Draws,      16 Flashes
-D12:  0.0190 x 0.0410 OBLONG    -----      14 Flashes
-D13:  0.0190 x 0.0410 RECTANGLE -----       2 Flashes
-D14:  0.0580 ROUND  --       0 Draws,       4 Flashes
-D15:  0.0580 SQUARE --       0 Draws,       2 Flashes
-D23:  0.0550 ROUND  --       0 Draws,      21 Flashes
----------------------------------------------------------
-  7 D-Codes      -----       0 Draws,      63 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.SMB
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.SMB:
----------------------------------------------------------
-D10:  0.1378 ROUND  --       0 Draws,       4 Flashes
-D14:  0.0580 ROUND  --       0 Draws,       4 Flashes
-D15:  0.0580 SQUARE --       0 Draws,       2 Flashes
-D23:  0.0550 ROUND  --       0 Draws,      21 Flashes
----------------------------------------------------------
-  4 D-Codes      -----       0 Draws,      31 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.SST
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.SST:
----------------------------------------------------------
-D24:  0.0080 ROUND  --      31 Draws,       0 Flashes
-D25:  0.0060 ROUND  --     132 Draws,       0 Flashes
-D26:  0.0079 ROUND  --      16 Draws,       0 Flashes
-D27:  0.0067 ROUND  --      21 Draws,       0 Flashes
----------------------------------------------------------
-  4 D-Codes      -----     200 Draws,       0 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.AST
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.AST:
----------------------------------------------------------
-D11:  0.0500 SQUARE --       0 Draws,      16 Flashes
-D12:  0.0190 x 0.0410 OBLONG    -----      14 Flashes
-D13:  0.0190 x 0.0410 RECTANGLE -----       2 Flashes
-D14:  0.0580 ROUND  --       0 Draws,       4 Flashes
-D15:  0.0580 SQUARE --       0 Draws,       2 Flashes
-D21:  0.0500 ROUND  --       4 Draws,       0 Flashes
-D24:  0.0080 ROUND  --      29 Draws,       0 Flashes
-D25:  0.0060 ROUND  --     299 Draws,       0 Flashes
-D27:  0.0067 ROUND  --      63 Draws,       0 Flashes
----------------------------------------------------------
-  9 D-Codes      -----     395 Draws,      38 Flashes
-
-*********************************************************
-
-Output file: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.DRD
-
-Aperture totals for D:\AFILES\STUDENT\TEMP\APDU\PROJECT.DRD:
----------------------------------------------------------
-D21:  0.0500 ROUND  --       4 Draws,       0 Flashes
-D28:  0.0100 ROUND  --     416 Draws,       0 Flashes
----------------------------------------------------------
-  2 D-Codes      -----     420 Draws,       0 Flashes
-
-
-*********************************************************
-
-Aperture totals for entire project:
----------------------------------------------------------
-D10:  0.1378 ROUND  --       0 Draws,      24 Flashes
-D11:  0.0500 SQUARE --       0 Draws,      48 Flashes
-D12:  0.0190 x 0.0410 OBLONG    -----      42 Flashes
-D13:  0.0190 x 0.0410 RECTANGLE -----       6 Flashes
-D14:  0.0580 ROUND  --       0 Draws,      20 Flashes
-D15:  0.0580 SQUARE --       0 Draws,      10 Flashes
-D16:  0.0010 ROUND  --       8 Draws,       0 Flashes
-D17:  0.0500 ROUND  --       0 Draws,      42 Flashes
-D18:  0.0190 ROUND  --     114 Draws,       0 Flashes
-D19:  0.0780 ROUND  --       0 Draws,       8 Flashes
-D20:  0.0780 SQUARE --       0 Draws,       4 Flashes
-D21:  0.0500 ROUND  --      16 Draws,       0 Flashes
-D22:  0.0750 ROUND  --       0 Draws,      42 Flashes
-D23:  0.0550 ROUND  --       0 Draws,      42 Flashes
-D24:  0.0080 ROUND  --      60 Draws,       0 Flashes
-D25:  0.0060 ROUND  --     431 Draws,       0 Flashes
-D26:  0.0079 ROUND  --      16 Draws,       0 Flashes
-D27:  0.0067 ROUND  --      84 Draws,       0 Flashes
-D28:  0.0100 ROUND  --     416 Draws,       0 Flashes
----------------------------------------------------------
- 19 D-Codes      -----    1145 Draws,     288 Flashes
-
-
-No warnings or errors.
+AutoECO Report
+FILE-A: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MAX
+FILE-B: D:\AFILES\STUDENT\TEMP\APDU\PROJECT.MNL
+If "*EOF*" immediately follows, no changes were made
+Adding footprint AX/RC05
+Adding footprint RAD/CK05
+Adding footprint DIP.100/8/W.300/L.450
+Adding package R
+Adding package C
+Adding package AD741
+Adding component R5
+Adding component C1
+Adding component R1
+Adding component R2
+Adding component D1
+Adding component R3
+Adding component R4
+Adding component D2
+Adding net 0
+Adding net N30565
+Adding net N30341
+Adding net N30308
+Adding net N30635
+Adding net VCC
+Adding net VEE
+Deleting net DEFAULT
+*EOF*
+No errors found

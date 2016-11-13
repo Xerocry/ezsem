@@ -17,7 +17,8 @@
     (LAYOUT_PCB_Footprint "{PCB Footprint}")
     (TRUE)
     (LAYOUT_Units "0")
-    (TRUE))
+    (TRUE)
+    ( "TRUE"))
   (Folder "Outputs"
     (File ".\project-main.net"
       (Type "Report"))
@@ -38,6 +39,10 @@
       (Sort User)))
   (DefaultLibraryBrowseDirectory "library\PSpice")
   (PartMRUSelector
+    (C
+      (FullPartName "C.Normal")
+      (LibraryName "D:\AFILES\STUDENT\TEMP\APDU\SOVIET.OLB")
+      (DeviceIndex "0"))
     (OUT
       (FullPartName "OUT.Normal")
       (LibraryName "D:\AFILES\STUDENT\TEMP\METROLOGYOLD\SOVIET.OLB")
@@ -51,10 +56,6 @@
       (LibraryName "D:\PROGRAM FILES\ORCAD\CAPTURE\LIBRARY\PSPICE\ANALOG.OLB")
       (DeviceIndex "0"))
     (0
-      (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
-      (DeviceIndex "0"))
-    (C
-      (FullPartName "C.Normal")
       (LibraryName "D:\STUDENT\MYPROJECT\SOVIET.OLB")
       (DeviceIndex "0"))
     (R
@@ -118,6 +119,7 @@
       (Path "Design Resources" ".\project.dsn" "RESULTCOND")
       (Path "Design Resources" ".\project.dsn" "Design Cache")
       (Path "Design Resources" "Library")
+      (Path "Design Resources" "Library" ".\soviet.olb")
       (Path "Outputs")
       (Path "PSpice Resources")
       (Path "PSpice Resources" "Simulation Profiles")
@@ -131,9 +133,9 @@
     (Doc
       (Type "COrSchematicDoc")
       (Frame
-        (Placement "44 0 1 -1 -1 -1 -1 252 1882 -14 910")
-        (Scroll "0 0")
-        (Zoom "100"))
+        (Placement "44 0 1 -1 -1 -8 -31 252 1882 -14 910")
+        (Scroll "0 102")
+        (Zoom "98"))
       (Path "D:\AFILES\STUDENT\TEMP\APDU\PROJECT.DSN")
       (Schematic "RESULTCOND")
       (Page "RESULTCOND"))))
