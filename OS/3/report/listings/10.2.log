@@ -1,0 +1,55 @@
+nikita@nikita-pc:~/temp$ g++ -std=c++11 10.2.cpp singlecore.c -o 10.2
+
+nikita@nikita-pc:~/temp$ sudo ./10.2 0 0 0 0
+Parent pid #3780, ppid #3779.
+First child pid #3781, ppid #3780.
+Second child pid #3782, ppid #3780.
+Third child pid #3783, ppid #3780.
+Second child pid #3784, ppid #3781.
+Third child pid #3785, ppid #3781.
+Third child pid #3786, ppid #3782.
+Third child pid #3787, ppid #3784.
+
+nikita@nikita-pc:~/temp$ sudo ./10.2 0 1 0 1
+Parent pid #4176, ppid #4175.
+First child pid #4177, ppid #4176.
+Second child pid #4178, ppid #4176.
+Third child pid #4179, ppid #4176.
+Second child pid #4180, ppid #4177.
+Third child pid #4181, ppid #4177.
+Third child pid #4182, ppid #4178.
+Third child pid #4183, ppid #4180.
+
+nikita@nikita-pc:~/temp$ sudo ./10.2 1 0 1 0
+Parent pid #4227, ppid #4226.
+First child pid #4228, ppid #4227.
+Second child pid #4229, ppid #4227.
+Third child pid #4230, ppid #4227.
+Second child pid #4231, ppid #4228.
+Third child pid #4232, ppid #4228.
+Third child pid #4233, ppid #4229.
+Third child pid #4234, ppid #4231.
+
+nikita@nikita-pc:~/temp$ sudo ./10.2 1 0 0 1
+Parent pid #4240, ppid #4239.
+First child pid #4241, ppid #4240.
+Second child pid #4242, ppid #4240.
+Third child pid #4243, ppid #4240.
+Second child pid #4244, ppid #4241.
+Third child pid #4245, ppid #4241.
+Third child pid #4246, ppid #4242.
+Third child pid #4247, ppid #4244.
+
+nikita@nikita-pc:~/temp$ sudo ./10.2 2 2 2 2
+Parent pid #4264, ppid #4263.
+First child pid #4265, ppid #4264.
+Third child pid #4267, ppid #4264.
+Second child pid #4266, ppid #2297.
+Third child pid #4269, ppid #2297.
+Second child pid #4268, ppid #2297.
+Third child pid #4270, ppid #2297.
+Third child pid #4271, ppid #4268.
+
+
+
+

@@ -1,0 +1,5 @@
+nikita@nikita-pc:~$ who
+nikita   tty7         2016-11-01 10:08 (:0)
+nikita@nikita-pc:~$ cat /proc/version
+Linux version 4.4.0-31-generic (buildd@lgw01-16) (gcc version 5.3.1 20160413 (Ubuntu 5.3.1-14ubuntu2.1) ) #50-Ubuntu SMP Wed Jul 13 00:07:12 UTC 2016
+

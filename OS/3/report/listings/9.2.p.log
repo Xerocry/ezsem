@@ -1,0 +1,26 @@
+nikita@nikita-pc:~/temp$ g++ -std=c++11 9.2.p.cpp -o 9.2.p
+
+nikita@nikita-pc:~/temp$ ./9.2.p 0
+Child #1 started, pid 6057, ppid 6056.
+Child process #1 has been finished  unsuccessfully.
+Child #2 started, pid 6060, ppid 6056.
+Child process #2 has been finished  successfully.
+Child #3 started, pid 6063, ppid 6056.
+Child process #3 has been finished  successfully.
+
+nikita@nikita-pc:~/temp$ ./9.2.p 1
+Child #1 started, pid 6067, ppid 6066.
+Child process #1 has been finished  successfully.
+Child #2 started, pid 6070, ppid 6066.
+Child process #2 has been finished  successfully.
+Child #3 started, pid 6074, ppid 6066.
+Child process #3 has been finished  successfully.
+
+nikita@nikita-pc:~/temp$ ./9.2.p 2
+Child #1 started, pid 6078, ppid 6077.
+Child process #1 has been finished  unsuccessfully.
+Child #2 started, pid 6081, ppid 6077.
+Child process #2 has been finished  successfully.
+Child #3 started, pid 6084, ppid 6077.
+Child process #3 has been finished  successfully.
+

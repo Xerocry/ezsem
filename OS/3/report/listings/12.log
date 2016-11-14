@@ -1,0 +1,7 @@
+nikita@nikita-pc:~/temp$ g++ 12.c singlecore.c -o 12
+nikita@nikita-pc:~/temp$ g++ -std=c++11 12.ch.cpp -o 12.ch
+Parent pid 5155, ppid 3961. Read from file: some text there
+Child pid 5156, ppid 2292. Read from file: some text there
+Process pid 5156, ppid 2292. Read from file: some text there
+
+

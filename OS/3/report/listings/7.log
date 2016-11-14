@@ -1,0 +1,18 @@
+nikita@nikita-pc:~/temp$ ./parent &
+[1] 6395
+Parent process pid #6395.
+Child process pid #6396.
+  PID TTY      STAT   TIME COMMAND
+ 2274 ?        Ss     0:00 /sbin/upstart --user
+ 2514 ?        S      0:00  \_ upstart-udev-bridge --daemon --
+( ... )
+ 5390 pts/1    Ss+    0:00  |   \_ bash
+ 6395 pts/1    S      0:00  |       \_ ./parent
+ 6396 pts/1    S      0:00  |           \_ child
+ 6397 pts/1    S      0:00  |               \_ sh -c ps -xf
+ 6398 pts/1    R      0:00  |                   \_ ps -xf
+( ... )
+Waiting child process pid #6396.
+
+[1]+  Done                    ./parent
+

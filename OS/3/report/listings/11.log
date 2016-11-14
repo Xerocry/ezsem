@@ -1,0 +1,8 @@
+nikita@nikita-pc:~/temp$ g++ -std=c++11 11.cpp singlecore.c -o 11
+nikita@nikita-pc:~/temp$ sudo ./11
+Parent pid #4130, ppid #4129.
+Parent 0.1 seconds.
+First child pid 4131, ppid 2292.
+Child 0.1 seconds.
+Child #1 started, pid 4131, ppid 2292.
+

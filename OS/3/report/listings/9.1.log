@@ -1,0 +1,14 @@
+nikita@nikita-pc:~/temp$ gcc 9.1.c -o 9.1
+nikita@nikita-pc:~/temp$ sudo ./9.1
+Child finished, pid 4835, ppid 4834.
+
+Parent started, pid 4834.
+WAIT: 4835
+STATUS: 2560
+WIFEXITED: 1
+WEXITSTATUS: 0xA
+WIFSIGNALED: 0
+WTERMSIG: 0
+WIFSTOPPED: 0
+WSTOPSIG: 0xA
+

@@ -1,0 +1,7 @@
+nikita@nikita-pc:~/temp$ gcc child.c -o child
+nikita@nikita-pc:~/temp$ gcc parent.c -o parent
+nikita@nikita-pc:~/temp$ ./parent 
+Parent process pid #6214.
+Child process pid #6215.
+Waiting child process pid #6215.
+
