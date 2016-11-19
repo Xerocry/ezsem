@@ -1,6 +1,0 @@
-nikita@nikita-pc:~/temp$ g++ -std=c++11 11.1.cpp singlecore.c -o 11.1
-nikita@nikita-pc:~/temp$ sudo ./11.1
-Parent pid #4281, ppid #4280.
-0.1 seconds.
-0.1 seconds.
-

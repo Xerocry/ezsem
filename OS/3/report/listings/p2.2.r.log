@@ -1,0 +1,17 @@
+First program result: 
+Child pid 3806, ppid 3805.
+Child has been finished.
+Parent pid 3805, ppid 3804.
+Parent has been finished.
+
+Second program result: 
+Parent pid 3807, ppid 3804.
+Parent has been finished.
+Child pid 3808, ppid 2362.
+Child has been finished.
+
+Third program result: 
+Child pid 3811, ppid 3810.
+Child has been finished.
+Parent pid 3810, ppid 3804.
+Parent has been finished.

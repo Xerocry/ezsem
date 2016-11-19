@@ -1,0 +1,6 @@
+nikita@nikita-pc:~/temp$ date +"%H:%M:%S.%5N" & sudo kill 3527 -s 2 & date +"%H:%M:%S.%5N" &  sudo kill 3526 -s 2
+( ... )
+03:27:19.60953
+03:27:19.63516
+( ... )
+

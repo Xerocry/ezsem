@@ -1,0 +1,23 @@
+nikita@nikita-pc:~/temp$ nice -5 ./p3.4.1 & nice -5 ./p3.4.1
+[1] 3466
+Pid 3466, Index 0.
+Pid 3467, Index 0.
+Pid 3466, Index 100000.
+Pid 3467, Index 100000.
+Pid 3466, Index 200000.
+Pid 3467, Index 200000.
+Pid 3467, Index 300000.
+Pid 3466, Index 300000.
+Pid 3467, Index 400000.
+Pid 3466, Index 400000.
+Pid 3467, Index 500000.
+Pid 3466, Index 500000.
+Pid 3467, Index 600000.
+Pid 3466, Index 600000.
+Pid 3467, Index 700000.
+Pid 3466, Index 700000.
+Pid 3467, Index 800000.
+Pid 3466, Index 800000.
+Pid 3467, Index 900000.
+Pid 3466, Index 900000.
+

@@ -1,0 +1,26 @@
+nikita@nikita-pc:~/temp$ g++ -std=c++11 p1.8.cpp -o p1.8
+
+nikita@nikita-pc:~/temp$ ./p1.8 0
+Filesystem      Size  Used Avail Use% Mounted on
+udev            976M     0  976M   0% /dev
+tmpfs           199M  3,8M  196M   2% /run
+/dev/sda1       292G  5,7G  271G   3% /
+tmpfs           995M  220K  994M   1% /dev/shm
+tmpfs           5,0M  4,0K  5,0M   1% /run/lock
+tmpfs           995M     0  995M   0% /sys/fs/cgroup
+tmpfs           199M   52K  199M   1% /run/user/1000
+
+nikita@nikita-pc:~/temp$ ./p1.8 1
+( ... )
+
+nikita@nikita-pc:~/temp$ ./p1.8 5
+Filesystem      Size  Used Avail Use% Mounted on
+udev            976M     0  976M   0% /dev
+tmpfs           199M  3,8M  196M   2% /run
+/dev/sda1       292G  5,7G  271G   3% /
+tmpfs           995M  220K  994M   1% /dev/shm
+tmpfs           5,0M  4,0K  5,0M   1% /run/lock
+tmpfs           995M     0  995M   0% /sys/fs/cgroup
+tmpfs           199M   52K  199M   1% /run/user/1000
+
+

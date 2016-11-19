@@ -1,0 +1,36 @@
+nikita@nikita-pc:~/temp$ g++ -std=c++11 p1.4.cpp singlecore.c -o p1.4
+
+nikita@nikita-pc:~/temp$ sudo ./p1.4 0 64 40 30 20
+Parent pid #5241, ppid #5240.
+First child pid #5242, ppid #2274.
+Second child pid #5245, ppid #2274.
+Second child pid #5243, ppid #2274.
+Third child pid #5248, ppid #2274.
+Third child pid #5247, ppid #2274.
+Third child pid #5246, ppid #2274.
+Third child pid #5244, ppid #2274.
+
+nikita@nikita-pc:~/temp$ sudo ./p1.4 0 64 31 40 64
+Parent pid #5321, ppid #5320.
+Third child pid #5324, ppid #5321.
+Second child pid #5323, ppid #5321.
+Third child pid #5325, ppid #5323.
+First child pid #5322, ppid #5321.
+Second child pid #5326, ppid #5322.
+Third child pid #5328, ppid #5326.
+Third child pid #5327, ppid #5322.
+
+nikita@nikita-pc:~/temp$ sudo ./p1.4 0 74 20 20 20
+Parent pid #5349, ppid #5348.
+Third child pid #5352, ppid #5349.
+Second child pid #5351, ppid #5349.
+First child pid #5350, ppid #5349.
+Third child pid #5353, ppid #5351.
+Second child pid #5354, ppid #5350.
+Third child pid #5355, ppid #5350.
+Third child pid #5356, ppid #5354.
+
+
+
+
+

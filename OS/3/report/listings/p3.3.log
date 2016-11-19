@@ -1,0 +1,12 @@
+nikita@nikita-pc:~/temp$ cat p3.3.txt & ./p3.3 & sh p3.3.sh &
+[1] 3346
+[2] 3347
+[3] 3348
+Text
+Program
+Script
+
+[1]   Done                    cat p3.3.txt
+[2]-  Done                    ./p3.3
+[3]+  Done                    sh p3.3.sh
+

@@ -1,0 +1,8 @@
+nikita@nikita-pc:~/temp$ gcc p2.1.1.c -o p2.1.1
+nikita@nikita-pc:~/temp$ gcc p2.1.1.ch.c -o p2.1.1.ch
+nikita@nikita-pc:~/temp$ ./p2.1.1
+Parent pid 5732, ppid 5671.
+Child pid 5733, ppid 5732.
+Child has been finished.
+Parent has been finished.
+

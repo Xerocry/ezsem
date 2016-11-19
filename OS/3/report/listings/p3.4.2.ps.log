@@ -1,0 +1,19 @@
+nikita@nikita-pc:~/temp$ ps -l -u nikita --sort ni
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+1 S  1000  2806  2275  0  69 -11 - 110499 poll_s ?       00:00:00 pulseaudio
+4 S  1000  2269     1  0  80   0 - 11341 ep_pol ?        00:00:00 systemd
+5 S  1000  2272  2269  0  80   0 - 15849 -      ?        00:00:00 (sd-pam)
+4 S  1000  2275  2263  0  80   0 - 13387 poll_s ?        00:00:01 upstart
+1 S  1000  2448  2275  0  80   0 -  9982 poll_s ?        00:00:00 upstart-udev-b
+1 S  1000  2460  2275  0  80   0 - 10955 ep_pol ? 
+( ... )
+
+nikita@nikita-pc:~/temp$ ps -l -u root --sort ni
+F S   UID   PID  PPID  C PRI  NI ADDR SZ WCHAN  TTY          TIME CMD
+1 S     0     5     2  0  60 -20 -     0 -      ?        00:00:00 kworker/0:0H
+1 S     0    15     2  0  60 -20 -     0 -      ?        00:00:00 kworker/1:0H
+1 S     0    20     2  0  60 -20 -     0 -      ?        00:00:00 kworker/2:0H
+1 S     0    25     2  0  60 -20 -     0 -      ?        00:00:00 kworker/3:0H
+1 S     0    28     2  0  60 -20 -     0 -      ?        00:00:00 netns
+1 S     0    29     2  0  60 -20 -     0 -      ? 
+( ... )

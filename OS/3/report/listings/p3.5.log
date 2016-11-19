@@ -1,0 +1,6 @@
+nikita@nikita-pc:~/temp$ gcc p3.5.c -o p3.5
+
+nikita@nikita-pc:~/temp$ nohup ./p3.5
+nohup: ignoring input and appending output to 'nohup.out'
+
+

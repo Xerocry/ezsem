@@ -1,0 +1,12 @@
+nikita@nikita-pc:~/temp$ gcc p3.1.p.c -o p3.1.p
+nikita@nikita-pc:~/temp$ gcc p3.1.1.ch.c -o p3.1.1.ch
+nikita@nikita-pc:~/temp$ gcc p3.1.2.ch.c -o p3.1.2.ch
+nikita@nikita-pc:~/temp$ gcc p3.1.3.ch.c -o p3.1.3.ch
+
+nikita@nikita-pc:~/temp$ ./p3.1.p
+Parent pid 5142, ppid 5012.
+First child pid 5143, ppid 5142.
+Second child pid 5144, ppid 5142.
+Third child pid 5145, ppid 5142.
+Signal handle
+

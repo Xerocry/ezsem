@@ -1,0 +1,8 @@
+( ... )
+ 5292 pts/2    Ss     0:00              \_ bash
+ 5557 pts/2    Sl+    0:00              |   \_ ./p4.2
+ 5565 pts/2    S+     0:00              |       \_ sh -c ps -axhf > p4.2.3.log
+ 5566 pts/2    R+     0:00              |           \_ ps -axhf
+ 5519 pts/6    Ss+    0:00              \_ bash
+
+( ... )

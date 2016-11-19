@@ -1,0 +1,23 @@
+nikita@nikita-pc:~/temp$ nice -15 ./p3.4.1 & nice -1 ./p3.4.1
+[1] 3502
+Pid 3502, Index 0.
+Pid 3502, Index 100000.
+Pid 3503, Index 0.
+Pid 3503, Index 100000.
+Pid 3502, Index 200000.
+Pid 3503, Index 200000.
+Pid 3502, Index 300000.
+Pid 3503, Index 300000.
+Pid 3502, Index 400000.
+Pid 3503, Index 400000.
+Pid 3502, Index 500000.
+Pid 3503, Index 500000.
+Pid 3503, Index 600000.
+Pid 3502, Index 600000.
+Pid 3503, Index 700000.
+Pid 3502, Index 700000.
+Pid 3503, Index 800000.
+Pid 3502, Index 800000.
+Pid 3503, Index 900000.
+Pid 3502, Index 900000.
+

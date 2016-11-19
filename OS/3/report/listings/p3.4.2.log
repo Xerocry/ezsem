@@ -1,0 +1,6 @@
+nikita@nikita-pc:~/temp$ ./p3.4.2
+SCHED_FIFO [1, 99]
+SCHED_RR [1, 99]
+SCHED_OTHER [0, 0]
+Current policy: SCHED_OTHER
+Current priority: 0

@@ -1,0 +1,15 @@
+nikita@nikita-pc:~/temp$ gcc -pthread p4.1.c -o p4.1
+nikita@nikita-pc:~/temp$ ./p4.1
+First thread message.
+Second thread message.
+Second thread message.
+Second thread message.
+Second thread message.
+Second thread message.
+First thread message.
+Second thread message.
+Second thread message.
+Second thread message.
+Second thread message.
+Second thread message.
+( ... )

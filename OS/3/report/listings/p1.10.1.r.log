@@ -1,0 +1,27 @@
+nikita@nikita-pc:~/temp$ sudo ./p1.10.1 1 64 40 30 20
+Parent pid #6740, ppid #6739.
+First child pid #6741, ppid #2284.
+Second child pid #6742, ppid #2284.
+First child pid #6742, ppid #2284.
+Third child pid #6743, ppid #2284.
+Second child pid #6743, ppid #2284.
+First child pid #6743, ppid #2284.
+
+nikita@nikita-pc:~/temp$ sudo ./p1.10.1 1 70 20 20 20
+Parent pid #6755, ppid #6754.
+Third child pid #6758, ppid #6757.
+Second child pid #6758, ppid #6757.
+First child pid #6758, ppid #6757.
+Second child pid #6757, ppid #6756.
+First child pid #6757, ppid #6756.
+First child pid #6756, ppid #2284.
+
+nikita@nikita-pc:~/temp$ sudo ./p1.10.1 1 64 31 40 64
+Parent pid #6768, ppid #6767.
+Third child pid #6771, ppid #6770.
+Second child pid #6771, ppid #6770.
+First child pid #6771, ppid #6770.
+Second child pid #6770, ppid #6769.
+First child pid #6770, ppid #6769.
+First child pid #6769, ppid #2284.
+

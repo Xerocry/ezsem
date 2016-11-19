@@ -1,0 +1,19 @@
+5671 pts/4    Ss     0:00  |   \_ bash
+ 6256 pts/4    S+     0:00  |       \_ ./p2.1.3
+ 6257 pts/4    S+     0:00  |           \_ p2.1.1.ch
+ 6258 pts/4    S+     0:00  |           \_ sh -c ps xf > p2.1.3.z1.log
+ 6259 pts/4    R+     0:00  |               \_ ps xf
+ 5795 ?        Sl     0:54  \_ gedit /home/nikita/temp/p2.1.1.log
+ 2286 ?        Ss     0:00 /lib/systemd/systemd --user
+ 2289 ?        S      0:00  \_ (sd-pam)
+
+( ... )
+
+ 5671 pts/4    Ss     0:00  |   \_ bash
+ 6256 pts/4    S+     0:00  |       \_ ./p2.1.3
+ 6257 pts/4    Z+     0:00  |           \_ [p2.1.1.ch] <defunct>
+ 6260 pts/4    S+     0:00  |           \_ sh -c ps xf > p2.1.3.z2.log
+ 6261 pts/4    R+     0:00  |               \_ ps xf
+ 5795 ?        Sl     0:54  \_ gedit /home/nikita/temp/p2.1.1.log
+ 2286 ?        Ss     0:00 /lib/systemd/systemd --user
+ 2289 ?        S      0:00  \_ (sd-pam)

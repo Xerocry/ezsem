@@ -1,0 +1,7 @@
+nikita@nikita-pc:~/temp$ sudo ./p3.2.p
+Parent pid 3526, ppid 3525.
+Child pid 3527, ppid 3526.
+03:27:19.616428 Child signal handle.
+03:27:19.642323 Parent signal handle.
+
+

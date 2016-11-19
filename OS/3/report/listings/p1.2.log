@@ -1,0 +1,10 @@
+nikita@nikita-pc:~/temp$ gcc p1.2.c -o p1.2
+nikita@nikita-pc:~/temp$ ./p1.2
+Process has been started #4169.
+Parent process #4169.
+Test value: 1 
+Process has been finished #4169.
+Child process #4170.
+Test value: -1 
+Process has been finished #4170.
+

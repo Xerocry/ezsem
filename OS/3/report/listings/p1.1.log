@@ -1,0 +1,8 @@
+nikita@nikita-pc:~/temp$ gcc p1.1.c -o p1.1
+nikita@nikita-pc:~/temp$ ./p1.1
+Process has been started #3945.
+Parent process #3945.
+Process has been finished #3945.
+Child process #3946.
+Process has been finished #3946.
+

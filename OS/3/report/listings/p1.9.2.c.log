@@ -1,0 +1,10 @@
+nikita@nikita-pc:~/temp$ gcc p1.9.2.c1.c -o p1.9.2.c1
+nikita@nikita-pc:~/temp$ gcc p1.9.2.c2.c -o p1.9.2.c2
+nikita@nikita-pc:~/temp$ gcc p1.9.2.c3.c -o p1.9.2.c3
+nikita@nikita-pc:~/temp$ ./p1.9.2.c1
+Child #1 started, pid 5236, ppid 3623.
+nikita@nikita-pc:~/temp$ ./p1.9.2.c2
+Child #2 started, pid 5239, ppid 3623.
+nikita@nikita-pc:~/temp$ ./p1.9.2.c3
+Child #3 started, pid 5240, ppid 3623.
+
