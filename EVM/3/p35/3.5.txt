@@ -1,0 +1,165 @@
+org	8400h
+			;r0-тик
+sec_10:	equ	FF09h	;r1-доли секунды
+sec:	equ	FF06h	;r2-секунды
+min:	equ	FF03h	;r3-минуты
+hour:	equ	FF00h	;r4-часы
+
+p4:	equ	E8h
+
+TCON:	equ	88h
+
+rst:	lcall	init
+	
+	clr	c
+;t1:	mov	c, 0h
+	jnb	10h, $
+	
+loop:	jb	11h, rst
+	lcall	indic
+	mov	a, #14h	;20 тиков
+	clr	c
+	subb	a, r0
+	jnc	loop
+	mov	r0, #0h
+	inc	r1
+	mov	dptr, #sec_10
+	mov	a, r1
+	mov	b, #Ah
+	div	ab
+	add	a, #30h
+	movx	@dptr, a
+	inc	dptr
+	mov	a, b
+	add	a, #30h
+	movx	@dptr, a
+	
+
+	mov	a, #63h	;100 долей секунды
+	clr	c
+	subb	a, r1
+	jnz	loop
+	mov	r1, #0h
+	inc	r2
+t3:	mov	dptr, #sec
+	mov	a, r2
+	mov	b, #Ah
+	div	ab
+	add	a, #30h
+	movx	@dptr, a
+	inc	dptr
+	mov	a, b
+	add	a, #30h
+	movx	@dptr, a
+	
+
+	mov	a, #3Ch	;60 секунд
+	clr	c
+	subb	a, r2
+	jnz	loop
+	mov	r2, #0h
+	inc	r3
+	mov	dptr, #min
+	mov	a, r3
+	mov	b, #Ah
+	div	ab
+	add	a, #30h
+	movx	@dptr, a
+	inc	dptr
+	mov	a, b
+	add	a, #30h
+	movx	@dptr, a
+	sjmp	t3
+
+	mov	a, #3Ch	;60 минут
+	clr	c
+	subb	a, r3
+	jnz	loop
+	mov	r3, #0h
+	inc	r4
+	mov	dptr, #min
+	mov	a, r4
+	mov	b, #Ah
+	div	ab
+	add	a, #30h
+	movx	@dptr, a
+	inc	dptr
+	mov	a, b
+	add	a, #30h
+	movx	@dptr, a
+	
+
+	mov	a, #17h	;24 часа
+	clr	c
+	subb	a, r4
+	jnz	loop
+	mov	r4, #0h
+	lcall	indic
+	
+	sjmp	loop
+
+	include	asms\4081_4\FLDR\indic.asm
+
+init:	mov	r0, #0h
+	mov	r1, #0h
+	mov	r2, #0h
+	mov	r3, #0h	
+	mov	r4, #0h
+	clr	10h
+	clr	11h
+	anl	TMOD, #11110000b
+	orl	TMOD, #00000001b
+	;orl	TCON, #00000101b
+	mov	p4, #0h
+	mov 	p1, #0h
+
+	mov	DPTR, #FF03h	;обнуление часов на экране
+	mov	a, #30h
+	movx	@DPTR, a
+	inc	DPTR
+	movx	@DPTR, a
+	inc	DPTR
+	inc	DPTR
+	movx	@DPTR, a
+	inc	DPTR
+	movx	@DPTR, a
+	inc	DPTR
+	inc	DPTR
+	movx	@DPTR, a
+	inc	DPTR
+
+	mov	TH0, #FEh
+	mov	TL0, #00h
+	setb	ea
+	setb	et0
+	setb	tr0
+	setb	ex0
+	ret
+
+tim0:	mov	TH0, #FEh
+	mov	TL0, #00h
+	inc	r0
+	reti
+
+int0:	clr	EX0
+	setb	EX1
+	setb	10h
+	reti
+
+int1:	clr	EX1
+	setb	EX0
+	setb	11h
+	reti
+
+	org	8003h	;внешнее прерывание 0
+	ljmp	int0
+
+	org	800Bh	;переполнение таймера 0
+	ljmp	tim0
+
+	org	8013h	;внешнее прерывание 1
+	ljmp	int1
+
+	org FF00h		;резервирование внешней памяти для видеобуфера 
+str1:	db	'00h00m00s  ms      '
+str2:	db	'                   '
