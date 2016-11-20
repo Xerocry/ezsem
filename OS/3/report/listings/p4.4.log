@@ -1,0 +1,13 @@
+nikita@nikita-pc:~/temp$ ./p4.4
+Second thread message, pid 4847, ppid 4669.
+Second thread message, pid 4847, ppid 4669.
+Second thread message, pid 4847, ppid 4669.
+Second thread message, pid 4847, ppid 4669.
+Second thread message, pid 4847, ppid 4669.
+First thread message, pid 4847, ppid 4669.
+Signal arrived.
+Second thread has been finished.
+First thread message, pid 4847, ppid 4669.
+First thread message, pid 4847, ppid 4669.
+First thread message, pid 4847, ppid 4669.
+( ... )

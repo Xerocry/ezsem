@@ -1,0 +1,19 @@
+nikita@nikita-pc:~/temp$ gcc -pthread p4.5.4.c -o p4.5.4
+nikita@nikita-pc:~/temp$ ./p4.5.4
+First thread message, pid 5374, ppid 4669.
+First thread message, pid 5374, ppid 4669.
+First thread message, pid 5374, ppid 4669.
+^ZSignal arrived. Counter: 1.
+First thread message, pid 5374, ppid 4669.
+^ZSignal arrived. Counter: 2.
+First thread message, pid 5374, ppid 4669.
+^ZSignal arrived. Counter: 3.
+First thread message, pid 5374, ppid 4669.
+^ZSignal arrived. Counter: 4.
+First thread message, pid 5374, ppid 4669.
+First thread message, pid 5374, ppid 4669.
+^ZSignal arrived. Counter: 5.
+First thread message, pid 5374, ppid 4669.
+^Z
+[1]+  Stopped                 ./p4.5.4
+

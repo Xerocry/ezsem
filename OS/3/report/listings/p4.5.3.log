@@ -1,0 +1,17 @@
+nikita@nikita-pc:~/temp$ gcc -pthread p4.5.3.c -o p4.5.3
+nikita@nikita-pc:~/temp$ ./p4.5.3
+First thread message, pid 5292, ppid 4669.
+First thread message, pid 5292, ppid 4669.
+^CSignal arrived. Counter: 1.
+First thread message, pid 5292, ppid 4669.
+^CSignal arrived. Counter: 2.
+First thread message, pid 5292, ppid 4669.
+^CSignal arrived. Counter: 3.
+First thread message, pid 5292, ppid 4669.
+^CSignal arrived. Counter: 4.
+First thread message, pid 5292, ppid 4669.
+First thread message, pid 5292, ppid 4669.
+^CSignal arrived. Counter: 5.
+First thread message, pid 5292, ppid 4669.
+^C
+

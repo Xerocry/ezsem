@@ -1,0 +1,14 @@
+nikita@nikita-pc:~/temp$ gcc -pthread p4.3.c -o p4.3
+nikita@nikita-pc:~/temp$ ./p4.3
+Second thread message, pid 4749, ppid 4669.
+Second thread message, pid 4749, ppid 4669.
+Second thread message, pid 4749, ppid 4669.
+Second thread message, pid 4749, ppid 4669.
+Second thread message, pid 4749, ppid 4669.
+First thread message, pid 4749, ppid 4669.
+Signal arrived.
+Second thread has been finished.
+First thread message, pid 4749, ppid 4669.
+First thread message, pid 4749, ppid 4669.
+First thread message, pid 4749, ppid 4669.
+( ... )

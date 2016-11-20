@@ -1,0 +1,9 @@
+nikita@nikita-pc:~/temp$ gcc -pthread p4.5.2.c -o p4.5.2
+nikita@nikita-pc:~/temp$ ./p4.5.2
+First thread message, pid 5652, ppid 5516.
+First thread message, pid 5652, ppid 5516.
+First thread message, pid 5652, ppid 5516.
+^CSignal arrived.
+Thread has been finished.
+Program has been finished.
+

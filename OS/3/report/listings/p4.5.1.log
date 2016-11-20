@@ -1,0 +1,5 @@
+nikita@nikita-pc:~/temp$ gcc -pthread p4.5.1.c -o p4.5.1
+nikita@nikita-pc:~/temp$ ./p4.5.1
+Process started, pid 5556, ppid 5516.
+^CSignal arrived.
+

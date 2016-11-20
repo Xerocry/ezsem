@@ -1,0 +1,13 @@
+nikita@nikita-pc:~/temp$ gcc -pthread p4.7.c -o p4.7
+nikita@nikita-pc:~/temp$ sudo ./p4.7
+Thread number 1, thread policy SCHED_OTHER.
+Thread number 3, thread policy SCHED_FIFO.
+Thread number 2, thread policy SCHED_RR.
+Thread number 2, thread policy SCHED_RR.
+Thread number 3, thread policy SCHED_FIFO.
+Thread number 1, thread policy SCHED_OTHER.
+Thread number 3, thread policy SCHED_FIFO.
+Thread number 2, thread policy SCHED_RR.
+Thread number 1, thread policy SCHED_OTHER.
+^C
+
