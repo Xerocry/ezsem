@@ -5,13 +5,14 @@
 
 
 #if defined(_LINUX_) || defined(_UDP_)
-Client::Client(std::ostream* out, std::istream* in, const uint16_t port, const char* address) throw(ClientException) {
+Client::Client(std::ostream* out, std::istream* in, std::ostream* error, const uint16_t port, const char* address) throw(ClientException) {
 #endif
 #if defined(_WIN_) && defined(_TCP_)
-Client::Client(std::ostream* out, std::istream* in, const char* port, const char* address) throw(ClientException) {
+Client::Client(std::ostream* out, std::istream* in, std::ostream* error, const char* port, const char* address) throw(ClientException) {
 #endif
     this->in = in;
     this->out = out;
+    this->error = error;
 
 #ifdef _LINUX_
 #ifdef _TCP_
@@ -120,8 +121,13 @@ Client::Client(std::ostream* out, std::istream* in, const char* port, const char
 const void Client::start() throw(ClientException) {
     this->generalInterrupt = false;
 
-    auto bind = std::bind(&Client::readThreadInitialize, std::placeholders::_1);
-    readThread = std::make_shared<std::thread>(bind, this);
+    auto bindRead = std::bind(&Client::readThreadInitialize, std::placeholders::_1);
+    readThread = std::make_shared<std::thread>(bindRead, this);
+
+#ifdef _UDP_
+    auto bindCheck = std::bind(&Client::checkThreadInitialize, std::placeholders::_1);
+    checkThread = std::make_shared<std::thread>(bindCheck, this);
+#endif
 
     std::string clientMessage;
 
@@ -167,7 +173,12 @@ const void Client::start() throw(ClientException) {
             throw ClientException(COULD_NOT_SEND_MESSAGE);
 #endif
 #ifdef _UDP_
-        writeLine(clientMessage, false);
+        try {
+            writeLine(clientMessage, false);
+        }
+        catch (const ClientException& exception) {
+            *this->error << "Message lost." << std::endl;
+        }
 #endif
     }
 }
@@ -178,9 +189,16 @@ void* Client::readThreadInitialize(void *thisPtr) {
 }
 
 const void Client::feedbackExecutor() {
-    while(true) {
+    while(!generalInterrupt) {
         try {
-            *this->out << readLine() << std::endl;
+#ifdef _TCP_
+            auto read = readLine();
+#endif
+#ifdef _UDP_
+            auto read = readLine(false);
+#endif
+            if(!read.empty())
+                *this->out << read << std::endl;
         }
         catch (const ClientException& exception) {
             this->generalInterrupt = true;
@@ -193,11 +211,31 @@ const void Client::feedbackExecutor() {
 }
 
 #ifdef _UDP_
+void* Client::checkThreadInitialize(void *thisPtr) {
+    ((Client*)thisPtr)->checkExecutor();
+    return NULL;
+}
+
+const void Client::checkExecutor() {
+    while(!generalInterrupt) {
+        sleep(CHECK_INTERVAL);
+
+        try { writeLine(CHECK_STRING, true); }
+        catch (const ClientException& exception) {
+            generalInterrupt = true;
+            break;
+        }
+    }
+}
+#endif
+
+#ifdef _UDP_
 const void Client::writeLine(const std::string message, const bool special) throw(ClientException) {
     auto result = std::string(message);
 
     if(special) {
-        currentPackageNumber = (message == std::string(ATTACH_STRING)) ? 0 : -1;
+        currentPackageNumber = (message == std::string(ATTACH_STRING)) ? 0 :
+                               ((message == std::string(CHECK_STRING)) ? 2 : -1);
         if(currentPackageNumber == -1)
             return;
     }
@@ -216,10 +254,10 @@ const void Client::writeLine(const std::string message, const bool special) thro
 
     responseArrived = false;
 
-    for(auto tryIndex = 0; tryIndex < TRIES_COUNT; ++tryIndex) {
-        sendto(generalSocket, result.data(), result.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+    for(auto tryIndex = 0; tryIndex < TRIES_COUNT && !generalInterrupt; ++tryIndex) {
+        sendto(generalSocket, result.data(), MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(struct sockaddr_in));
 
-        if(currentPackageNumber == 0 && readLine() == ATTACH_STRING)
+        if(currentPackageNumber == 0 && readLine(true) == ATTACH_STRING)
             return;
         else if(currentPackageNumber != 0) {
             auto iterationsWait = ITERATIONS_COUNT;
@@ -235,7 +273,12 @@ const void Client::writeLine(const std::string message, const bool special) thro
 }
 #endif
 
+#ifdef _TCP_
 const std::string Client::readLine() throw(ClientException) {
+#endif
+#ifdef _UDP_
+const std::string Client::readLine(const bool waitAttach) throw(ClientException) {
+#endif
     auto result = std::string();
 
 #ifdef _UDP_
@@ -253,12 +296,26 @@ const std::string Client::readLine() throw(ClientException) {
 
         bzero(input, sizeof(input));
         auto size = sizeof(serverAddress);
+
+        if(waitAttach) {
+            fd_set fdSet;
+            struct timeval interval;
+            FD_SET(generalSocket, &fdSet);
+            interval.tv_sec = 1;
+            interval.tv_usec = 0;
+            select(generalSocket + 1, &fdSet, NULL, NULL, &interval);
+            if(!FD_ISSET(generalSocket, &fdSet))
+                return result;
+        }
+
         recvfrom(generalSocket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) &serverAddress, (socklen_t *) &size);
         result = input;
 
+        auto find = result.find_last_of('\n');
+        if(find != std::string::npos)
+            result.erase(find);
+
         std::remove(result.begin(), result.end(), '\r');
-        if (result.back() == '\n')
-            result.pop_back();
 
         if (result.size() < 3)
             continue;
@@ -267,7 +324,7 @@ const std::string Client::readLine() throw(ClientException) {
 
         if(prefix == std::string(SEND_STRING)) {
             auto response = result.substr(2, result.size() - 2);
-            auto find = response.find_first_of('@', 0);
+            find = response.find_first_of('@', 0);
 
             if(find == std::string::npos || find >= response.size() - 1)
                 continue;
@@ -282,21 +339,33 @@ const std::string Client::readLine() throw(ClientException) {
             if(packageNumber == 0)
                 continue;
 
+            bool continueNeeded = false;
+            if(packageNumber >= serverPackageNumber)
+                serverPackageNumber = packageNumber + 1;
+            else
+                continueNeeded = true;
+
             auto message = std::string(result);
 
             result = response.substr(find + 1, response.size() - find - 1);
 
             response = std::string(RESPONSE_STRING) + std::to_string(packageNumber);
-            sendto(generalSocket, response.data(), response.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+            sendto(generalSocket, response.data(), MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(struct sockaddr_in));
+
+            if(packageNumber == 2)
+                continue;
 
             if(packageNumber == 1) {
                 if(result == std::string(DETACH_STRING)) {
-                    sendto(generalSocket, message.data(), message.size(), EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(serverAddress));
+                    sendto(generalSocket, message.data(), MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) &serverAddress, sizeof(struct sockaddr_in));
                     throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
                 }
                 else
                     continue;
             }
+
+            if(continueNeeded)
+                continue;
 
             break;
         }
@@ -331,7 +400,7 @@ const std::string Client::readLine() throw(ClientException) {
 
     char resolvedSymbol = ' ';
 
-    for(auto index = 0; index < MESSAGE_SIZE; ++index) {
+    for(auto index = 0; index < MESSAGE_SIZE && !generalInterrupt; ++index) {
         auto readSize = recv(generalSocket, &resolvedSymbol, 1, EMPTY_FLAGS);
         if(readSize <= 0)
             throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
@@ -344,7 +413,7 @@ const std::string Client::readLine() throw(ClientException) {
 #ifdef _WIN_
     char resolvedSymbol = ' ';
 
-    while(true) {
+    while(!generalInterrupt) {
         auto readSize = recv(generalSocket, &resolvedSymbol, 1, EMPTY_FLAGS);
         if(readSize == 0)
             throw ClientException(COULD_NOT_RECEIVE_MESSAGE);
@@ -362,32 +431,40 @@ const std::string Client::readLine() throw(ClientException) {
 }
 
 const void Client::stop() throw(ClientException) {
-    if(!this->generalInterrupt)
+    if(!this->generalInterrupt) {
 #ifdef _TCP_
         send(generalSocket, "exit\n", 5, EMPTY_FLAGS);
 #endif
 #ifdef _UDP_
-        writeLine("exit", false);
+        try { writeLine("exit", false); }
+        catch (const std::exception& exception) {}
 #endif
+    }
 
-    if(readThread != nullptr && readThread->joinable())
-        readThread->join();
+    this->generalInterrupt = true;
 
 #ifdef _LINUX_
     if(generalSocket <= 0)
         return;
 
-#ifdef _TCP_
     auto shutdownSocket = shutdown(generalSocket, SHUT_RDWR);
     if (shutdownSocket != 0)
         new ClientException(COULD_NOT_SHUT_SOCKET_DOWN);
-#endif
+
+    if(readThread != nullptr && readThread->joinable())
+        readThread->join();
 
     auto socketClose = close(generalSocket);
     if(socketClose != 0)
         throw ClientException(COULD_NOT_CLOSE_SOCKET);
 
     *this->out << "Socket is closed." << std::endl;
+
+#ifdef _UDP_
+    if(checkThread != nullptr && checkThread->joinable())
+        checkThread->join();
+#endif
+
 #endif
 #ifdef _WIN_
     if(generalSocket <= 0 && generalWSAStartup != 0)

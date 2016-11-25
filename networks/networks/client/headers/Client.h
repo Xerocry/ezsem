@@ -57,22 +57,29 @@ private:
 
 #ifdef _UDP_
     static const int TRIES_COUNT = 5;
-    static const int ITERATIONS_COUNT = 10000;
+    static const int ITERATIONS_COUNT = (int) 1e8;
+
+    static const int CHECK_INTERVAL = 5;
 
     static constexpr const char* SEND_STRING = "@S";
     static constexpr const char* RESPONSE_STRING = "@R";
     static constexpr const char* ATTACH_STRING = "@A";
     static constexpr const char* DETACH_STRING = "@D";
+    static constexpr const char* CHECK_STRING = "@C";
 
     bool responseArrived;
-    int progressivePackageNumber = 2;
+    int progressivePackageNumber = 3;
     int currentPackageNumber;
+    int serverPackageNumber = 3;
+
+    std::shared_ptr<std::thread> checkThread;
 #endif
 
     std::shared_ptr<std::thread> readThread;
 
     std::ostream* out;
     std::istream* in;
+    std::ostream* error;
 
     bool generalInterrupt;
 
@@ -101,19 +108,30 @@ public:
 
 
 #if defined(_LINUX_) || defined(_UDP_)
-    explicit Client(std::ostream* out, std::istream* in,  const uint16_t port, const char* address) throw(ClientException);
+    explicit Client(std::ostream* out, std::istream* in, std::ostream* error, const uint16_t port, const char* address) throw(ClientException);
 #endif
 #if defined(_WIN_) && defined(_TCP_)
-    explicit Client(std::ostream* out, std::istream* in,  const char* port, const char* address) throw(ClientException);
+    explicit Client(std::ostream* out, std::istream* in, std::ostream* error,  const char* port, const char* address) throw(ClientException);
 #endif
     const void start() throw(ClientException);
 
     static void* readThreadInitialize(void *thisPtr);
     const void feedbackExecutor();
+
+#ifdef _UDP_
+    static void* checkThreadInitialize(void *thisPtr);
+    const void checkExecutor();
+#endif
+
 #ifdef _UDP_
     const void writeLine(const std::string message, const bool special) throw(ClientException);
 #endif
+#ifdef _TCP_
     const std::string readLine() throw(ClientException);
+#endif
+#ifdef _UDP_
+    const std::string readLine(const bool waitAttach) throw(ClientException);
+#endif
 
     const void stop() throw(ClientException);
     ~Client();

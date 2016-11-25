@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     }
     
     try {
-        Client(&(std::cout), &(std::cin),
+        Client(&(std::cout), &(std::cin), &(std::cerr),
 #if defined(_LINUX_) || defined(_UDP_)
                 port,
 #endif
