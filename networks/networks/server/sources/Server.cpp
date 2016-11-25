@@ -187,9 +187,16 @@ const void Server::start() throw(ServerException, ServerController::ControllerEx
             }
 #endif
 #ifdef _WIN_
-           if(std::string(connectionBuffer) == std::string(CONNECT_STRING)) {
+           auto connectionString = std::string(connectionBuffer);
+
+           std::remove(connectionString.begin(), connectionString.end(), '\r');
+           if(connectionString.back() == '\n')
+               connectionString.pop_back();
+
+           if(connectionString == attachMessage) {
                auto resultSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-               sendto(resultSocket, ACCEPT_STRING, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) clientAddress, sizeof(struct sockaddr_in));
+               auto responseString = std::string(RESPONSE_STRING) + "0";
+               sendto(resultSocket, responseString.data(), MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) clientAddress, sizeof(struct sockaddr_in));
                createClientThread(resultSocket, clientAddress);
            }
 #endif
@@ -376,7 +383,8 @@ void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const in
                                      int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived) {
 #endif
 #ifdef _WIN_
-void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress) {
+void* Server::clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress,
+                                     int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived) {
 #endif
 #endif
 #ifdef _TCP_
@@ -428,7 +436,8 @@ const void Server::acceptClient(const int threadId, const int clientSocket, cons
                                 int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived) throw(ServerException) {
 #endif
 #ifdef _WIN_
-const void Server::acceptClient(const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress) throw(ServerException) {
+const void Server::acceptClient(const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress,
+                                int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived) throw(ServerException) {
 #endif
 #endif
 #ifdef _TCP_
@@ -460,7 +469,7 @@ const void Server::acceptClient(const int threadId, const SOCKET clientSocket) t
             message = readLine(threadId, clientSocket);
 #endif
 #ifdef _UDP_
-            message = readLine(clientSocket, clientAddress);
+            message = readLine(clientSocket, clientAddress, currentPackageNumber, clientPackageNumber, responseArrived, false);
 #endif
 #endif
         }
@@ -506,7 +515,9 @@ const void Server::writeLine(const std::string& message, const int socket, const
                              const bool special, const bool waitThreadRead) throw(ServerException) {
 #endif
 #ifdef _WIN_
-const void Server::writeLine(const std::string& message, const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException) {
+const void Server::writeLine(const std::string& message, const SOCKET socket, const sockaddr_in* clientAddress,
+                             int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived,
+                             const bool special, const bool waitThreadRead) throw(ServerException) {
 #endif
 #endif
 #ifdef _TCP_
@@ -574,7 +585,8 @@ const std::string Server::readLine(const int socket, const sockaddr_in* clientAd
                                    int* currentPackageNumber, int* clientPackageNumber, bool* responseArrived, bool responseExecutor) throw(ServerException) {
 #endif
 #ifdef _WIN_
-const std::string Server::readLine(const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException) {
+const std::string Server::readLine(const SOCKET socket, const sockaddr_in* clientAddress,
+                                   int* currentPackageNumber, int* clientPackageNumber, bool* responseArrived, bool responseExecutor) throw(ServerException) {
 #endif
 #endif
 #ifdef _TCP_
@@ -593,7 +605,7 @@ const std::string Server::readLine(const int threadId, const SOCKET socket) cons
     bzero(input, sizeof(input));
 #endif
 #ifdef _WIN_
-    ????????????????????
+    // ????????????????????
     auto input = new char[MESSAGE_SIZE];
     while(!this->generalInterrupt && result.empty()) {
         memset(input, 0, MESSAGE_SIZE);
@@ -607,7 +619,12 @@ const std::string Server::readLine(const int threadId, const SOCKET socket) cons
 
             ++iterationIndex;
 
+#ifdef _LINUX_
             bzero(input, sizeof(input));
+#endif
+#ifdef _WIN_
+            ZeroMemory(input, sizeof(input));
+#endif
             auto size = sizeof(struct sockaddr_in);
             recvfrom(socket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) clientAddress, (socklen_t *) &size);
             result = input;
@@ -743,7 +760,12 @@ void* Server::checkThreadInitialize(void *thisPtr) {
 
 const void Server::checkExecutor() {
     while(!this->generalInterrupt && !this->checkInterrupt) {
+#ifdef _LINUX_
         sleep(CHECK_INTERVAL);
+#endif
+#ifdef _WIN_
+        Sleep((DWORD)(CHECK_INTERVAL * 1e3));
+#endif
 
         bool lockUsers = this->mutexUsers.try_lock();
 

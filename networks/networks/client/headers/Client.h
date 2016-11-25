@@ -61,6 +61,8 @@ private:
 
     static const int CHECK_INTERVAL = 5;
 
+    static const int ATTACH_DELAY = 1;
+
     static constexpr const char* SEND_STRING = "@S";
     static constexpr const char* RESPONSE_STRING = "@R";
     static constexpr const char* ATTACH_STRING = "@A";

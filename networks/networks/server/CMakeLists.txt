@@ -6,4 +6,4 @@ set(SOURCE_FILES sources/main.cpp headers/Server.h sources/Server.cpp sources/Co
 
 add_executable(server ${SOURCE_FILES})
 
-#target_link_libraries(server advapi32 mswsock wsock32 ws2_32)
+target_link_libraries(server advapi32 mswsock wsock32 ws2_32)

@@ -277,8 +277,10 @@ private:
     const void acceptClient(const int threadId, const SOCKET clientSocket) throw(ServerException);
 #endif
 #ifdef _UDP_
-    static void* clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress);
-    const void acceptClient(const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress) throw(ServerException);
+    static void* clientThreadInitialize(void *thisPtr, const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress,
+                                        int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived);
+    const void acceptClient(const int threadId, const SOCKET clientSocket, const sockaddr_in* clientAddress,
+                            int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived) throw(ServerException);
 #endif
 
     const void createClientThread(const SOCKET clientSocket, sockaddr_in* clientAddress);
@@ -290,13 +292,16 @@ private:
     const void writeLine(const std::string& message, const SOCKET socket) throw(ServerException);
 #endif
 #ifdef _UDP_
-    const void writeLine(const std::string& message, const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException);
+    const void writeLine(const std::string& message, const SOCKET socket, const sockaddr_in* clientAddress,
+                         int* currentPackageNumber, int* clientPackageNumber, int* progressivePackageNumber, bool* responseArrived,
+                         const bool special, const bool waitThreadRead) throw(ServerException);
 #endif
 #ifdef _TCP_
     const std::string readLine(const int threadId, const SOCKET socket) const throw(ServerException);
 #endif
 #ifdef _UDP_
-    static const std::string readLine(const SOCKET socket, const sockaddr_in* clientAddress) throw(ServerException);
+    const std::string readLine(const SOCKET socket, const sockaddr_in* clientAddress,
+                               int* currentPackageNumber, int* clientPackageNumber, bool* responseArrived, bool responseExecutor) throw(ServerException);
 #endif
 #endif
 

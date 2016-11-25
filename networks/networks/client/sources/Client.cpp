@@ -107,6 +107,8 @@ Client::Client(std::ostream* out, std::istream* in, std::ostream* error, const c
     serverAddress.sin_port = htons(port);
     serverAddress.sin_addr.S_un.S_addr = inet_addr(address);
 
+    this->generalInterrupt = false;
+
     try { writeLine(ATTACH_STRING, true); }
     catch (const ClientException& exception) {
         throw ClientException(COULD_NOT_CREATE_CONNECTION);
@@ -201,10 +203,11 @@ const void Client::feedbackExecutor() {
                 *this->out << read << std::endl;
         }
         catch (const ClientException& exception) {
-            this->generalInterrupt = true;
 #ifdef _WIN_
-            *this->out << "Connection lost. Press \"Enter\" to exit." << std::endl;
+            if(!this->generalInterrupt)
+                *this->out << "Connection lost. Press \"Enter\" to exit." << std::endl;
 #endif
+            this->generalInterrupt = true;
             break;
         }
     }
@@ -218,10 +221,19 @@ void* Client::checkThreadInitialize(void *thisPtr) {
 
 const void Client::checkExecutor() {
     while(!generalInterrupt) {
+#ifdef _LINUX_
         sleep(CHECK_INTERVAL);
+#endif
+#ifdef _WIN_
+        Sleep((DWORD)(CHECK_INTERVAL * 1e3));
+#endif
 
         try { writeLine(CHECK_STRING, true); }
         catch (const ClientException& exception) {
+#ifdef _WIN_
+            if(!this->generalInterrupt)
+                *this->out << "Connection lost. Press \"Enter\" to exit." << std::endl;
+#endif
             generalInterrupt = true;
             break;
         }
@@ -294,22 +306,39 @@ const std::string Client::readLine(const bool waitAttach) throw(ClientException)
 
         ++iterationIndex;
 
+#ifdef _LINUX_
         bzero(input, sizeof(input));
+#endif
+#ifdef _WIN_
+        ZeroMemory(input, sizeof(input));
+#endif
+
         auto size = sizeof(serverAddress);
 
         if(waitAttach) {
+#ifdef _LINUX_
             fd_set fdSet;
             struct timeval interval;
             FD_SET(generalSocket, &fdSet);
-            interval.tv_sec = 1;
+            interval.tv_sec = ATTACH_DELAY;
             interval.tv_usec = 0;
             select(generalSocket + 1, &fdSet, NULL, NULL, &interval);
+
             if(!FD_ISSET(generalSocket, &fdSet))
                 return result;
+#endif
+#ifdef  _WIN_
+            Sleep((DWORD)(ATTACH_DELAY * 1e3));
+#endif
         }
 
         recvfrom(generalSocket, input, MESSAGE_SIZE, EMPTY_FLAGS, (struct sockaddr *) &serverAddress, (socklen_t *) &size);
         result = input;
+
+#ifdef  _WIN_
+        if(waitAttach && result.empty())
+            return result;
+#endif
 
         auto find = result.find_last_of('\n');
         if(find != std::string::npos)
@@ -474,6 +503,14 @@ const void Client::stop() throw(ClientException) {
     auto shutdownSocket = shutdown(generalSocket, SD_SEND);
     if (shutdownSocket == SOCKET_ERROR)
         new ClientException(COULD_NOT_SHUT_SOCKET_DOWN);
+#endif
+
+    if(readThread != nullptr && readThread->joinable())
+        readThread->join();
+
+#ifdef _UDP_
+    if(checkThread != nullptr && checkThread->joinable())
+        checkThread->join();
 #endif
 
     closesocket(generalSocket);
